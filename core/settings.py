@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app'
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_storethesis',
+        'NAME': 'db_eco',
         'USER': 'root',
         'PASSWORD': 'rootpassword',
         'HOST': '127.0.0.1',
@@ -86,6 +86,7 @@ DATABASES = {
         },
     }
 }
+
 
 
 # Password validation
