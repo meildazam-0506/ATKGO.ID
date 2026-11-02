@@ -1,0 +1,533 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk | ATKGO.ID</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: #f8f6f1;
+            color: #252641;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 950px;
+            min-height: 540px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 12px 40px rgba(37,38,65,.12);
+        }
+
+        .login-banner {
+            padding: 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #252641;
+            color: white;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 55px;
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .brand img {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .brand span span {
+            color: #ef3938;
+        }
+
+        .login-banner h1 {
+            margin: 0 0 18px;
+            font-size: 38px;
+            line-height: 1.2;
+        }
+
+        .login-banner h1 em {
+            color: #ef6258;
+            font-style: normal;
+        }
+
+        .login-banner p {
+            color: #e0e0e8;
+            line-height: 1.8;
+        }
+
+        .banner-info {
+            margin-top: 25px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 12px;
+            color: #e0e0e8;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .login-form {
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-icon {
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: #fff0ef;
+            color: #ef3938;
+            font-size: 25px;
+            margin-bottom: 22px;
+        }
+
+        .login-form h2 {
+            margin: 0 0 10px;
+            font-size: 29px;
+        }
+
+        .subtitle {
+            margin: 0 0 25px;
+            color: #777;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin: 17px 0 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #ef3938;
+            box-shadow: 0 0 0 3px rgba(239,57,56,.1);
+        }
+
+        .login-button {
+            width: 100%;
+            margin-top: 23px;
+            padding: 15px;
+            border: none;
+            border-radius: 9px;
+            background: #ef3938;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background: #d92f30;
+        }
+
+        .message {
+            margin: 12px 0;
+            padding: 11px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .message.error {
+            color: #c62828;
+            background: #fff0f0;
+        }
+
+        .message.success {
+            color: #247a42;
+            background: #effaf2;
+        }
+
+        .back-home {
+            display: block;
+            margin-top: 25px;
+            text-align: center;
+            color: #252641;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-home:hover {
+            color: #ef3938;
+        }
+
+        .email-display {
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #555;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 700px) {
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+
+            .login-banner {
+                padding: 28px;
+            }
+
+            .brand {
+                margin-bottom: 25px;
+            }
+
+            .login-banner h1 {
+                font-size: 29px;
+            }
+
+            .login-form {
+                padding: 32px 25px;
+            }
+        }
+        
+/* Pilihan Login dan Daftar */
+.mode-links {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0 20px;
+}
+
+.mode-links a {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    color: #252641;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.mode-links a.active {
+    background: #252641;
+    color: white;
+    border-color: #252641;
+}
+
+.password-box {
+    position: relative;
+}
+
+.password-box input {
+    padding-right: 45px;
+}
+
+.otp-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.secondary-button {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 9px;
+    background: white;
+    cursor: pointer;
+    color: #252641;
+}
+
+    </style>
+</head>
+
+<body>
+
+<main class="login-container">
+
+    <section class="login-banner">
+
+        <div class="brand">
+            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+            <span>ATK<span>GO</span>.ID</span>
+        </div>
+
+        <h1>Selamat Datang di <em>ATKGO.ID</em></h1>
+
+        <p>
+            Temukan kebutuhan alat tulis dan perlengkapan kantor
+            dengan pengalaman belanja yang praktis, mudah,
+            dan terpercaya.
+        </p>
+
+        <div class="banner-info">
+            <strong>Belanja lebih mudah!</strong><br>
+            Masuk menggunakan email, password, dan kode verifikasi
+            untuk mengakses layanan ATKGO.ID.
+        </div>
+
+    </section>
+
+
+    
+<section class="login-form">
+
+    <div class="form-icon">✉</div>
+
+    {% if request.session.otp_email %}
+
+        <!-- TAHAP VERIFIKASI OTP -->
+
+        <h2>Verifikasi Email</h2>
+
+        <p class="subtitle">
+            Masukkan kode OTP enam digit yang telah
+            kami kirimkan ke email kamu.
+        </p>
+
+        <div class="email-display">
+            {{ request.session.otp_email }}
+        </div>
+
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <input type="hidden" name="action" value="verify_otp">
+
+            <label for="otp">Kode Verifikasi</label>
+
+            <input
+                type="text"
+                name="otp"
+                id="otp"
+                placeholder="Masukkan 6 digit OTP"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                autocomplete="one-time-code"
+                required
+            >
+
+            <button type="submit" class="login-button">
+                Verifikasi dan Masuk →
+            </button>
+        </form>
+
+        <div class="otp-actions">
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="action" value="resend_otp">
+
+                <button type="submit" class="secondary-button">
+                    Kirim Ulang OTP
+                </button>
+            </form>
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="action" value="cancel_otp">
+
+                <button type="submit" class="secondary-button">
+                    Batalkan Verifikasi
+                </button>
+            </form>
+
+        </div>
+
+    {% else %}
+
+        <h2>Masuk / Daftar</h2>
+
+        <p class="subtitle">
+            Selamat datang di ATKGO.ID.
+            Masuk ke akun atau buat akun baru untuk berbelanja.
+        </p>
+
+        <div class="mode-links">
+
+            <a href="{% url 'login' %}?mode=login"
+               class="{% if mode != 'register' %}active{% endif %}">
+                Login
+            </a>
+
+            <a href="{% url 'login' %}?mode=register"
+               class="{% if mode == 'register' %}active{% endif %}">
+                Daftar
+            </a>
+
+        </div>
+
+        {% if mode == 'register' %}
+
+            <!-- FORM PENDAFTARAN -->
+
+            <h2 style="font-size:21px;">Buat Akun Baru</h2>
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="register_send_otp"
+                >
+
+                <label for="full_name">Nama Lengkap</label>
+
+                <input
+                    type="text"
+                    name="full_name"
+                    id="full_name"
+                    placeholder="Masukkan nama lengkap"
+                    autocomplete="name"
+                    required
+                >
+
+                <label for="email">Alamat Email</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="nama@email.com"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Buat password"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <label for="confirm_password">
+                    Konfirmasi Password
+                </label>
+
+                <input
+                    type="password"
+                    name="confirm_password"
+                    id="confirm_password"
+                    placeholder="Ulangi password"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <button type="submit" class="login-button">
+                    Daftar dan Kirim OTP →
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <!-- FORM LOGIN -->
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="login_send_otp"
+                >
+
+                <label for="email">Alamat Email</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="nama@email.com"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Masukkan password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button type="submit" class="login-button">
+                    Masuk dan Kirim OTP →
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    {% endif %}
+
+    <!-- PESAN DJANGO -->
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <a href="{% url 'landing' %}" class="back-home">
+        Kembali ke Beranda
+    </a>
+
+</section>
+
+
+</main>
+
+</body>
+</html>

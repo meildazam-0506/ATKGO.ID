@@ -1,0 +1,168 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beranda | ATKGO.ID</title>
+  <meta name="description" content="ATKGO.ID — Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.">
+  <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="{% url 'beranda' %}">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+        <span>ATK<span class="go">GO</span>.ID</span>
+      </a>
+      <nav id="mainNav" aria-label="Menu utama">
+        <a href="{% url 'beranda' %}" class="active">Beranda</a>
+        <a href="{% url 'produk' %}">Layanan</a>
+        <a href="{% url 'kategori' %}">Kategori</a>
+        <a href="{% url 'tentang' %}">Tentang</a>
+        <a href="{% url 'kontak' %}">Kontak</a>
+      </nav>
+      <a class="nav-cta" href="{% url 'kontak' %}">
+    Hubungi Kami →
+</a>
+
+<!-- Tombol Logout -->
+<form method="POST" action="{% url 'logout' %}" class="logout-form">
+    {% csrf_token %}
+
+    <button type="submit" class="logout-button"
+            aria-label="Logout" title="Keluar dari akun">
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="19"
+             height="19"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+
+        </svg>
+
+    </button>
+</form>
+
+<button class="menu" id="menuBtn" type="button"
+    aria-label="Buka menu"
+    aria-controls="mainNav"
+    aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">Agensi Strategi &amp; Produksi Visual Kreatif</span>
+          <h1>Lebih cepat,<br><em>hemat,</em> dan Berdampak.</h1>
+          <p class="lead">ATKGO.ID membantu kebutuhan strategi pemasaran, manajemen media sosial, dan produksi visual Anda dengan proses yang praktis, kreatif, dan profesional. dan mudah.</p>
+          <div class="actions">
+            <a class="btn btn-red" href="produk.html">Lihat Layanan →</a>
+            <a class="btn btn-outline" href="tentang.html">Tentang Agensi</a>
+          </div>
+          <p class="hero-tagline">Satu Agensi untuk seluruh solusi kreatif brand anda.</p>
+        </div>
+        <div class="hero-art">
+          <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+          <div class="floating">Kreatif • Strategis • Terpercaya</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Keunggulan -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">KENAPA ATKGO.ID?</span>
+            <h2>Solusi Kreatif Yang Lebih Mudah dan Berdampak.</h2>
+          </div>
+        </div>
+        <div class="grid">
+          <article class="card"><div class="icon">✓</div><h3>Praktis dan Efisien</h3><p>Alur kerja dan manajemen proyek disusun rapi agar kebutuhan strategi dan konten brand Anda lebih mudah direalisasikan.</p></article>
+          <article class="card"><div class="icon">♡</div><h3>Solusi Kreatif Menyeluruh</h3><p>Layanan strategi, manajemen media sosial, hingga produksi aset visual dalam satu agensi terpadu.</p></article>
+          <article class="card">
+            <div class="icon">↗</div>
+            <h3>Profesional dan Berkualitas</h3>
+            <p> Mengutamakan komunikasi yang jelas, hasil visual berkualitas tinggi, dan profesionalisme dalam setiap kampanye..</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pilihan produk -->
+    <section class="section alt">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">PILIHAN PRODUK</span>
+            <h2>Temukan kebutuhanmu.</h2>
+            <p>Lihat beberapa kategori produk ATKGO.ID.</p>
+          </div>
+          <a class="btn btn-outline" href="produk.html">Lihat semua layanan →</a>
+        </div>
+        <div class="grid">
+          <article class="card"><div class="icon">✎</div><h3>Alat Tulis</h3><p>Pulpen, pensil, crayon, dan perlengkapan menulis.</p></article>
+          <article class="card"><div class="icon">▤</div><h3>Buku &amp; Kertas</h3><p>Buku tulis, loose leaf, kertas, dan perlengkapan catatan.</p></article>
+          <article class="card"><div class="icon">▣</div><h3>Perlengkapan Kantor</h3><p>Map, binder, gunting, dan kebutuhan administrasi.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ajakan menghubungi -->
+    <section class="section">
+      <div class="wrap">
+        <div class="banner">
+          <div>
+            <h2>Butuh rekomendasi produk?</h2>
+            <p>Hubungi ATKGO.ID untuk menanyakan ketersediaan dan kebutuhan ATK.</p>
+          </div>
+          <a class="btn btn-red" href="kontak.html">Hubungi Kami →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <h3>ATKGO.ID</h3>
+          <p>Mitra cerdas pengadaan alat tulis dan perlengkapan kantor: lebih cepat, hemat, dan terpercaya.</p>
+        </div>
+        <div>
+          <h3>Menu</h3>
+          <div class="footer-links">
+            <a href="produk.html">Katalog Produk</a>
+            <a href="kategori.html">Kategori</a>
+            <a href="tentang.html">Tentang Kami</a>
+          </div>
+        </div>
+        <div>
+          <h3>Kontak</h3>
+          <div class="footer-links">
+            <a href="kontak.html">Hubungi ATKGO.ID</a>
+            <span>Indonesia</span>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">© 2026 ATKGO.ID. Semua hak dilindungi.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>

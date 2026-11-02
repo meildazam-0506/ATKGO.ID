@@ -1,0 +1,118 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Kontak | ATKGO.ID</title>
+
+  <meta name="description" content="ATKGO.ID — Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.">
+
+  <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+<body>
+  <header>
+  <div class="wrap nav">
+    <a class="brand" href="{% url 'home' %}">
+      <img src="{% static 'assets/img/logo.png' %}" width="47" height="48" alt="Logo ATKGO.ID">
+      <span>ATK<span class="go">GO</span>.ID</span>
+    </a>
+
+    <nav id="mainNav" aria-label="Menu utama">
+      <a href="{% url 'home' %}">Beranda</a>
+      <a href="{% url 'produk' %}">Layanan</a>
+      <a href="{% url 'kategori' %}">Kategori</a>
+      <a href="{% url 'tentang' %}">Tentang</a>
+      <a href="{% url 'kontak' %}" class="active" aria-current="page">Kontak</a>
+    </nav>
+
+    <a class="nav-cta" href="{% url 'kontak' %}">Hubungi Kami →</a>
+
+    <button class="menu" id="menuBtn" type="button"
+      aria-label="Buka menu" aria-controls="mainNav" aria-expanded="false">☰</button>
+  </div>
+</header>
+
+  <main>
+    <section class="section alt">
+      <div class="wrap split">
+        <div>
+          <span class="eyebrow">KONTAK</span>
+          <h1 class="page-title">Ada yang ingin <em>ditanyakan?</em></h1>
+          <p>Isi formulir berikut untuk menyiapkan pesan pesanan atau pertanyaan. Pesan akan dibuka melalui aplikasi email di perangkat kamu.</p>
+          <div class="card">
+            <h3>ATKGO.ID</h3>
+            <p>Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.</p>
+            <p><b class="contact-hours">Jam layanan:</b> Sesuaikan dengan jam operasional toko.</p>
+          </div>
+        </div>
+
+        <form class="form card" id="contactForm">
+           <div class="form-group">
+        <label for="nama">Nama</label>
+        <input
+            type="text"
+            id="nama"
+            name="nama"
+            placeholder="Masukkan nama Anda"
+            required
+        >
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="nama@email.com"
+            required
+        >
+    </div>
+
+          </label>
+          <label>Pesan<textarea id="pesan" required placeholder="Tulis pesan kamu..."></textarea></label>
+          <button class="btn btn-red" type="submit">Lanjut Pembayaran →
+          </button>
+        
+          <small class="notice"></small>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <h3>ATKGO.ID</h3>
+          <p>Mitra cerdas pengadaan alat tulis dan perlengkapan kantor: lebih cepat, hemat, dan terpercaya.</p>
+        </div>
+        <div>
+          <h3>Menu</h3>
+          <div class="footer-links">
+            <a href="{% url 'produk' %}">Katalog Produk</a>
+            <a href="{% url 'kategori' %}">Kategori</a>
+            <a href="{% url 'tentang' %}">Tentang Kami</a>
+          </div>
+        </div>
+        <div>
+          <h3>Kontak</h3>
+          <div class="footer-links">
+            <a href="{% url 'kontak' %}">Hubungi ATKGO.ID</a>
+            <span>Indonesia</span>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">© 2026 ATKGO.ID. Semua hak dilindungi.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>

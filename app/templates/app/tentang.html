@@ -1,0 +1,107 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tentang | ATKGO.ID</title>
+  <meta name="description" content="ATKGO.ID — Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.">
+
+  <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="{% url 'home' %}">
+        <img src="{% static 'assets/img/logo.png' %}" width="47" height="48" alt="Logo ATKGO.ID">
+        <span>ATK<span class="go">GO</span>.ID</span>
+      </a>
+
+      <nav id="mainNav" aria-label="Menu utama">
+        <a href="{% url 'home' %}">Beranda</a>
+        <a href="{% url 'produk' %}">Layanan</a>
+        <a href="{% url 'kategori' %}">Kategori</a>
+        <a href="{% url 'tentang' %}" class="active" aria-current="page">Tentang</a>
+        <a href="{% url 'kontak' %}">Kontak</a>
+      </nav>
+
+      <a class="nav-cta" href="{% url 'kontak' %}">Hubungi Kami →</a>
+
+      <button class="menu" id="menuBtn" type="button"
+        aria-label="Buka menu" aria-controls="mainNav" aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="wrap split">
+        <div class="logo-box">
+          <img
+           src="{% static 'assets/img/agensi.png' %}"
+           alt="Agensi ATKGO.ID"
+          >
+        </div>
+
+        <div>
+          <span class="eyebrow">TENTANG KAMI</span>
+          <h1 class="page-title">Partner Digital untuk Mengembangkan Bisnis <em>ATK.</em></h1>
+
+          <p>ATKGO.ID adalah agensi digital marketing yang membantu bisnis mengembangkan identitas merek dan memperluas jangkauan pemasaran melalui strategi digital yang kreatif dan terarah.</p>
+
+          <p>Kami menyediakan layanan strategi konten, desain visual, manajemen media sosial, serta produksi foto dan video untuk membantu bisnis membangun citra merek yang kuat dan menjangkau lebih banyak audiens.</p>
+
+          <div class="checklist">
+            <div class="check"><b>✓</b> Strategi Kreatif</div>
+            <div class="check"><b>✓</b> Desain</div>
+            <div class="check"><b>✓</b> Layanan Terarah</div>
+            <div class="check"><b>✓</b> Fokus pada Klien</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <span class="eyebrow">KOMITMEN KAMI</span>
+        <h2>Kreatif, Strategis, dan Terpercaya.</h2>
+        <p class="lead">Kami berkomitmen membantu bisnis mengembangkan merek melalui strategi konten, desain kreatif, dan pemasaran digital yang terarah untuk menjangkau audiens yang tepat.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <h3>ATKGO.ID</h3>
+          <p>Agensi digital marketing yang membantu bisnis membangun identitas merek, mengembangkan konten kreatif, dan meningkatkan jangkauan pemasaran secara digital.</p>
+        </div>
+
+        <div>
+          <h3>Menu</h3>
+          <div class="footer-links">
+            <a href="{% url 'produk' %}">Layanan Kami</a>
+            <a href="{% url 'kategori' %}">Portofolio</a>
+            <a href="{% url 'tentang' %}">Tentang Kami</a>
+          </div>
+        </div>
+
+        <div>
+          <h3>Kontak</h3>
+          <div class="footer-links">
+            <a href="{% url 'kontak' %}">Hubungi ATKGO.ID</a>
+            <span>Konsultasi Layanan Digital Marketing</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="copyright">© 2026 ATKGO.ID. Semua hak dilindungi.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>

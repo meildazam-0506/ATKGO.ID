@@ -1,0 +1,127 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Kategori | ATKGO.ID</title>
+
+  <meta name="description" content="ATKGO.ID — Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.">
+
+  <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+<body>
+  <header>
+  <div class="wrap nav">
+
+    <a class="brand" href="{% url 'home' %}">
+      <img src="{% static 'assets/img/logo.png' %}" width="47" height="48" alt="Logo ATKGO.ID">
+      <span>ATK<span class="go">GO</span>.ID</span>
+    </a>
+
+    <nav id="mainNav" aria-label="Menu utama">
+      <a href="{% url 'home' %}">Beranda</a>
+      <a href="{% url 'produk' %}">Layanan</a>
+      <a href="{% url 'kategori' %}" class="active" aria-current="page">Kategori</a>
+      <a href="{% url 'tentang' %}">Tentang</a>
+      <a href="{% url 'kontak' %}">Kontak</a>
+    </nav>
+
+    <a class="nav-cta" href="{% url 'kontak' %}">Hubungi Kami →</a>
+
+    <button class="menu" id="menuBtn" type="button"
+      aria-label="Buka menu"
+      aria-controls="mainNav"
+      aria-expanded="false">☰</button>
+
+  </div>
+</header>
+
+  <main>
+    <section class="section alt">
+      <div class="wrap">
+        <span class="eyebrow">JELAJAHI KATEGORI</span>
+        <h1 class="page-title">Kategori <em>produk.</em></h1>
+        <p class="lead">Pilih kategori untuk menemukan perlengkapan yang sesuai kebutuhan belajar, kerja, dan aktivitas kreatif.</p>
+        <div class="grid">
+          <article class="card">
+            <div class="icon">✎</div>
+            <h3>Alat Tulis</h3>
+            <p>Pulpen, pensil, crayon, pensil warna, dan alat tulis lainnya.</p>
+            <br>
+            <a class="btn btn-outline" href="{% url 'produk' %}">Lihat layanan →</a>
+          </article>
+          <article class="card">
+            <div class="icon">▤</div>
+            <h3>Buku &amp; Kertas</h3>
+            <p>Buku tulis, loose leaf, kertas HVS, dan kebutuhan catatan.</p>
+            <br>
+            <a class="btn btn-outline" href="{% url 'produk' %}">Lihat layanan →</a>
+          </article>
+          <article class="card">
+            <div class="icon">✂</div>
+            <h3>Perlengkapan</h3>
+            <p>Gunting, map, binder, dan perlengkapan administrasi kantor.</p>
+            <br>
+            <a class="btn btn-outline" href="{% url 'produk' %}">Lihat layanan →</a>
+          </article>
+          <article class="card">
+            <div class="icon">▣</div>
+            <h3>Perlengkapan Sekolah</h3>
+            <p>Berbagai kebutuhan untuk menunjang kegiatan belajar.</p>
+            <br>
+            <a class="btn btn-outline" href="{% url 'produk' %}">Lihat layanan →</a>
+          </article>
+          <article class="card">
+            <div class="icon">▦</div>
+            <h3>Kebutuhan Kantor</h3>
+            <p>Produk penunjang kegiatan operasional dan administrasi.</p>
+            <br>
+            <a class="btn btn-outline" href="{% url 'produk' %}">Lihat layanan →</a>
+          </article>
+          <article class="card">
+            <div class="icon">✦</div>
+            <h3>Produk Kreatif</h3>
+            <p>Perlengkapan untuk menggambar, mewarnai, dan berkreasi.</p>
+            <br>
+            <a class="btn btn-outline" href="{% url 'produk' %}">Lihat layanan →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <h3>ATKGO.ID</h3>
+          <p>Mitra cerdas pengadaan alat tulis dan perlengkapan kantor: lebih cepat, hemat, dan terpercaya.</p>
+        </div>
+        <div>
+          <h3>Menu</h3>
+          <div class="footer-links">
+             <a href="{% url 'produk' %}">Katalog Produk</a>
+             <a href="{% url 'kategori' %}">Kategori</a>
+             <a href="{% url 'tentang' %}">Tentang Kami</a>
+          </div>
+        </div>
+        <div>
+          <h3>Kontak</h3>
+          <div class="footer-links">
+              <a href="{% url 'kontak' %}">Hubungi ATKGO.ID</a>
+            <span>Indonesia</span>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">© 2026 ATKGO.ID. Semua hak dilindungi.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>
