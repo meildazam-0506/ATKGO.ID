@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Beranda &middot; ATKGO.ID{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Website ATKGO.ID berhasil dijalankan!</h1>
+    <p>Struktur HTML dan CSS sudah dipisahkan. Mulai kembangkan halaman Anda dari sini.</p>
+    <a class="btn" href="{% url 'admin:index' %}">Buka Admin</a>
+</section>
+
+{% if jumlah_provinsi is not None %}
+<section class="card-grid">
+    <article class="card">
+        <h2>{{ jumlah_provinsi }}</h2>
+        <p>Provinsi terdaftar</p>
+    </article>
+    <article class="card">
+        <h2>{{ jumlah_anggota }}</h2>
+        <p>Anggota terdaftar</p>
+    </article>
+</section>
+{% endif %}
+{% endblock %}

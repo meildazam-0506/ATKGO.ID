@@ -1,0 +1,620 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pembayaran | ATKGO.ID</title>
+
+    <link rel="icon" type="image/png"
+          href="{% static 'assets/img/logo.png' %}">
+    <link rel="stylesheet"
+          href="{% static 'assets/css/style.css' %}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f8f8f6;
+            color: #292929;
+            font-family: Arial, sans-serif;
+        }
+
+        .payment-page {
+            min-height: 75vh;
+            padding: 55px 20px 80px;
+        }
+
+        .payment-container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .payment-heading {
+            margin-bottom: 30px;
+        }
+
+        .payment-heading small {
+            color: #888;
+            letter-spacing: 2px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .payment-heading h1 {
+            font-size: clamp(28px, 4vw, 42px);
+            margin: 10px 0;
+            color: #292929;
+        }
+
+        .payment-heading p {
+            color: #777;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .payment-layout {
+            display: grid;
+            grid-template-columns: 1.7fr 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .payment-main,
+        .summary-card {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .payment-section {
+            padding-bottom: 25px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .payment-section:last-child {
+            border-bottom: 0;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 20px;
+            font-size: 19px;
+        }
+
+        .section-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f8e9e8;
+            color: #df332b;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #fff;
+            color: #292929;
+        }
+
+        .form-group input[readonly],
+        .form-group textarea[readonly] {
+            background: #f8f8f6;
+            color: #666;
+            cursor: default;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #df332b;
+            box-shadow: 0 0 0 3px rgba(223, 51, 43, .08);
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #eaeaea;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .payment-option input {
+            margin-top: 4px;
+            accent-color: #df332b;
+        }
+
+        .payment-option strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .payment-option small {
+            display: block;
+            margin-top: 5px;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .payment-option.disabled {
+            background: #f8f8f6;
+            cursor: not-allowed;
+            opacity: .7;
+        }
+
+        .payment-status {
+            padding: 13px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: #f8f8f6;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .summary-card {
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-card h2 {
+            font-size: 19px;
+            margin: 0 0 20px;
+        }
+
+        .service-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .service-name {
+            font-weight: 600;
+        }
+
+        .service-detail {
+            color: #888;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .service-price {
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .empty-message {
+            padding: 25px 15px;
+            text-align: center;
+            color: #777;
+            background: #f8f8f6;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 16px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .summary-total {
+            border-top: 1px solid #eee;
+            padding-top: 18px;
+            margin-top: 20px;
+            color: #222;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .btn-confirm {
+            display: block;
+            width: 100%;
+            margin-top: 22px;
+            padding: 15px;
+            border: 0;
+            border-radius: 9px;
+            background: #df332b;
+            color: white;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-confirm:hover {
+            background: #bd2923;
+        }
+
+        .btn-confirm:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .continue-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .summary-note {
+            margin-top: 15px;
+            color: #888;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 760px) {
+            .payment-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-main,
+            .summary-card {
+                padding: 20px;
+            }
+
+            .summary-card {
+                position: static;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="payment-page">
+    <div class="payment-container">
+
+        <header class="payment-heading">
+            <small>ATKGO.ID / PEMESANAN</small>
+            <h1>Pembayaran Pesanan</h1>
+            <p>
+                Lengkapi informasi pemesanan dan periksa kembali
+                layanan pilihan Anda sebelum melanjutkan.
+            </p>
+        </header>
+
+        <form id="payment-form">
+
+            <div class="payment-layout">
+
+                <section class="payment-main">
+
+                    <!-- INFORMASI PEMESAN -->
+                    <section class="payment-section">
+
+                        <h2 class="section-title">
+                            <span class="section-number">1</span>
+                            Informasi Pemesan
+                        </h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="nama">Nama Lengkap</label>
+                                <input
+                                    type="text"
+                                    id="nama"
+                                    name="nama"
+                                    value="{{ nama_pengguna }}"
+                                    readonly
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value="{{ email_pengguna }}"
+                                    readonly
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="telepon">Nomor WhatsApp</label>
+                                <input
+                                    type="tel"
+                                    id="telepon"
+                                    name="telepon"
+                                    value="{{ telepon_pengguna }}"
+                                    readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bisnis">Nama Bisnis / Instansi</label>
+                                <input
+                                    type="text"
+                                    id="bisnis"
+                                    name="bisnis"
+                                    value="{{ bisnis_pengguna }}"
+                                    placeholder="Masukkan nama bisnis (opsional)">
+                            </div>
+
+                            <div class="form-group full">
+                                <label for="alamat">Alamat</label>
+                                <textarea
+                                    id="alamat"
+                                    name="alamat"
+                                    readonly>{{ alamat_pengguna }}</textarea>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <!-- METODE PEMBAYARAN -->
+                    <section class="payment-section">
+
+                        <h2 class="section-title">
+                            <span class="section-number">2</span>
+                            Metode Pembayaran
+                        </h2>
+
+                        <div class="payment-status">
+                            <strong>Informasi pembayaran</strong><br>
+                            Integrasi Midtrans ATKGO.ID sedang dipersiapkan.
+                            Metode pembayaran online akan tersedia setelah
+                            sistem pembayaran resmi diaktifkan.
+                        </div>
+
+                        <label class="payment-option disabled">
+                            <input
+                                type="radio"
+                                name="metode"
+                                value="Midtrans"
+                                disabled>
+
+                            <span>
+                                <strong>Midtrans</strong>
+                                <small>
+                                    Virtual Account, QRIS, dan e-wallet
+                                    — segera tersedia.
+                                </small>
+                            </span>
+                        </label>
+
+                        <label class="payment-option">
+                            <input
+                                type="radio"
+                                name="metode"
+                                value="Konsultasi Pembayaran"
+                                checked>
+
+                            <span>
+                                <strong>Konfirmasi dengan Tim ATKGO.ID</strong>
+                                <small>
+                                    Tim akan menghubungi Anda untuk
+                                    mengonfirmasi ruang lingkup layanan
+                                    dan instruksi pembayaran.
+                                </small>
+                            </span>
+                        </label>
+
+                    </section>
+
+                </section>
+
+                <!-- RINGKASAN PESANAN -->
+                <aside class="summary-card">
+
+                    <h2>Ringkasan Pesanan</h2>
+
+                    <div id="daftar-layanan">
+                        Memuat layanan...
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <strong id="subtotal-harga">Rp0</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Biaya tambahan</span>
+                        <strong>Rp0</strong>
+                    </div>
+
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span id="total-harga">Rp0</span>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn-confirm"
+                        id="btn-konfirmasi">
+                        Konfirmasi Detail Pesanan
+                    </button>
+
+                    <a href="/keranjang/" class="continue-link">
+                        Kembali ke Keranjang
+                    </a>
+
+                    <p class="summary-note">
+                        Belum ada pembayaran otomatis pada tahap ini.
+                        Konfirmasi akhir dan instruksi pembayaran akan
+                        diberikan setelah tim ATKGO.ID meninjau pesanan.
+                    </p>
+
+                </aside>
+
+            </div>
+        </form>
+
+    </div>
+</main>
+
+<script>
+(function () {
+    'use strict';
+
+    const KEY = 'atkgo_cart';
+
+    function ambilKeranjang() {
+        try {
+            return JSON.parse(localStorage.getItem(KEY) || '[]');
+        } catch (error) {
+            return [];
+        }
+    }
+
+    const keranjang = ambilKeranjang();
+
+    const daftar = document.getElementById('daftar-layanan');
+    const subtotalElement = document.getElementById('subtotal-harga');
+    const totalElement = document.getElementById('total-harga');
+    const tombol = document.getElementById('btn-konfirmasi');
+
+    function rupiah(angka) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            maximumFractionDigits: 0
+        }).format(angka);
+    }
+
+    let total = 0;
+
+    daftar.replaceChildren();
+
+    if (keranjang.length === 0) {
+        const kosong = document.createElement('div');
+        kosong.className = 'empty-message';
+        kosong.textContent =
+            'Keranjang masih kosong. Silakan pilih layanan terlebih dahulu.';
+
+        daftar.appendChild(kosong);
+        tombol.disabled = true;
+
+    } else {
+        keranjang.forEach(function (layanan) {
+            const qty = Math.max(1, Number(layanan.qty) || 1);
+            const harga = Math.max(0, Number(layanan.price) || 0);
+            const jumlah = harga * qty;
+
+            total += jumlah;
+
+            const baris = document.createElement('div');
+            baris.className = 'service-row';
+
+            const info = document.createElement('div');
+
+            const nama = document.createElement('div');
+            nama.className = 'service-name';
+            nama.textContent = layanan.name || 'Layanan ATKGO';
+
+            const detail = document.createElement('div');
+            detail.className = 'service-detail';
+            detail.textContent = qty + ' layanan';
+
+            info.append(nama, detail);
+
+            const hargaElement = document.createElement('div');
+            hargaElement.className = 'service-price';
+            hargaElement.textContent = rupiah(jumlah);
+
+            baris.append(info, hargaElement);
+            daftar.appendChild(baris);
+        });
+    }
+
+    subtotalElement.textContent = rupiah(total);
+    totalElement.textContent = rupiah(total);
+
+    document.getElementById('payment-form')
+        .addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (keranjang.length === 0) {
+                alert('Keranjang Anda masih kosong.');
+                window.location.href = '/keranjang/';
+                return;
+            }
+
+            if (!this.reportValidity()) return;
+
+            alert(
+                'Informasi pesanan berhasil diperiksa di halaman ini. ' +
+                'Fitur penyimpanan pesanan dan pembayaran online ' +
+                'belum diaktifkan. Silakan tunggu integrasi berikutnya.'
+            );
+        });
+
+})();
+</script>
+
+</body>
+</html>

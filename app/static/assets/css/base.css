@@ -1,0 +1,43 @@
+/* ==========================================================
+   BASE — reset & gaya dasar elemen HTML
+   ========================================================== */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+button, input, textarea, select { font: inherit; }
+
+h1 {
+  font-size: clamp(40px, 5.3vw, 68px);
+  line-height: 1.04;
+  letter-spacing: -2.8px;
+  color: var(--navy);
+  margin: 15px 0;
+}
+h1 em { font-style: normal; color: var(--red); }
+
+h2 {
+  font-size: clamp(28px, 3.5vw, 39px);
+  line-height: 1.15;
+  letter-spacing: -1px;
+  color: var(--navy);
+  margin: 9px 0 14px;
+}
+
+p { color: var(--muted); }
+
+/* Tanda fokus saat navigasi memakai keyboard */
+:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }

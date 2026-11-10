@@ -1,0 +1,253 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Produk | ATKGO.ID</title>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f2;
+            color: #26352a;
+        }
+        .sidebar {
+            position: fixed; inset: 0 auto 0 0;
+            width: 245px; background: #304b35;
+            padding: 28px 18px; color: white;
+        }
+        .brand { font-size: 21px; font-weight: bold; margin-bottom: 35px; }
+        .brand small {
+            display: block; color: #c6d4c8;
+            font-size: 10px; margin-top: 6px; letter-spacing: 1px;
+        }
+        .menu-title {
+            color: #b9c9bb; font-size: 10px;
+            letter-spacing: 1px; margin: 25px 10px 12px;
+        }
+        .sidebar a {
+            display: block; padding: 13px 12px;
+            color: #e1e9e1; text-decoration: none;
+            border-radius: 8px; font-size: 13px; margin-bottom: 5px;
+        }
+        .sidebar a.active, .sidebar a:hover { background: #ffffff20; }
+        .main { margin-left: 245px; padding: 32px; }
+        .header {
+            display: flex; justify-content: space-between;
+            align-items: center; gap: 15px; margin-bottom: 25px;
+        }
+        .header h1 { font-size: 25px; margin-bottom: 7px; }
+        .muted { color: #849087; font-size: 13px; }
+        .button {
+            display: inline-block; background: #304b35;
+            color: white; text-decoration: none; border: 0;
+            border-radius: 8px; padding: 12px 17px;
+            cursor: pointer; font-size: 13px;
+        }
+        .stats {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 16px; margin-bottom: 23px;
+        }
+        .stat {
+            background: white; border: 1px solid #e8ece7;
+            padding: 20px; border-radius: 12px;
+        }
+        .stat small { color: #849087; }
+        .stat strong { display: block; font-size: 25px; margin-top: 9px; }
+        .panel {
+            background: white; border: 1px solid #e8ece7;
+            border-radius: 13px; padding: 22px;
+        }
+        .toolbar {
+            display: flex; justify-content: space-between;
+            gap: 15px; align-items: center; margin-bottom: 20px;
+        }
+        .search { display: flex; gap: 8px; }
+        .search input {
+            width: 250px; padding: 11px;
+            border: 1px solid #dce3dc; border-radius: 8px;
+        }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 720px; }
+        th, td {
+            padding: 14px 11px; text-align: left;
+            border-bottom: 1px solid #edf0ec; font-size: 12px;
+        }
+        th { color: #849087; font-weight: 600; }
+        .product-info { display: flex; align-items: center; gap: 11px; }
+        .product-info img {
+            width: 45px; height: 45px; border-radius: 8px;
+            object-fit: cover; background: #f1f3f0;
+        }
+        .no-image {
+            width: 45px; height: 45px; border-radius: 8px;
+            background: #e8efe7; display: grid; place-items: center;
+        }
+        .badge {
+            padding: 6px 9px; border-radius: 20px;
+            background: #e8f2e8; color: #496d4d; font-size: 10px;
+        }
+        .inactive { background: #f4e9e9; color: #9a4545; }
+        .actions { display: flex; gap: 7px; align-items: center; }
+        .edit {
+            background: #e8efe7; color: #304b35;
+            padding: 7px 10px; border-radius: 6px;
+            text-decoration: none;
+        }
+        .delete {
+            background: #f8eaea; color: #a33d3d;
+            padding: 7px 10px; border: 0;
+            border-radius: 6px; cursor: pointer;
+        }
+        .messages { margin-bottom: 15px; }
+        .message {
+            padding: 12px; border-radius: 8px;
+            background: #e8f2e8; margin-bottom: 8px; font-size: 13px;
+        }
+        @media(max-width:800px) {
+            .sidebar { position: relative; width: 100%; }
+            .main { margin-left: 0; padding: 20px; }
+            .stats { grid-template-columns: 1fr; }
+            .header, .toolbar { align-items: flex-start; flex-direction: column; }
+            .search, .search input { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        ATKGO.ID
+        <small>AGENCY WORKSPACE</small>
+    </div>
+
+    <p class="menu-title">MENU UTAMA</p>
+    <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
+    <a href="{% url 'admin_products' %}" class="active">▣ &nbsp; Manajemen Produk</a>
+    <a href="{% url 'admin_dashboard' %}">♙ &nbsp; Pelanggan</a>
+    <a href="{% url 'admin_dashboard' %}">▤ &nbsp; Pesanan</a>
+    <a href="{% url 'admin_dashboard' %}">✉ &nbsp; Pesan Pelanggan</a>
+
+    <p class="menu-title">MANAJEMEN TIM</p>
+    <a href="{% url 'admin_register' %}">＋ &nbsp; Tambah Admin</a>
+    <a href="{% url 'home' %}">↗ &nbsp; Lihat Website</a>
+
+    <form method="POST" action="{% url 'admin_logout' %}">
+        {% csrf_token %}
+        <button class="button" style="margin-top:25px;background:#a94a4a;width:100%;">
+            Keluar
+        </button>
+    </form>
+</aside>
+
+<main class="main">
+    <header class="header">
+        <div>
+            <h1>Manajemen Produk</h1>
+            <p class="muted">Kelola katalog produk ATKGO.ID dari satu tempat.</p>
+        </div>
+        <a class="button" href="{% url 'admin_product_create' %}">＋ Tambah Produk</a>
+    </header>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="stats">
+        <div class="stat">
+            <small>Total Produk</small>
+            <strong>{{ total_produk }}</strong>
+        </div>
+        <div class="stat">
+            <small>Produk Aktif</small>
+            <strong>{{ produk_aktif }}</strong>
+        </div>
+        <div class="stat">
+            <small>Stok Habis</small>
+            <strong>{{ stok_habis }}</strong>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="toolbar">
+            <div>
+                <h2 style="font-size:17px;">Daftar Produk</h2>
+                <p class="muted" style="margin-top:6px;">Data produk yang tersimpan di database.</p>
+            </div>
+
+            <form method="GET" class="search">
+                <input type="text" name="q" value="{{ keyword }}"
+                       placeholder="Cari nama atau kategori...">
+                <button class="button" type="submit">Cari</button>
+            </form>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>PRODUK</th>
+                        <th>KATEGORI</th>
+                        <th>HARGA</th>
+                        <th>STOK</th>
+                        <th>STATUS</th>
+                        <th>AKSI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>
+                            <div class="product-info">
+                                {% if product.gambar %}
+                                    <img src="{{ product.gambar.url }}" alt="{{ product.nama }}">
+                                {% else %}
+                                    <div class="no-image">▣</div>
+                                {% endif %}
+                                <strong>{{ product.nama }}</strong>
+                            </div>
+                        </td>
+                        <td>{{ product.kategori|default:"-" }}</td>
+                        <td>Rp {{ product.harga|floatformat:0 }}</td>
+                        <td>{{ product.stok }}</td>
+                        <td>
+                            {% if product.is_active %}
+                                <span class="badge">Aktif</span>
+                            {% else %}
+                                <span class="badge inactive">Nonaktif</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a class="edit"
+                                   href="{% url 'admin_product_edit' product.id %}">Edit</a>
+
+                                <form method="POST"
+                                      action="{% url 'admin_product_delete' product.id %}"
+                                      onsubmit="return confirm('Yakin ingin menghapus produk ini?');">
+                                    {% csrf_token %}
+                                    <button class="delete" type="submit">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align:center;padding:30px;">
+                            Produk belum tersedia.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,158 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin | ATKGO.ID</title>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #343653;
+        }
+
+        .auth-wrap {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 30px;
+            background: #f4f6f2;
+        }
+
+        .auth-card {
+            width: min(900px, 100%);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 45px #0001;
+        }
+
+        .auth-side {
+            padding: 48px 38px;
+            background: rgb(255, 229, 229);
+            color: #343653;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-side img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .auth-side p { line-height: 1.8; }
+
+        .auth-form { padding: 45px 38px; }
+
+        .auth-form label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: 600;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8ded5;
+            border-radius: 8px;
+        }
+
+        .auth-form button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #405d42;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .alert {
+            padding: 12px;
+            margin: 12px 0;
+            background: #f1f5ef;
+            border-radius: 8px;
+        }
+
+        .auth-form a {
+            color: #405d42;
+            text-decoration: none;
+        }
+
+        @media (max-width: 680px) {
+            .auth-card { grid-template-columns: 1fr; }
+            .auth-side, .auth-form { padding: 28px; }
+        }
+    </style>
+</head>
+
+<body>
+<main class="auth-wrap">
+    <div class="auth-card">
+
+        <section class="auth-side">
+            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+            <h1>Admin Workspace</h1>
+            <p>
+                Selamat datang di ruang kerja internal ATKGO.ID.
+                Kelola layanan, pelanggan, pesanan, dan operasional
+                agency melalui satu dashboard.
+            </p>
+            <small>AUTHORIZED PERSONNEL ONLY</small>
+        </section>
+
+        <section class="auth-form">
+            <h2>Login Admin</h2>
+            <p>Masuk menggunakan akun tim ATKGO.ID.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label for="email">Email Admin</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autocomplete="username"
+                    required
+                >
+
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button type="submit">Masuk ke Dashboard</button>
+            </form>
+
+            <p style="margin-top:22px;">
+                <a href="{% url 'landing' %}">← Kembali ke Website</a>
+            </p>
+        </section>
+
+    </div>
+</main>
+</body>
+</html>

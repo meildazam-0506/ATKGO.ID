@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} | ATKGO.ID</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f2; color: #26352a;
+        }
+        .container {
+            max-width: 850px; margin: auto;
+            background: white; padding: 30px;
+            border-radius: 15px; border: 1px solid #e8ece7;
+        }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        .subtitle { color: #849087; font-size: 13px; margin-bottom: 25px; }
+        .form-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+        }
+        .field.full { grid-column: 1 / -1; }
+        label {
+            display: block; font-size: 13px;
+            font-weight: bold; margin-bottom: 8px;
+        }
+        input, textarea {
+            width: 100%; padding: 12px;
+            border: 1px solid #dce3dc; border-radius: 8px;
+            font-family: inherit; font-size: 13px;
+        }
+        textarea { min-height: 120px; resize: vertical; }
+        .current-image {
+            width: 110px; height: 110px; object-fit: cover;
+            border-radius: 10px; display: block; margin-bottom: 12px;
+        }
+        .checkbox {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .checkbox input { width: auto; }
+        .actions {
+            display: flex; gap: 10px; margin-top: 25px;
+        }
+        .btn {
+            display: inline-block; padding: 12px 18px;
+            border: 0; border-radius: 8px;
+            text-decoration: none; cursor: pointer;
+            font-weight: bold; font-size: 13px;
+        }
+        .primary { background: #304b35; color: white; }
+        .secondary { background: #edf1ec; color: #304b35; }
+        .message {
+            background: #f8eaea; color: #923d3d;
+            padding: 12px; border-radius: 8px;
+            margin-bottom: 15px; font-size: 13px;
+        }
+        @media(max-width:600px) {
+            body { padding: 15px; }
+            .container { padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .field.full { grid-column: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>{{ page_title }}</h1>
+    <p class="subtitle">Lengkapi informasi produk ATKGO.ID di bawah ini.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <div class="field full">
+                <label>Nama Layanan *</label>
+                <input type="text" name="nama"
+                       value="{{ product.nama|default:'' }}" required>
+            </div>
+
+            <div class="field">
+                <label>Kategori</label>
+                <input type="text" name="kategori"
+                       value="{{ product.kategori|default:'' }}"
+                       placeholder="Contoh: Alat Tulis">
+            </div>
+
+            <div class="field">
+                <label>Harga (Rupiah) *</label>
+                <input type="number" name="harga" min="0" step="0.01"
+                       value="{{ product.harga|default:'0' }}" required>
+            </div>
+
+            <div class="field">
+                <label>Stok *</label>
+                <input type="number" name="stok" min="0"
+                       value="{{ product.stok|default:'0' }}" required>
+            </div>
+
+            <div class="field full">
+                <label>Deskripsi Layanan</label>
+                <textarea name="deskripsi"
+                          placeholder="Tuliskan deskripsi produk...">{{ product.deskripsi|default:'' }}</textarea>
+            </div>
+
+            <div class="field full">
+                <label>Foto Layanan</label>
+
+                {% if product.gambar %}
+                    <img class="current-image"
+                         src="{{ product.gambar.url }}"
+                         alt="{{ product.nama }}">
+                    <p class="subtitle">Foto saat ini. Pilih foto baru jika ingin menggantinya.</p>
+                {% endif %}
+
+                <input type="file" name="gambar" accept="image/*">
+            </div>
+
+            <div class="field full">
+                <label class="checkbox">
+                    <input type="checkbox" name="is_active"
+                           {% if product.is_active or not product %}checked{% endif %}>
+                    Produk aktif dan ditampilkan di katalog pelanggan
+                </label>
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <button class="btn primary" type="submit">{{ button_text }}</button>
+            <a class="btn secondary" href="{% url 'admin_products' %}">Batal</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

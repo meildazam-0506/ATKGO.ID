@@ -1,0 +1,253 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Layanan & Mitra | ATKGO.ID</title>
+    <meta name="description" content="Layanan strategi konten, produksi visual, desain, dan manajemen media sosial ATKGO.ID.">
+
+    <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+
+<body data-cart-url="/keranjang/">
+
+
+<header>
+    <div class="wrap nav">
+
+        <a class="brand" href="{% url 'beranda' %}">
+            <img src="{% static 'assets/img/logo.png' %}"
+                 alt="Logo ATKGO.ID">
+            <span>ATK<span class="go">GO</span>.ID</span>
+        </a>
+
+        <nav id="mainNav" aria-label="Menu utama">
+            <a href="{% url 'beranda' %}">Beranda</a>
+            <a href="{% url 'produk' %}" class="active" aria-current="page">Layanan</a>
+            <a href="{% url 'kategori' %}">Kategori</a>
+            <a href="{% url 'tentang' %}">Tentang</a>
+            <a href="{% url 'kontak' %}">Kontak</a>
+        </nav>
+
+        <a class="nav-cta" href="{% url 'kontak' %}">
+            Hubungi Kami →
+        </a>
+
+        <!-- IKON KERANJANG -->
+        <a href="/keranjang/" class="cart-nav" aria-label="Buka keranjang"
+           title="Keranjang">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="22" height="22"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"/>
+                <circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            <span id="cart-count" class="cart-count">0</span>
+        </a>
+
+        <button class="menu" id="menuBtn" type="button"
+                aria-label="Buka menu"
+                aria-controls="mainNav"
+                aria-expanded="false">
+            ☰
+        </button>
+
+    </div>
+</header>
+
+
+<main>
+
+    <!-- DAFTAR LAYANAN -->
+    <section class="section alt">
+        <div class="wrap">
+
+            <span class="eyebrow">LAYANAN & MITRA ATKGO</span>
+
+            <h1 class="page-title">
+                Layanan <em>pilihan.</em>
+            </h1>
+
+            <p class="lead">
+                Jelajahi berbagai paket layanan strategi konten, produksi visual,
+                dan manajemen media sosial yang dirancang untuk memperkuat brand Anda.
+                Nilai dan scope paket dapat disesuaikan dengan kebutuhan proyek Anda.
+            </p>
+
+            <!-- PENCARIAN DAN FILTER -->
+            <div class="actions">
+
+                <input
+                    type="text"
+                    id="searchProducts"
+                    class="search-input"
+                    placeholder="Cari layanan..."
+                    aria-label="Cari layanan">
+
+                <select
+                    id="filter"
+                    class="filter-select"
+                    aria-label="Filter layanan">
+
+                    <option value="all">Semua Layanan</option>
+                    <option value="paket layanan agensi">Paket Layanan Agensi</option>
+                    <option value="strategi konten & brand">Strategi Konten & Brand</option>
+                    <option value="produksi visual & desain">Produksi Visual & Desain</option>
+                    <option value="manajemen media sosial">Manajemen Media Sosial</option>
+                    <option value="kreatif & dokumentasi">Kreatif & Dokumentasi</option>
+
+                </select>
+
+            </div>
+
+            <!-- DAFTAR LAYANAN DARI DATABASE -->
+            <div class="product-grid" id="products">
+
+                {% for product in products %}
+
+                <article
+                    class="product"
+                    data-name="{{ product.nama|lower }}"
+                    data-category="{{ product.kategori|lower }}">
+
+                    <div class="product-visual">
+
+                        {% if product.gambar %}
+                            <img
+                                src="{{ product.gambar.url }}"
+                                alt="{{ product.nama }}">
+                        {% else %}
+                            <div class="no-image">
+                                Gambar layanan belum tersedia
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="product-info">
+
+                        <small>
+                            {{ product.kategori|default:"Layanan ATKGO" }}
+                        </small>
+
+                        <h3>{{ product.nama }}</h3>
+
+                        <p>
+                            {{ product.deskripsi|default:"Solusi kreatif sesuai kebutuhan bisnis Anda." }}
+                        </p>
+
+                        <div class="price">
+                            Rp{{ product.harga|floatformat:0 }}
+                        </div>
+
+                        <button
+                            type="button"
+                            class="add"
+                            data-name="{{ product.nama }}"
+                            data-price="{{ product.harga }}"
+                            data-qty="1">
+                            Tambah Layanan
+                        </button>
+
+                    </div>
+
+                </article>
+
+                {% empty %}
+
+                <article class="card">
+                    <h3>Belum Ada Layanan</h3>
+                    <p>
+                        Layanan belum tersedia. Silakan tambahkan paket layanan
+                        melalui halaman admin Django.
+                    </p>
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- AJAKAN -->
+    <section class="section">
+        <div class="wrap">
+
+            <div class="banner">
+
+                <div>
+                    <h2>Kembangkan brand bersama ATKGO.ID</h2>
+                    <p>
+                        Temukan solusi strategi konten, desain visual,
+                        dan pengelolaan media sosial untuk bisnis Anda.
+                    </p>
+                </div>
+
+                <a class="btn btn-red" href="{% url 'kontak' %}">
+                    Konsultasi Sekarang →
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="wrap">
+
+        <div class="footer-grid">
+
+            <div>
+                <h3>ATKGO.ID</h3>
+                <p>
+                    Mitra strategi konten, produksi visual,
+                    dan manajemen media sosial untuk mengembangkan brand bisnis Anda.
+                </p>
+            </div>
+
+            <div>
+                <h3>Menu</h3>
+                <div class="footer-links">
+                    <a href="{% url 'home' %}">Beranda</a>
+                    <a href="{% url 'produk' %}">Layanan</a>
+                    <a href="{% url 'kategori' %}">Kategori</a>
+                    <a href="{% url 'tentang' %}">Tentang Kami</a>
+                </div>
+            </div>
+
+            <div>
+                <h3>Kontak</h3>
+                <div class="footer-links">
+                    <a href="{% url 'kontak' %}">Hubungi ATKGO.ID</a>
+                    <span>Indonesia</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="copyright">
+            © 2026 ATKGO.ID. Semua hak dilindungi.
+        </div>
+
+    </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="{% static 'assets/js/script.js' %}"></script>
+
+</body>
+</html>
+```

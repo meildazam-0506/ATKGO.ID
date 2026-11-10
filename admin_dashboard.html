@@ -1,0 +1,615 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Workspace | ATKGO.ID</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f2;
+            color: #26352a;
+        }
+
+        :root {
+            --green: #304b35;
+            --green-light: #e8efe7;
+            --text: #26352a;
+            --muted: #849087;
+            --white: #ffffff;
+            --border: #e8ece7;
+        }
+
+        .sidebar {
+            width: 255px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: var(--green);
+            color: white;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px 8px 30px;
+            border-bottom: 1px solid #ffffff25;
+        }
+
+        .brand img {
+            width: 43px;
+            height: 43px;
+            object-fit: contain;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .brand h2 {
+            font-size: 19px;
+        }
+
+        .brand small {
+            display: block;
+            margin-top: 5px;
+            color: #c6d4c8;
+            font-size: 11px;
+        }
+
+        .menu-title {
+            color: #b9c9bb;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            margin: 27px 10px 12px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #e1e9e1;
+            text-decoration: none;
+            padding: 13px 12px;
+            border-radius: 9px;
+            margin-bottom: 5px;
+            font-size: 13px;
+            transition: .2s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #ffffff20;
+            color: white;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            border-top: 1px solid #ffffff25;
+            padding-top: 18px;
+        }
+
+        .sidebar-bottom form button {
+            width: 100%;
+            padding: 12px;
+            border: 0;
+            border-radius: 8px;
+            color: white;
+            background: #a94a4a;
+            cursor: pointer;
+        }
+
+        .main {
+            margin-left: 255px;
+            padding: 30px 35px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 25px;
+            margin-bottom: 7px;
+        }
+
+        .topbar p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--green-light);
+            display: grid;
+            place-items: center;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .admin-profile strong {
+            font-size: 13px;
+        }
+
+        .admin-profile small {
+            display: block;
+            color: var(--muted);
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        .welcome {
+            background: linear-gradient(110deg, #304b35, #58765c);
+            color: white;
+            padding: 28px;
+            border-radius: 16px;
+            margin-bottom: 27px;
+        }
+
+        .welcome h2 {
+            font-size: 21px;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #e0e9df;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 28px 0 17px;
+        }
+
+        .section-heading h2 {
+            font-size: 17px;
+        }
+
+        .section-heading span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 17px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 22px;
+            border-radius: 13px;
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-icon {
+            width: 39px;
+            height: 39px;
+            border-radius: 10px;
+            background: var(--green-light);
+            display: grid;
+            place-items: center;
+            font-size: 19px;
+        }
+
+        .stat-card h3 {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 17px;
+            font-weight: normal;
+        }
+
+        .stat-card strong {
+            display: block;
+            font-size: 27px;
+            margin-top: 7px;
+        }
+
+        .stat-card small {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 22px;
+            border-radius: 13px;
+            min-width: 0;
+        }
+
+        .panel h3 {
+            font-size: 15px;
+            margin-bottom: 18px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        .data-row:last-child {
+            border-bottom: 0;
+        }
+
+        .data-row strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .data-row small {
+            color: var(--muted);
+        }
+
+        .status {
+            color: #496d4d;
+            background: #e8f2e8;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 13px;
+        }
+
+        .quick-link {
+            display: block;
+            background: white;
+            padding: 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            text-decoration: none;
+            transition: .2s;
+        }
+
+        .quick-link:hover {
+            border-color: #8da58d;
+            transform: translateY(-2px);
+        }
+
+        .quick-link span {
+            font-size: 22px;
+        }
+
+        .quick-link strong {
+            display: block;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+
+        .quick-link small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        .empty {
+            color: var(--muted);
+            font-size: 12px;
+            padding: 12px 0;
+        }
+
+        @media(max-width:1100px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:750px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .menu {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3px;
+            }
+
+            .menu-title {
+                margin-top: 20px;
+            }
+
+            .sidebar-bottom {
+                margin-top: 15px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:430px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+        <div>
+            <h2>ATKGO.ID</h2>
+            <small>ADMIN WORKSPACE</small>
+        </div>
+    </div>
+
+    <p class="menu-title">MENU UTAMA</p>
+
+    <nav class="menu">
+        <a href="{% url 'admin_dashboard' %}" class="active">
+            <span class="menu-icon">▦</span> Dashboard
+        </a>
+
+        <a href="/admin/#auth-user">
+            <span class="menu-icon">♙</span> Pengguna & Pelanggan
+        </a>
+
+        <a href="{% url 'admin_products' %}">
+            <span class="menu-icon">▣</span> Manajemen Produk
+        </a>
+
+        <a href="/admin/app/contactmessage/">
+            <span class="menu-icon">✉</span> Pesan Pelanggan
+        </a>
+
+        <a href="{% url 'produk' %}">
+            <span class="menu-icon">◈</span> Lihat Katalog
+        </a>
+    </nav>
+
+    <p class="menu-title">MANAJEMEN TIM</p>
+
+    <nav class="menu">
+        <a href="{% url 'admin_register' %}">
+            <span class="menu-icon">＋</span> Tambah Admin
+        </a>
+
+        <a href="/admin/">
+            <span class="menu-icon">⚙</span> Pengaturan Admin
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <form method="POST" action="{% url 'admin_logout' %}">
+            {% csrf_token %}
+            <button type="submit">↪ Keluar dari Dashboard</button>
+        </form>
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div>
+            <h1>Dashboard Overview</h1>
+            <p>Ringkasan operasional dan aktivitas ATKGO.ID.</p>
+        </div>
+
+        <div class="admin-profile">
+            <div class="avatar">
+                {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+            </div>
+            <div>
+                <strong>{{ request.user.first_name|default:request.user.username }}</strong>
+                <small>Administrator</small>
+            </div>
+        </div>
+    </header>
+
+    <section class="welcome">
+        <h2>Selamat datang di Admin Workspace!</h2>
+        <p>
+            Kelola operasional bisnis, pelanggan, produk, dan aktivitas tim
+            ATKGO.ID melalui satu pusat kendali.
+        </p>
+    </section>
+
+    <div class="section-heading">
+        <h2>Ringkasan Bisnis</h2>
+        <span>Data dari database ATKGO.ID</span>
+    </div>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span class="stat-icon">▣</span>
+            </div>
+            <h3>Total Produk</h3>
+            <strong>{{ total_produk }}</strong>
+            <small>{{ produk_aktif }} produk aktif</small>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span class="stat-icon">♙</span>
+            </div>
+            <h3>Total Pelanggan</h3>
+            <strong>{{ total_pelanggan }}</strong>
+            <small>Akun pelanggan terdaftar</small>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span class="stat-icon">✉</span>
+            </div>
+            <h3>Pesan Masuk</h3>
+            <strong>{{ total_pesan }}</strong>
+            <small>{{ pesan_belum_dibaca }} belum dibaca</small>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span class="stat-icon">♧</span>
+            </div>
+            <h3>Anggota Admin</h3>
+            <strong>{{ total_admin }}</strong>
+            <small>Akun dengan akses staff</small>
+        </div>
+
+    </section>
+
+    <div class="section-heading">
+        <h2>Aktivitas dan Data Terbaru</h2>
+        <span>Informasi terbaru</span>
+    </div>
+
+    <section class="content-grid">
+
+        <div class="panel">
+            <h3>Produk Terbaru</h3>
+
+            {% for produk in produk_terbaru %}
+                <div class="data-row">
+                    <div>
+                        <strong>{{ produk.nama }}</strong>
+                        <small>Stok: {{ produk.stok }}</small>
+                    </div>
+                    {% if produk.is_active %}
+                        <span class="status">Aktif</span>
+                    {% else %}
+                        <span class="status">Nonaktif</span>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p class="empty">Belum ada produk yang ditambahkan.</p>
+            {% endfor %}
+        </div>
+
+        <div class="panel">
+            <h3>Pesan Pelanggan Terbaru</h3>
+
+            {% for pesan in pesan_terbaru %}
+                <div class="data-row">
+                    <div>
+                        <strong>{{ pesan.nama }}</strong>
+                        <small>{{ pesan.email }}</small>
+                    </div>
+                    {% if pesan.sudah_dibaca %}
+                        <span class="status">Dibaca</span>
+                    {% else %}
+                        <span class="status">Baru</span>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p class="empty">Belum ada pesan pelanggan.</p>
+            {% endfor %}
+        </div>
+
+    </section>
+
+    <div class="section-heading">
+        <h2>Akses Cepat</h2>
+        <span>Menu operasional</span>
+    </div>
+
+    <section class="quick-links">
+
+        <a href="/admin/app/product/" class="quick-link">
+            <span>▣</span>
+            <strong>Kelola Produk</strong>
+            <small>Tambah dan ubah produk</small>
+        </a>
+
+        <a href="/admin/app/contactmessage/" class="quick-link">
+            <span>✉</span>
+            <strong>Pesan Pelanggan</strong>
+            <small>Periksa pesan masuk</small>
+        </a>
+
+        <a href="{% url 'admin_register' %}" class="quick-link">
+            <span>♙</span>
+            <strong>Tambah Anggota</strong>
+            <small>Daftarkan admin baru</small>
+        </a>
+
+    </section>
+
+</main>
+
+</body>
+</html>

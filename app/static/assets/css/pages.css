@@ -1,0 +1,113 @@
+/* ==========================================================
+   PAGES — gaya khusus per halaman
+   ========================================================== */
+
+/* ---------- Beranda: hero ---------- */
+.hero {
+  background: linear-gradient(125deg, #FFF8EA, #F8EBD5 60%, #FFFDF8);
+  overflow: hidden;
+}
+.hero-grid {
+  min-height: 510px;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 35px;
+  align-items: center;
+  padding: 55px 0;
+}
+.hero-tagline { color: var(--navy); font-weight: 700; }
+
+.hero-art {
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.hero-art .ring {
+  position: absolute;
+  width: min(340px, 80vw);
+  aspect-ratio: 1;
+  border: 3px solid var(--red);
+  border-radius: 50%;
+  opacity: .85;
+}
+.hero-art .ring::before,
+.hero-art .ring::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  transform: rotate(12deg);
+}
+.hero-art .ring::after { inset: 20px; transform: rotate(-10deg); }
+
+.hero-art img {
+  position: relative;
+  z-index: 2;
+  width: min(270px, 70%);
+  height: 290px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.floating {
+  position: absolute;
+  bottom: 18px;
+  right: 3%;
+  background: var(--navy);
+  color: #fff;
+  padding: 13px 17px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  z-index: 3;
+}
+
+
+/* ---------- Tentang ---------- */
+.logo-box {
+  background: var(--navy);
+  border-radius: 18px;
+  padding: 30px;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.logo-box img {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  object-fit: contain;
+  filter: none !important;
+  opacity: 1;
+  visibility: visible;
+}
+
+.checklist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.check {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 9px;
+  padding: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.check b {
+  color: var(--red);
+  margin-right: 6px;
+}
+
+/* ---------- Kontak ---------- */
+.contact-hours { color: var(--navy); }

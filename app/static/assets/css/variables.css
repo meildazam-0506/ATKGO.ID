@@ -1,0 +1,19 @@
+/* ==========================================================
+   VARIABLES — ubah warna, font, dan ukuran utama di sini
+   ========================================================== */
+:root {
+  /* Warna brand */
+  --red:   #EF3938;
+  --navy:  #3A3B5A;
+  --cream: #FFF8EA;
+
+  /* Warna pendukung */
+  --paper: #FFFDF8;   /* latar halaman */
+  --ink:   #292A40;   /* teks utama */
+  --muted: #6D6E7C;   /* teks sekunder */
+  --line:  #E9DFD0;   /* garis / border */
+  --footer-bg: #25263B;
+
+  /* Font */
+  --font-main: Arial, Helvetica, sans-serif;
+}

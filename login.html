@@ -1,0 +1,335 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Masuk / Daftar | ATKGO.ID</title>
+
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+    <style>
+        .auth-wrap {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 30px;
+            background: #f4f6f2;
+        }
+
+        .auth-card {
+            width: min(900px, 100%);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 45px #0001;
+        }
+
+        .auth-side {
+            padding: 48px 38px;
+            background: rgb(255, 229, 229);
+            color: #343653;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-side img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .auth-side p {
+            line-height: 1.8;
+        }
+
+        .auth-form {
+            padding: 45px 38px;
+        }
+
+        .auth-form label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: 600;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8ded5;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .auth-form button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #405d42;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 18px 0;
+        }
+
+        .auth-tabs a {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #344d36;
+        }
+
+        .auth-tabs .active {
+            background: #405d42;
+            color: white;
+        }
+
+        .alert {
+            padding: 10px;
+            margin: 8px 0;
+            background: #f1f5ef;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 680px) {
+            .auth-card {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-side,
+            .auth-form {
+                padding: 28px;
+            }
+        }
+        .auth-form select,
+.auth-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d8ded5;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font: inherit;
+    background: white;
+}
+
+.auth-form textarea {
+    resize: vertical;
+}
+
+.register-step h3 {
+    color: #405d42;
+    font-size: 16px;
+    margin: 20px 0;
+}
+
+.register-step[hidden] {
+    display: none;
+}
+.auth-form .btn-back {
+    background: #e9eee7;
+    color: #405d42;
+    margin-top: 12px;
+}
+    </style>
+</head>
+
+<body>
+
+<main class="auth-wrap">
+
+    <div class="auth-card">
+
+        <!-- BAGIAN INFORMASI -->
+        <section class="auth-side">
+
+            <img
+                src="{% static 'assets/img/logo.png' %}"
+                alt="Logo ATKGO.ID"
+            >
+
+            <h1>Selamat Datang di ATKGO.ID</h1>
+
+            <p>
+                Masuk atau buat akun untuk berbelanja alat tulis
+                dan perlengkapan kantor dengan mudah.
+            </p>
+
+        </section>
+
+        <!-- BAGIAN LOGIN DAN REGISTER -->
+        <section class="auth-form">
+
+            
+{% if mode == 'register' %}
+    <h2>Buat Akun Baru</h2>
+    <p>Lengkapi informasi akun dan alamat pengiriman.</p>
+{% else %}
+    <h2>Masuk ke Akun</h2>
+    <p>Selamat datang kembali di ATKGO.ID.</p>
+{% endif %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="auth-tabs">
+    <a href="{% url 'login' %}?mode=login"
+       class="{% if mode != 'register' %}active{% endif %}">
+        Login
+    </a>
+    <a href="{% url 'login' %}?mode=register"
+       class="{% if mode == 'register' %}active{% endif %}">
+        Daftar
+    </a>
+</div>
+
+<form method="POST" action="{% url 'login' %}?mode={{ mode }}" id="authForm">
+    {% csrf_token %}
+
+    {% if mode == 'register' %}
+        <input type="hidden" name="action" value="register">
+
+        <div class="register-step" id="step1">
+            <h3>Langkah 1 dari 2 — Informasi Akun</h3>
+
+            <label for="full_name">Nama Lengkap</label>
+            <input type="text" id="full_name" name="full_name"
+                   autocomplete="name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"
+                   autocomplete="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"
+                   minlength="8" autocomplete="new-password" required>
+
+            <label for="confirm_password">Konfirmasi Password</label>
+            <input type="password" id="confirm_password"
+                   name="confirm_password" minlength="8"
+                   autocomplete="new-password" required>
+
+            <button type="button" id="nextStep">Lanjutkan ke Alamat →</button>
+        </div>
+
+        <div class="register-step" id="step2" hidden>
+            <h3>Langkah 2 dari 2 — Alamat Pengiriman</h3>
+
+            <label for="telp">Nomor Telepon</label>
+            <input type="tel" id="telp" name="telp"
+                   autocomplete="tel" required>
+
+            <label for="provinsi">Provinsi</label>
+<select id="provinsi" name="provinsi" required>
+    <option value="">Pilih Provinsi</option>
+
+    {% for provinsi in provinsi_list %}
+        <option value="{{ provinsi.id }}">
+            {{ provinsi.nama_provinsi }}
+        </option>
+    {% endfor %}
+</select>
+
+            <label for="kabupaten_kota">Kabupaten/Kota</label>
+            <input type="text" id="kabupaten_kota"
+                   name="kabupaten_kota" required>
+
+            <label for="kecamatan">Kecamatan</label>
+            <input type="text" id="kecamatan"
+                   name="kecamatan" required>
+
+            <label for="kelurahan_desa">Kelurahan/Desa</label>
+            <input type="text" id="kelurahan_desa"
+                   name="kelurahan_desa" required>
+
+            <label for="kode_pos">Kode Pos</label>
+            <input type="text" id="kode_pos" name="kode_pos"
+                   maxlength="10" required>
+
+            <label for="alamat">Alamat Lengkap</label>
+            <textarea id="alamat" name="alamat" rows="3"
+                      placeholder="Nama jalan, nomor rumah, RT/RW, patokan..."
+                      required></textarea>
+
+            <button type="button" id="prevStep" class="btn-back">
+                Kembali
+            </button>
+            <button type="submit">
+                Daftar Sekarang
+            </button>
+        </div>
+
+    {% else %}
+        <input type="hidden" name="action" value="login">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email"
+               autocomplete="email" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password"
+               autocomplete="current-password" required>
+
+        <button type="submit">Masuk</button>
+    {% endif %}
+</form>
+
+<p>
+    <a href="{% url 'landing' %}">← Kembali ke Beranda</a>
+</p>
+
+{% if mode == 'register' %}
+<script>
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const nextStep = document.getElementById('nextStep');
+    const prevStep = document.getElementById('prevStep');
+    const form = document.getElementById('authForm');
+
+    nextStep.addEventListener('click', function () {
+    const fields = step1.querySelectorAll('input');
+
+    for (const field of fields) {
+        if (!field.reportValidity()) return;
+    }
+
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm_password').value;
+
+    if (password.length < 8) {
+        alert('Password minimal 8 karakter.');
+        return;
+    }
+
+    if (password !== confirm) {
+        alert('Konfirmasi password tidak sama.');
+        return;
+    }
+
+    step1.hidden = true;
+    step2.hidden = false;
+});
+</script>
+{% endif %}
+
+</main>
+
+</body>
+</html>

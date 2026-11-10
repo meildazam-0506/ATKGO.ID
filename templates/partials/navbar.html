@@ -1,0 +1,10 @@
+{% load static %}
+<header class="navbar">
+    <div class="container navbar__inner">
+        <a class="navbar__brand" href="{% url 'app:home' %}">ATKGO<span>.ID</span></a>
+        <nav class="navbar__menu">
+            <a href="{% url 'app:home' %}">Beranda</a>
+            <a href="{% url 'admin:index' %}">Admin</a>
+        </nav>
+    </div>
+</header>
