@@ -1,0 +1,676 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$czhEjjg2BfOeZAONW6wHWk$UfpYtaHe8MjYsHeQIigciKbTk0PXfWkKMO9GjuEfp9k=",
+    "last_login": "2026-11-14T10:27:08.781Z",
+    "is_superuser": false,
+    "username": "almahdalyruya@gmail.com",
+    "first_name": "Ruyasha",
+    "last_name": "",
+    "email": "almahdalyruya@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-11-07T04:07:01.568Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$c3W3vV8QQRITRqF8reql12$9Y2T3Pv5PHJjd9ggC5Z6xEpKFyVstYAgLPEH5CkMAF8=",
+    "last_login": "2026-11-14T09:58:40.983Z",
+    "is_superuser": true,
+    "username": "srimldazam@gmail.com",
+    "first_name": "Sri meilda zam",
+    "last_name": "",
+    "email": "srimldazam@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-11-07T04:11:13.342Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$F5CIdyjbcUfthbKds76g2N$XwKs9vTCjbQ+d+ONJG13iWfFSVcDbA6C73SbgFoKloU=",
+    "last_login": "2026-11-09T06:39:55.542Z",
+    "is_superuser": false,
+    "username": "jinggalova15@gmail.com",
+    "first_name": "Nur hikmah Rs",
+    "last_name": "",
+    "email": "jinggalova15@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-11-07T07:16:48.543Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$RdcPqZ5rGOILhr5CfFZbe4$8rlLtJDakkA+/aXqZKGhnju8O9hZMz7UP3Dsq6BL9SA=",
+    "last_login": "2026-11-07T07:46:18.163Z",
+    "is_superuser": true,
+    "username": "Asus",
+    "first_name": "",
+    "last_name": "",
+    "email": "srimldazam@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-11-07T07:34:40.312Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$GHtrNj9oCPdUgITHMtwdil$lTfudcM7tE02w5Y2t+SU8VQrVJrrdiLjHnc5elpBeb0=",
+    "last_login": "2026-11-09T06:01:50.500Z",
+    "is_superuser": false,
+    "username": "nrazizaardatillah@gmail.com",
+    "first_name": "Nur Azizah Ardatillah",
+    "last_name": "",
+    "email": "nrazizaardatillah@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-11-09T06:01:49.364Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "7be03375-af59-4d9d-93c0-032f18ee3628",
+  "fields": {
+    "nama_provinsi": "Kalimantan Barat",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "cf6ea1f6-5cf9-462f-a0b8-0ed2abb22181",
+  "fields": {
+    "nama_provinsi": "Jawa Barat",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "8b32d12a-397d-4f0d-896e-1417daf2ce03",
+  "fields": {
+    "nama_provinsi": "Kalimantan Timur",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "1492324c-2fcc-4512-9f4c-1d64b2257ac1",
+  "fields": {
+    "nama_provinsi": "Sulawesi Utara",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "1a0c8355-1e29-486b-9fcc-1d6ded35a0fe",
+  "fields": {
+    "nama_provinsi": "Jawa Tengah",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "563eefe1-0aab-45ee-a24a-373d1595988d",
+  "fields": {
+    "nama_provinsi": "Maluku Utara",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "1148f465-06a7-4911-a6b5-3dd0eb477cbb",
+  "fields": {
+    "nama_provinsi": "Sulawesi Selatan",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "88863bed-b57d-4eca-9233-3ee99d207fae",
+  "fields": {
+    "nama_provinsi": "Bali",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "f4edb0d3-5f75-4924-85d8-40816d1413ac",
+  "fields": {
+    "nama_provinsi": "Sulawesi Tenggara",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "5dc754fc-299a-4bdb-aaad-4b4434d4e5a8",
+  "fields": {
+    "nama_provinsi": "Gorontalo",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "76792e56-b1bf-40d4-83f6-526f9a235d6d",
+  "fields": {
+    "nama_provinsi": "Aceh",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "94b9b9a2-f900-41ae-a4f2-5323b6520bf1",
+  "fields": {
+    "nama_provinsi": "Kalimantan Selatan",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "09302444-4452-4dbe-9664-60fbbaad288d",
+  "fields": {
+    "nama_provinsi": "Sulawesi Barat",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "7d89cd1b-b52c-49e3-b6c4-6f4e9f3c467b",
+  "fields": {
+    "nama_provinsi": "Kalimantan Utara",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "4d517652-69bc-4047-a363-731024446e9c",
+  "fields": {
+    "nama_provinsi": "Papua Barat Daya",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "e47cfb49-5def-4523-89f4-7456545bf073",
+  "fields": {
+    "nama_provinsi": "Sulawesi Tengah",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "431b58bb-d6ad-4261-8486-7da260f38d18",
+  "fields": {
+    "nama_provinsi": "Kepulauan Bangka Belitung",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "56797eeb-7e67-4e9c-b3ea-87922d1f162e",
+  "fields": {
+    "nama_provinsi": "Kepulauan Riau",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "338c8c53-6ff6-43e4-8cb3-8a645a78344c",
+  "fields": {
+    "nama_provinsi": "Kalimantan Tengah",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "3e32542e-96ba-4e7c-9674-8f85fdc32607",
+  "fields": {
+    "nama_provinsi": "Banten",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "53aabd71-6de7-4056-afc6-9b45c6957272",
+  "fields": {
+    "nama_provinsi": "DI Yogyakarta",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "c7616487-6b64-41a5-87e5-9cfa95795727",
+  "fields": {
+    "nama_provinsi": "Papua Selatan",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "8d4603ad-799f-46de-ab1b-a475356faaec",
+  "fields": {
+    "nama_provinsi": "Sumatera Utara",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "dc4ef470-7e23-4e36-ac78-a78b7b4cdf41",
+  "fields": {
+    "nama_provinsi": "Nusa Tenggara Barat",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "184bd458-78c7-4e70-81eb-a957863e0991",
+  "fields": {
+    "nama_provinsi": "Bengkulu",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "d4e4382d-002b-498d-8862-adb07b7e2ac0",
+  "fields": {
+    "nama_provinsi": "Riau",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "2616a3b0-6cea-436a-ad9e-afca3c839ea9",
+  "fields": {
+    "nama_provinsi": "Sumatera Barat",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "42012fca-7a40-48d7-9b26-b022e1e5fa32",
+  "fields": {
+    "nama_provinsi": "Nusa Tenggara Timur",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "ffbfdd6c-0076-4d10-8e9b-b0bb1d88805b",
+  "fields": {
+    "nama_provinsi": "Sumatera Selatan",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "8930597d-467d-4639-be22-b12a62c8d54c",
+  "fields": {
+    "nama_provinsi": "DKI Jakarta",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "c0241a8c-c72d-4b24-9a6d-c30e801658ba",
+  "fields": {
+    "nama_provinsi": "Jawa Timur",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "d2a66cc8-3cdc-4d42-a09f-c7f551b3a741",
+  "fields": {
+    "nama_provinsi": "Papua",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "880a4693-eb70-4d4e-8ab7-cda4e8456e73",
+  "fields": {
+    "nama_provinsi": "Papua Pegunungan",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "3857c7c9-ee0b-4a7b-a2ab-d13a8f2eca5e",
+  "fields": {
+    "nama_provinsi": "Papua Tengah",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "597968b1-5121-4664-8817-d5f82d30e010",
+  "fields": {
+    "nama_provinsi": "Lampung",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "64e9ebff-5bdf-43aa-99c4-eec4f6bc17cd",
+  "fields": {
+    "nama_provinsi": "Maluku",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "a1af6cde-98a4-4e99-ae33-ef00ac493ec4",
+  "fields": {
+    "nama_provinsi": "Jambi",
+    "aktif": true
+  }
+},
+{
+  "model": "app.provinsi",
+  "pk": "54c64f7a-6813-4362-b64d-fb77995fbf9f",
+  "fields": {
+    "nama_provinsi": "Papua Barat",
+    "aktif": true
+  }
+},
+{
+  "model": "app.userpengguna",
+  "pk": 1,
+  "fields": {
+    "uuid": "8f545c0d-cbf0-4b59-b2dd-dfd30526c099",
+    "telp": "",
+    "gender": null,
+    "alamat": null,
+    "kabupaten_kota": null,
+    "kecamatan": null,
+    "kelurahan_desa": null,
+    "kode_pos": null,
+    "photo": "",
+    "provinsi_anggota": null,
+    "jafung": null,
+    "nuptk": null,
+    "bidang_keahlian": null,
+    "link_sinta": "",
+    "link_scopus": null,
+    "link_google_scholar": null,
+    "link_orcid": null,
+    "nama_usaha": null,
+    "jenis_usaha": null,
+    "alamat_usaha": null,
+    "telepon_usaha": null,
+    "catatan_usaha": null
+  }
+},
+{
+  "model": "app.userpengguna",
+  "pk": 2,
+  "fields": {
+    "uuid": "49d7939e-b8d6-4a6e-9247-c79ebb2378dc",
+    "telp": "",
+    "gender": null,
+    "alamat": null,
+    "kabupaten_kota": null,
+    "kecamatan": null,
+    "kelurahan_desa": null,
+    "kode_pos": null,
+    "photo": "",
+    "provinsi_anggota": null,
+    "jafung": null,
+    "nuptk": null,
+    "bidang_keahlian": null,
+    "link_sinta": "",
+    "link_scopus": null,
+    "link_google_scholar": null,
+    "link_orcid": null,
+    "nama_usaha": null,
+    "jenis_usaha": null,
+    "alamat_usaha": null,
+    "telepon_usaha": null,
+    "catatan_usaha": null
+  }
+},
+{
+  "model": "app.userpengguna",
+  "pk": 3,
+  "fields": {
+    "uuid": "eeefb1cb-7780-405d-b6a3-719e7a349ed5",
+    "telp": "+6282278843288",
+    "gender": null,
+    "alamat": "Laropo",
+    "kabupaten_kota": "Mamuju",
+    "kecamatan": "Papalang",
+    "kelurahan_desa": "Toabo",
+    "kode_pos": "90954",
+    "photo": "",
+    "provinsi_anggota": "1148f465-06a7-4911-a6b5-3dd0eb477cbb",
+    "jafung": null,
+    "nuptk": null,
+    "bidang_keahlian": null,
+    "link_sinta": "",
+    "link_scopus": null,
+    "link_google_scholar": null,
+    "link_orcid": null,
+    "nama_usaha": null,
+    "jenis_usaha": null,
+    "alamat_usaha": null,
+    "telepon_usaha": null,
+    "catatan_usaha": null
+  }
+},
+{
+  "model": "app.userpengguna",
+  "pk": 5,
+  "fields": {
+    "uuid": "fdf21085-deee-4adb-bfde-ff55d9e52882",
+    "telp": "081141019168",
+    "gender": null,
+    "alamat": "jl.poros kolaka pomalaa",
+    "kabupaten_kota": "Kolaka",
+    "kecamatan": "Wundulako",
+    "kelurahan_desa": "Lamekongga",
+    "kode_pos": "93511",
+    "photo": "",
+    "provinsi_anggota": "f4edb0d3-5f75-4924-85d8-40816d1413ac",
+    "jafung": null,
+    "nuptk": null,
+    "bidang_keahlian": null,
+    "link_sinta": "",
+    "link_scopus": null,
+    "link_google_scholar": null,
+    "link_orcid": null,
+    "nama_usaha": null,
+    "jenis_usaha": null,
+    "alamat_usaha": null,
+    "telepon_usaha": null,
+    "catatan_usaha": null
+  }
+},
+{
+  "model": "app.useradmin",
+  "pk": "Asus",
+  "fields": {
+    "telp": "081234567890",
+    "gender": "Perempuan",
+    "photo": ""
+  }
+},
+{
+  "model": "app.product",
+  "pk": 1,
+  "fields": {
+    "nama": "Paket Layanan Agensi",
+    "deskripsi": "Solusi digital marketing sesuai kebutuhan bisnis Anda.",
+    "kategori": "Paket Layanan Agensi",
+    "harga": "111999.80",
+    "stok": 1,
+    "is_active": true,
+    "gambar": "produk/agensi_yxAcoWs.png",
+    "dibuat_pada": "2026-11-07T05:36:35.308Z"
+  }
+},
+{
+  "model": "app.product",
+  "pk": 2,
+  "fields": {
+    "nama": "Strategi Konten & Brand",
+    "deskripsi": "Perencanaan konten dan penguatan identitas merek.",
+    "kategori": "Strategi Konten & Brand",
+    "harga": "1000000.00",
+    "stok": 1,
+    "is_active": true,
+    "gambar": "produk/agensi_4WxO0xF.png",
+    "dibuat_pada": "2026-11-07T05:37:36.926Z"
+  }
+},
+{
+  "model": "app.product",
+  "pk": 3,
+  "fields": {
+    "nama": "Produksi Visual & Desain",
+    "deskripsi": "Pembuatan desain promosi dan konten visual kreatif.",
+    "kategori": "Produksi Visual & Desain",
+    "harga": "200000.00",
+    "stok": 1,
+    "is_active": true,
+    "gambar": "produk/agensi_8sERfpE.png",
+    "dibuat_pada": "2026-11-07T05:40:16.054Z"
+  }
+},
+{
+  "model": "app.product",
+  "pk": 4,
+  "fields": {
+    "nama": "Manajemen Social Media",
+    "deskripsi": "Pengelolaan akun dan penjadwalan konten media sosial.",
+    "kategori": "Social Media",
+    "harga": "150000.00",
+    "stok": 1,
+    "is_active": true,
+    "gambar": "produk/agensi_IToavvi.png",
+    "dibuat_pada": "2026-11-07T05:42:00.688Z"
+  }
+},
+{
+  "model": "app.product",
+  "pk": 5,
+  "fields": {
+    "nama": "Kreatif & Dokumentasi",
+    "deskripsi": "Produksi foto, video promosi, dan dokumentasi kegiatan.",
+    "kategori": "Kreatif & Dokumentasi",
+    "harga": "250000.00",
+    "stok": 2,
+    "is_active": true,
+    "gambar": "produk/agensi_jB8hecM.png",
+    "dibuat_pada": "2026-11-07T05:42:45.155Z"
+  }
+},
+{
+  "model": "app.websitesetting",
+  "pk": 1,
+  "fields": {
+    "nama_website": "ATKGO.ID",
+    "tagline": "Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.",
+    "email_kontak": "hello@atkgo.id",
+    "telepon_kontak": "081234567890",
+    "alamat_kantor": "Jakarta, Indonesia",
+    "jam_operasional": "Senin - Jumat: 08.00 - 17.00 WIB",
+    "banner_promo_judul": "Butuh rekomendasi produk atau layanan?",
+    "banner_promo_deskripsi": "Hubungi ATKGO.ID untuk mendiskusikan kebutuhan paket visual dan operasional Anda."
+  }
+},
+{
+  "model": "app.articlecategory",
+  "pk": 1,
+  "fields": {
+    "nama": "Tips & Efisiensi Kantor",
+    "slug": "tips-efisiensi-kantor"
+  }
+},
+{
+  "model": "app.articlecategory",
+  "pk": 2,
+  "fields": {
+    "nama": "Panduan Bisnis & Branding",
+    "slug": "panduan-bisnis-branding"
+  }
+},
+{
+  "model": "app.articlecategory",
+  "pk": 3,
+  "fields": {
+    "nama": "Edukasi Perlengkapan",
+    "slug": "edukasi-perlengkapan"
+  }
+},
+{
+  "model": "app.article",
+  "pk": 1,
+  "fields": {
+    "judul": "5 Strategi Menghemat Anggaran Pengadaan ATK Kantor hingga 30% Setiap Bulan",
+    "slug": "5-strategi-menghemat-anggaran-pengadaan-atk-kantor",
+    "kategori": 1,
+    "ringkasan": "Pengeluaran alat tulis dan perlengkapan kantor yang tidak terkontrol kerap menjadi pemborosan tersembunyi bagi perusahaan. Simak 5 langkah praktis mengoptimalkan efisiensi pengadaan ATK tanpa mengurangi produktivitas tim kerja.",
+    "konten": "Di tengah tuntutan efisiensi operasional bisnis modern, biaya pengadaan Alat Tulis Kantor (ATK) sering kali dipandang sebelah mata. Padahal, jika diakumulasikan, pembelian perlengkapan kerja seperti kertas, pulpen, tinta printer, hingga ordner dan binder menyerap porsi anggaran operasional yang cukup signifikan.\r\n\r\nTanpa sistem pengelolaan yang terstruktur, pemborosan kecil sehari-hari dapat menyebabkan pembengkakan pengeluaran bulanan hingga puluhan persen. Berikut adalah 5 strategi cerdas yang dapat diterapkan oleh manajer operasional dan tim purchasing:\r\n\r\n1. Lakukan Audit Inventaris dan Analisis Pola Pemakaian\r\nLangkah awal dalam penghematan adalah mengetahui apa yang sebenarnya dibutuhkan. Lakukan pencatatan inventaris berkala setiap akhir bulan. Identifikasi barang apa saja yang memiliki tingkat perputaran (turnover) tinggi dan barang mana yang cenderung menumpuk di gudang. Dengan data ini, pembelian dapat didasarkan pada kebutuhan riil, bukan sekadar perkiraan.\r\n\r\n2. Terapkan Kebijakan Sentralisasi Pembelian (Bulk Buying)\r\nHindari pembelian mendadak dalam jumlah eceran ketika barang habis. Pembelian eceran di toko retail lokal biasanya memakan biaya 15% hingga 25% lebih mahal dibandingkan pembelian grosir atau kuantiti terjadwal. Sentralisasikan seluruh permintaan divisi dalam satu jadwal pemesanan bulanan untuk mendapatkan harga grosir terbaik.\r\n\r\n3. Standardisasi Spesifikasi Barang\r\nBanyak perusahaan membeli variasi produk yang terlalu beragam untuk fungsi yang sama. Lakukan standardisasi spesifikasi produk, misalnya menetapkan satu jenis kertas HVS 70-80 GSM untuk operasional harian dan satu merek pulpen kerja terpercaya. Standardisasi memudahkan negosiasi volume diskon kepada mitra penyedia.\r\n\r\n4. Bekerja Sama dengan Mitra Pengadaan Resmi dan Terintegrasi\r\nMemilih mitra distributor resmi seperti ATKGO.ID memberikan keuntungan ganda: jaminan keaslian produk, kepastian stok berkala, serta kemudahan proses invoicing dan penawaran khusus corporate contract. Anda tidak perlu lagi repot membandingkan harga puluhan toko berbeda setiap kali persediaan habis.\r\n\r\n5. Bangun Kesadaran Ramah Lingkungan (Green Office)\r\nEdukasi seluruh karyawan untuk memanfaatkan teknologi digital seperti dokumen PDF untuk arsip internal, mengaktifkan mode cetak bolak-balik (duplex), dan merawat perlengkapan kantor dengan baik. Langkah sederhana ini tidak hanya menghemat anggaran tetapi juga mendukung inisiatif keberlanjutan lingkungan.\r\n\r\nDengan mengombinasikan kelima strategi di atas, perusahaan Anda dapat menekan pengeluaran belanja operasional hingga 30% setiap bulan sekaligus meningkatkan akurasi manajemen inventaris kantor.",
+    "gambar": "artikel/20240304161307.jpg",
+    "penulis": 2,
+    "nama_penulis": "Tim Redaksi ATKGO.ID",
+    "is_published": true,
+    "dibuat_pada": "2026-11-14T09:58:10.802Z",
+    "diperbarui_pada": "2026-11-14T10:04:56.124Z"
+  }
+},
+{
+  "model": "app.article",
+  "pk": 2,
+  "fields": {
+    "judul": "Pentingnya Corporate Stationery Profesional dalam Membangun Kredibilitas Bisnis",
+    "slug": "pentingnya-corporate-stationery-profesional-kredibilitas-bisnis",
+    "kategori": 2,
+    "ringkasan": "Kop surat resmi, map folder eksklusif, amplop dinas, dan notebook berlogo bukan sekadar alat tulis, melainkan duta visual pertama identitas perusahaan Anda di mata klien dan investor.",
+    "konten": "Dalam dunia bisnis B2B (Business-to-Business) dan layanan profesional, kesan pertama (first impression) sering kali menjadi penentu utama terbangunnya rasa percaya. Saat Anda menghadiri pertemuan penting, memberikan proposal penawaran, atau menandatangani dokumen perjanjian kerja sama, media cetak yang Anda bawa berbicara lebih lantang daripada sekadar kata-kata.\r\n\r\nInilah mengapa perlengkapan kantor perusahaan (Corporate Stationery) memiliki nilai strategis yang jauh melampaui fungsi fisiknya:\r\n\r\n1. Mencerminkan Profesionalisme dan Skala Usaha\r\nSebuah proposal bisnis yang diserahkan dalam map folder custom berkualitas tinggi dengan kop surat berlogo resmi dan tajam langsung menyampaikan pesan bahwa perusahaan Anda dikelola secara terstruktur, mapan, dan memperhatikan detail. Sebaliknya, dokumen penting yang disatukan secara asal dengan klip kertas biasa dapat menurunkan persepsi nilai di mata calon mitra.\r\n\r\n2. Memperkuat Identitas Brand (Brand Identity)\r\nKonsistensi visual adalah kunci ingatan merek (brand recall). Warna korporat, tipografi, dan logo yang seragam pada kartu nama, amplop dinas, formulir tanda terima, hingga ID card karyawan membangun identitas yang kokoh dan mudah dikenali dalam setiap titik kontak (touchpoint) dengan pelanggan.\r\n\r\n3. Elemen Kunci Stationery Korporat yang Wajib Dimiliki:\r\nKop Surat (Letterhead): Landasan utama seluruh korespondensi resmi, penawaran harga, dan perjanjian.\r\nAmplop Resmi (Envelopes): Perlindungan dokumen yang elegan sekaligus etalase merek pertama saat surat diterima.\r\nFolder / Map Bisnis: Wadah rapi untuk berkas penawaran, profil perusahaan, dan lembar kontrak kerja.\r\nKartu Nama Eksekutif: Jembatan jaringan bisnis personal yang tak tergantikan di era digital.\r\nNotebook & Pulpen Custom:** Merchandise bermanfaat yang menjaga kehadiran brand Anda di meja kerja klien sepanjang waktu.\r\n\r\n4. Kualitas Bahan dan Sentuhan Finishing\r\nPemilihan jenis kertas (seperti Concorde, Linen, atau Art Carton tebal) dan teknik finishing seperti emboss, hot print foil emas/perak, hingga laminasi doff memberikan sentuhan taktil (tactile experience) yang mewah dan berkelas.\r\n\r\nDi ATKGO.ID, kami tidak hanya menyediakan alat tulis reguler, namun juga menghadirkan layanan Creative Agency untuk mendesain dan memproduksi perlengkapan korporat eksklusif yang disesuaikan secara presisi dengan identitas brand bisnis Anda.",
+    "gambar": "artikel/images.jpg",
+    "penulis": 2,
+    "nama_penulis": "Creative Team ATKGO.ID",
+    "is_published": true,
+    "dibuat_pada": "2026-11-14T09:58:10.810Z",
+    "diperbarui_pada": "2026-11-14T10:03:13.869Z"
+  }
+},
+{
+  "model": "app.article",
+  "pk": 3,
+  "fields": {
+    "judul": "Panduan Memilih Kertas Kantor: Kapan Menggunakan HVS 70 GSM, 80 GSM, atau 100 GSM?",
+    "slug": "panduan-memilih-kertas-kantor-hvs-70-80-100-gsm",
+    "kategori": 3,
+    "ringkasan": "Banyak perusahaan salah memilih jenis gramatur kertas yang berakibat printer sering macet (paper jam) atau hasil cetak tembus pandang. Kenali perbedaan fungsi dan spesifikasi kertas yang tepat untuk operasional Anda.",
+    "konten": "Kertas adalah kebutuhan pokok paling mendasar di setiap lingkungan kantor, instansi pendidikan, maupun agensi kreatif. Namun, tahukah Anda bahwa salah memilih gramatur (ketebalan) kertas tidak hanya mempengaruhi estetika dokumen, tetapi juga dapat memicu masalah teknis seperti printer macet (paper jam) dan tinta yang menembus ke sisi belakang?\r\n\r\nMari kita bedah karakteristik tiga gramatur kertas HVS paling populer dan panduan penggunaannya:\r\n\r\n1. Kertas HVS 70 GSM — Ringan, Praktis, dan Sangat Ekonomis\r\nKertas dengan ketebalan 70 GSM (Gram per Square Meter) adalah jenis yang paling banyak digunakan untuk keperluan internal bervolume tinggi.\r\nKarakteristik: Bobot ringan, tekstur halus, harga paling ekonomis per rim.\r\nKapan Digunakan: Sangat ideal untuk fotokopi dokumen operasional massal, draf naskah rapat harian, nota pengiriman, dan arsip internal sementara.\r\nCatatan: Kurang disarankan untuk pencetakan dokumen bolak-balik dengan intensitas gambar atau tabel pekat karena risiko tinta merembes (show-through).\r\n\r\n2. Kertas HVS 80 GSM — Standar Emas untuk Dokumen Resmi Korporat\r\n80 GSM merupakan standar profesional yang paling direkomendasikan untuk seluruh aktivitas perkantoran resmi.\r\n- Karakteristik: Ketebalan optimal, tidak mudah lecek, opasitas tinggi sehingga tinta tidak tembus ke belakang.\r\n- Kapan Digunakan: Dokumen kontrak kerja sama, laporan keuangan, surat dinas berkop resmi, proposal klien, dan materi presentasi penting.\r\n- Keunggulan Mesin: Kompatibel dengan semua jenis printer laserjet, inkjet, dan mesin fotokopi kecepatan tinggi tanpa risiko ganda menarik kertas.\r\n\r\n3. Kertas HVS 100 GSM ke Atas — Tebal, Kokoh, dan Elemen Premium\r\nUntuk dokumen yang membutuhkan durabilitas jangka panjang dan kesan eksklusif, kertas 100 GSM adalah pilihan sempurna.\r\n- Karakteristik: Sangat kaku, daya serap tinta superior, memberikan nuansa mewah saat disentuh.\r\n- Kapan Digunakan: Sertifikat penghargaan, sampul proposal jilid, kartu garansi, lembar pemisah bab laporan tahunan (annual report), dan dokumen portofolio desain.\r\n\r\nTips Merawat Kertas di Lingkungan Tropis:\r\n1. Simpan rim kertas di tempat yang kering dan berventilasi baik, jauh dari lantai semen secara langsung.\r\n2. Jangan biarkan tumpukan kertas terbuka berhari-hari di tray printer karena kelembapan udara Indonesia dapat membuat kertas melengkung dan memicu paper jam.\r\n3. Selalu kibas-kibaskan (fan) lembaran kertas sebelum dimasukkan ke dalam baki pengumpan printer.\r\n\r\nATKGO.ID menyediakan aneka pilihan kertas HVS berkualitas premium dari merek-merek ternama dengan jaminan kertas berderajat putih tinggi (high brightness) untuk hasil cetak tajam maksimal.",
+    "gambar": "artikel/1782451789-53b618ZD6I.jpg",
+    "penulis": 2,
+    "nama_penulis": "Divisi Produk ATKGO.ID",
+    "is_published": true,
+    "dibuat_pada": "2026-11-14T09:58:10.819Z",
+    "diperbarui_pada": "2026-11-14T10:04:22.944Z"
+  }
+}
+]

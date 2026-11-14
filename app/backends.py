@@ -31,19 +31,32 @@ class EmailOrUsernameModelBackend(ModelBackend):
             user = None
         except User.MultipleObjectsReturned:
             # Jika ada duplikasi username (seharusnya unik di Django)
-            candidates = User.objects.filter(username__iexact=username)
-            matching = [u for u in candidates if u.check_password(password)]
-            if len(matching) == 1:
-                u = matching[0]
-                if self.user_can_authenticate(u):
-                    return u
+            try:
+                candidates = User.objects.filter(username__iexact=username)
+                matching = [u for u in candidates if u.check_password(password)]
+                if len(matching) == 1:
+                    u = matching[0]
+                    if self.user_can_authenticate(u):
+                        return u
+                    if request is not None:
+                        request._inactive_user_detected = True
+            except Exception as e:
                 if request is not None:
-                    request._inactive_user_detected = True
+                    request._db_error_detected = str(e)
+            return None
+        except Exception as e:
+            if request is not None:
+                request._db_error_detected = str(e)
             return None
 
         # 2. Coba cari berdasarkan email (case-insensitive)
-        email_candidates = User.objects.filter(email__iexact=username)
-        count = email_candidates.count()
+        try:
+            email_candidates = User.objects.filter(email__iexact=username)
+            count = email_candidates.count()
+        except Exception as e:
+            if request is not None:
+                request._db_error_detected = str(e)
+            return None
 
         if count == 1:
             user = email_candidates.first()

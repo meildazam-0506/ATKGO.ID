@@ -134,18 +134,26 @@ def login_page(request):
                 clean_prefix = re.sub(r'[^a-zA-Z0-9_]', '', email.split('@')[0]) or 'konsumen'
                 candidate = clean_prefix
                 counter = 1
-                while User.objects.filter(username__iexact=candidate).exists():
-                    candidate = f"{clean_prefix}_{counter}"
-                    counter += 1
-                username = candidate
+                try:
+                    while User.objects.filter(username__iexact=candidate).exists():
+                        candidate = f"{clean_prefix}_{counter}"
+                        counter += 1
+                    username = candidate
+                except Exception:
+                    messages.error(request, "Terjadi kendala pada database saat memeriksa ketersediaan akun.")
+                    return render(request, 'app/login.html', context)
             else:
                 if not re.match(r'^[\w.@+-]+$', username):
                     messages.error(request, "Username hanya boleh memuat huruf, angka, dan karakter @/./+/-/_.")
                     return render(request, 'app/login.html', context)
 
-            if User.objects.filter(username__iexact=username).exists():
-                messages.error(request, f"Username '{username}' sudah digunakan. Silakan gunakan username lain.")
-                return render(request, 'app/login.html', context)
+                try:
+                    if User.objects.filter(username__iexact=username).exists():
+                        messages.error(request, f"Username '{username}' sudah digunakan. Silakan gunakan username lain.")
+                        return render(request, 'app/login.html', context)
+                except Exception:
+                    messages.error(request, "Terjadi kendala pada database saat memeriksa ketersediaan username.")
+                    return render(request, 'app/login.html', context)
 
             try:
                 validate_email(email)
@@ -153,9 +161,13 @@ def login_page(request):
                 messages.error(request, "Format alamat email tidak valid.")
                 return render(request, 'app/login.html', context)
 
-            if User.objects.filter(email__iexact=email).exists():
-                messages.error(request, "Alamat email ini sudah terdaftar. Silakan masuk menggunakan akun Anda.")
-                return render(request, 'app/login.html', {'mode': 'login'})
+            try:
+                if User.objects.filter(email__iexact=email).exists():
+                    messages.error(request, "Alamat email ini sudah terdaftar. Silakan masuk menggunakan akun Anda.")
+                    return render(request, 'app/login.html', {'mode': 'login'})
+            except Exception:
+                messages.error(request, "Terjadi kendala pada database saat memeriksa ketersediaan email.")
+                return render(request, 'app/login.html', context)
 
             if password != confirm_password:
                 messages.error(request, "Konfirmasi password tidak cocok dengan password yang dimasukkan.")
@@ -204,10 +216,16 @@ def login_page(request):
                 messages.error(request, "Email/Username dan password wajib diisi.")
                 return render(request, 'app/login.html', {'mode': 'login'})
 
-            user = authenticate(request, username=identitas, password=password)
+            try:
+                user = authenticate(request, username=identitas, password=password)
+            except Exception as e:
+                user = None
+                request._db_error_detected = str(e)
 
             if user is None:
-                if getattr(request, '_inactive_user_detected', False):
+                if getattr(request, '_db_error_detected', False):
+                    messages.error(request, "Terjadi gangguan koneksi ke database. Silakan coba sesaat lagi.")
+                elif getattr(request, '_inactive_user_detected', False):
                     messages.error(request, "Akun Anda saat ini tidak aktif. Silakan hubungi customer service ATKGO.ID.")
                 elif getattr(request, '_ambiguous_account_detected', False):
                     messages.error(request, "Terdapat lebih dari satu akun dengan email yang sama. Harap masuk menggunakan username Anda.")
@@ -226,7 +244,11 @@ def login_page(request):
                     except Exception:
                         pass
 
-            login(request, user)
+            try:
+                login(request, user)
+            except Exception as e:
+                messages.error(request, f"Gagal menginisialisasi sesi login: {str(e)}")
+                return render(request, 'app/login.html', {'mode': 'login'})
             messages.success(request, f"Selamat datang kembali, {user.first_name or user.username}!")
 
             next_url = request.POST.get('next') or request.GET.get('next')
@@ -564,10 +586,17 @@ def admin_login(request):
             messages.error(request, "Email/Username dan password admin wajib diisi.")
             return render(request, 'login_admin.html')
 
-        user = authenticate(request, username=identitas, password=password)
+        try:
+            user = authenticate(request, username=identitas, password=password)
+        except Exception as e:
+            user = None
+            request._db_error_detected = str(e)
 
         if user is None:
-            messages.error(request, "Kredensial admin salah atau akun tidak ditemukan.")
+            if getattr(request, '_db_error_detected', False):
+                messages.error(request, "Terjadi kendala koneksi ke database. Silakan coba sesaat lagi.")
+            else:
+                messages.error(request, "Kredensial admin salah atau akun tidak ditemukan.")
             return render(request, 'login_admin.html')
 
         if not user.is_active:
@@ -578,7 +607,11 @@ def admin_login(request):
             messages.error(request, "Akun Anda tidak memiliki hak akses Administrator ATKGO.ID.")
             return render(request, 'login_admin.html')
 
-        login(request, user)
+        try:
+            login(request, user)
+        except Exception as e:
+            messages.error(request, f"Gagal menginisialisasi sesi admin: {str(e)}")
+            return render(request, 'login_admin.html')
         messages.success(request, f"Selamat datang di Admin Workspace, {user.first_name or user.username}!")
         return redirect('admin_dashboard')
 
