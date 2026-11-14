@@ -24,7 +24,8 @@ _backup_*/
 backup_*/
 
 # Static & Media collections
-staticfiles/
+staticfiles/*
+!staticfiles/.gitkeep
 media/*
 !media/.gitkeep
 !media/artikel/

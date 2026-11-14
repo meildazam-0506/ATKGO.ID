@@ -52,10 +52,16 @@ def admin_required(view_func):
 
 def landing(request):
     """Halaman pembuka / landing page dengan konten dinamis CMS."""
-    hero_banner = HeroBanner.objects.filter(is_active=True).first()
-    keunggulan_list = Keunggulan.objects.filter(is_active=True).order_by('urutan', 'id')
-    website_setting = WebsiteSetting.objects.first()
-    artikel_terbaru = Article.objects.filter(is_published=True).order_by('-dibuat_pada')[:3]
+    try:
+        hero_banner = HeroBanner.objects.filter(is_active=True).first()
+        keunggulan_list = list(Keunggulan.objects.filter(is_active=True).order_by('urutan', 'id'))
+        website_setting = WebsiteSetting.objects.first()
+        artikel_terbaru = list(Article.objects.filter(is_published=True).order_by('-dibuat_pada')[:3])
+    except Exception:
+        hero_banner = None
+        keunggulan_list = []
+        website_setting = None
+        artikel_terbaru = []
 
     context = {
         'hero_banner': hero_banner,
@@ -69,9 +75,14 @@ def landing(request):
 @login_required(login_url='login')
 def beranda(request):
     """Halaman beranda utama konsumen setelah login berhasil."""
-    hero_banner = HeroBanner.objects.filter(is_active=True).first()
-    keunggulan_list = Keunggulan.objects.filter(is_active=True).order_by('urutan', 'id')
-    website_setting = WebsiteSetting.objects.first()
+    try:
+        hero_banner = HeroBanner.objects.filter(is_active=True).first()
+        keunggulan_list = list(Keunggulan.objects.filter(is_active=True).order_by('urutan', 'id'))
+        website_setting = WebsiteSetting.objects.first()
+    except Exception:
+        hero_banner = None
+        keunggulan_list = []
+        website_setting = None
 
     context = {
         'hero_banner': hero_banner,
@@ -351,19 +362,23 @@ def artikel_list(request):
     query = request.GET.get('q', '').strip()
     kategori_slug = request.GET.get('kategori', '').strip()
 
-    articles = Article.objects.filter(is_published=True)
+    try:
+        articles = Article.objects.filter(is_published=True)
 
-    if kategori_slug:
-        articles = articles.filter(kategori__slug=kategori_slug)
+        if kategori_slug:
+            articles = articles.filter(kategori__slug=kategori_slug)
 
-    if query:
-        articles = articles.filter(
-            Q(judul__icontains=query) |
-            Q(ringkasan__icontains=query) |
-            Q(konten__icontains=query)
-        )
+        if query:
+            articles = articles.filter(
+                Q(judul__icontains=query) |
+                Q(ringkasan__icontains=query) |
+                Q(konten__icontains=query)
+            )
 
-    categories = ArticleCategory.objects.all()
+        categories = list(ArticleCategory.objects.all())
+    except Exception:
+        articles = []
+        categories = []
 
     context = {
         'articles': articles,
