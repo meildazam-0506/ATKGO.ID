@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="id">
@@ -65,9 +64,42 @@
             padding: 12px;
             border: 1px solid #d8ded5;
             border-radius: 8px;
+            font-size: 14px;
         }
 
-        .auth-form button {
+        .password-box {
+            position: relative;
+        }
+
+        .password-box input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-password:hover {
+            color: #405d42;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .auth-form button[type="submit"] {
             width: 100%;
             padding: 14px;
             margin-top: 20px;
@@ -77,6 +109,11 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
+            font-size: 15px;
+        }
+
+        .auth-form button[type="submit"]:hover {
+            background: #324a34;
         }
 
         .alert {
@@ -84,6 +121,20 @@
             margin: 12px 0;
             background: #f1f5ef;
             border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .alert.error {
+            background: #fff0f0;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .alert.success {
+            background: #effaf2;
+            color: #247a42;
+            border-left: 4px solid #247a42;
         }
 
         .auth-form a {
@@ -107,52 +158,98 @@
             <h1>Admin Workspace</h1>
             <p>
                 Selamat datang di ruang kerja internal ATKGO.ID.
-                Kelola layanan, pelanggan, pesanan, dan operasional
-                agency melalui satu dashboard.
+                Kelola layanan, pelanggan, produk, dan operasional
+                melalui satu pusat kontrol terpadu.
             </p>
             <small>AUTHORIZED PERSONNEL ONLY</small>
         </section>
 
         <section class="auth-form">
             <h2>Login Admin</h2>
-            <p>Masuk menggunakan akun tim ATKGO.ID.</p>
+            <p>Masuk menggunakan akun tim administrator ATKGO.ID.</p>
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert">{{ message }}</div>
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
 
-            <form method="POST">
+            <form method="POST" action="{% url 'admin_login' %}">
                 {% csrf_token %}
 
-                <label for="email">Email Admin</label>
+                <label for="email">Email atau Username Admin</label>
                 <input
-                    type="email"
+                    type="text"
                     id="email"
                     name="email"
+                    placeholder="nama@atkgo.id atau username"
                     autocomplete="username"
                     required
                 >
 
                 <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    autocomplete="current-password"
-                    required
-                >
+                <div class="password-box">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Masukkan password admin"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="password"
+                        aria-label="Tampilkan atau sembunyikan password"
+                        title="Tampilkan / sembunyikan password"
+                    >
+                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
 
-                <button type="submit">Masuk ke Dashboard</button>
+                <button type="submit">Masuk ke Dashboard &rarr;</button>
             </form>
 
             <p style="margin-top:22px;">
-                <a href="{% url 'landing' %}">← Kembali ke Website</a>
+                <a href="{% url 'landing' %}">&larr; Kembali ke Website</a>
             </p>
         </section>
 
     </div>
 </main>
+
+<script>
+    document.querySelectorAll('.toggle-password').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.dataset.target;
+            const input = document.getElementById(targetId);
+            if (!input) return;
+
+            const eyeClosed = this.querySelector('.eye-closed');
+            const eyeOpen = this.querySelector('.eye-open');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (eyeClosed) eyeClosed.style.display = 'none';
+                if (eyeOpen) eyeOpen.style.display = 'block';
+                this.setAttribute('aria-label', 'Sembunyikan password');
+            } else {
+                input.type = 'password';
+                if (eyeClosed) eyeClosed.style.display = 'block';
+                if (eyeOpen) eyeOpen.style.display = 'none';
+                this.setAttribute('aria-label', 'Tampilkan password');
+            }
+        });
+    });
+</script>
 </body>
 </html>

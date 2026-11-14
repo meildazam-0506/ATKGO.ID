@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Artikel &amp; Edukasi | ATKGO.ID</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f6f2; color: #26352a; }
+
+        :root {
+            --green: #304b35;
+            --green-light: #e8efe7;
+            --text: #26352a;
+            --muted: #849087;
+            --white: #ffffff;
+            --border: #e8ece7;
+        }
+
+        .sidebar {
+            width: 255px; height: 100vh; position: fixed; top: 0; left: 0;
+            background: var(--green); color: white; padding: 25px 18px;
+            display: flex; flex-direction: column; z-index: 10;
+        }
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            padding: 5px 8px 30px; border-bottom: 1px solid #ffffff25;
+        }
+        .brand img { width: 38px; height: 38px; border-radius: 50%; background: white; object-fit: contain; }
+        .brand h2 { font-size: 16px; font-weight: bold; }
+        .brand small { font-size: 10px; opacity: .7; letter-spacing: 1.5px; }
+
+        .menu-title { font-size: 10px; letter-spacing: 1.5px; color: #a3c2a9; margin: 25px 8px 10px; font-weight: bold; }
+        .menu a {
+            display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+            color: #d1e2d4; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: 500;
+            margin-bottom: 3px; transition: all .2s;
+        }
+        .menu a:hover, .menu a.active { background: #3e5e44; color: white; }
+
+        .main { margin-left: 255px; padding: 30px 40px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .topbar h1 { font-size: 24px; }
+        .topbar p { color: var(--muted); font-size: 13px; }
+
+        .card {
+            background: white; border-radius: 14px; border: 1px solid var(--border);
+            padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .actions-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block; padding: 11px 20px; background: var(--green);
+            color: white; border: 0; border-radius: 8px; font-size: 13px; font-weight: bold;
+            text-decoration: none; cursor: pointer;
+        }
+        .button:hover { background: #243a28; }
+
+        .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .table th, .table td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+        .table th { background: #f8faf7; color: var(--muted); font-weight: bold; }
+
+        .thumb { width: 60px; height: 42px; object-fit: cover; border-radius: 6px; background: #e8efe7; }
+        .badge {
+            display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;
+        }
+        .badge-success { background: #e8f5e9; color: #2e7d32; }
+        .badge-draft { background: #f5f5f5; color: #777; }
+
+        .btn-action {
+            display: inline-block; padding: 6px 12px; font-size: 12px; font-weight: bold;
+            border-radius: 6px; text-decoration: none; margin-right: 5px;
+        }
+        .btn-edit { background: #edf1ec; color: var(--green); }
+        .btn-delete { background: #fff0f0; color: #c62828; border: none; cursor: pointer; }
+
+        .alert {
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;
+        }
+        .alert.success { background: #effaf2; color: #247a42; border-left: 4px solid #247a42; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo">
+        <div>
+            <h2>ATKGO.ID</h2>
+            <small>ADMIN WORKSPACE</small>
+        </div>
+    </div>
+
+    <p class="menu-title">MENU UTAMA</p>
+    <nav class="menu">
+        <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
+        <a href="{% url 'admin_products' %}">▣ &nbsp; Manajemen Produk</a>
+        <a href="{% url 'admin_orders' %}">▤ &nbsp; Pesanan Pelanggan</a>
+        <a href="{% url 'admin_articles' %}" class="active">✎ &nbsp; Artikel &amp; Edukasi</a>
+        <a href="{% url 'admin_content' %}">✦ &nbsp; Konten Website (CMS)</a>
+        <a href="{% url 'admin_customers' %}">♙ &nbsp; Pelanggan &amp; Usaha</a>
+        <a href="{% url 'admin_messages' %}">✉ &nbsp; Pesan Pelanggan</a>
+        <a href="{% url 'beranda' %}">◈ &nbsp; Buka Website</a>
+    </nav>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div>
+            <h1>Manajemen Artikel &amp; Edukasi</h1>
+            <p>Kelola artikel edukasi, tips bisnis, dan wawasan yang dipublikasikan di website ATKGO.ID.</p>
+        </div>
+        <a href="{% url 'admin_article_create' %}" class="button">＋ Tambah Artikel Baru</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card">
+        <div class="actions-header">
+            <h2 style="font-size: 16px; color: var(--green);">Daftar Artikel ({{ articles.count }})</h2>
+            <a href="{% url 'artikel_list' %}" target="_blank" style="font-size: 12px; color: var(--green); text-decoration: none; font-weight: bold;">↗ Lihat Halaman Artikel Website</a>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">Gambar</th>
+                    <th>Judul Artikel</th>
+                    <th>Kategori</th>
+                    <th>Penulis</th>
+                    <th>Status</th>
+                    <th>Tanggal Dibuat</th>
+                    <th style="width: 140px;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for art in articles %}
+                    <tr>
+                        <td>
+                            {% if art.gambar %}
+                                <img src="{{ art.gambar.url }}" alt="{{ art.judul }}" class="thumb">
+                            {% else %}
+                                <div class="thumb" style="display:flex;align-items:center;justify-content:center;color:#304b35;font-weight:bold;">✎</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ art.judul }}</strong>
+                            <p style="color:var(--muted); font-size:11px; margin-top:2px;">{{ art.ringkasan|truncatewords:10 }}</p>
+                        </td>
+                        <td>{{ art.kategori.nama|default:"Umum" }}</td>
+                        <td>{{ art.nama_penulis|default:"Tim ATKGO" }}</td>
+                        <td>
+                            {% if art.is_published %}
+                                <span class="badge badge-success">Terbit</span>
+                            {% else %}
+                                <span class="badge badge-draft">Draft</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ art.dibuat_pada|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{% url 'admin_article_edit' art.id %}" class="btn-action btn-edit">Edit</a>
+                            <form method="POST" action="{% url 'admin_article_delete' art.id %}" style="display:inline;" onsubmit="return confirm('Hapus artikel ini?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-action btn-delete">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #888; padding: 40px 15px;">
+                            Belum ada artikel yang ditambahkan. Silakan klik tombol <strong>＋ Tambah Artikel Baru</strong> di atas.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>

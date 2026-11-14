@@ -423,20 +423,32 @@
             <span class="menu-icon">▦</span> Dashboard
         </a>
 
-        <a href="/admin/#auth-user">
-            <span class="menu-icon">♙</span> Pengguna & Pelanggan
-        </a>
-
         <a href="{% url 'admin_products' %}">
             <span class="menu-icon">▣</span> Manajemen Produk
         </a>
 
-        <a href="/admin/app/contactmessage/">
+        <a href="{% url 'admin_orders' %}">
+            <span class="menu-icon">▤</span> Pesanan Pelanggan
+        </a>
+
+        <a href="{% url 'admin_articles' %}">
+            <span class="menu-icon">✎</span> Artikel &amp; Edukasi
+        </a>
+
+        <a href="{% url 'admin_content' %}">
+            <span class="menu-icon">✦</span> Konten Website (CMS)
+        </a>
+
+        <a href="{% url 'admin_customers' %}">
+            <span class="menu-icon">♙</span> Pelanggan &amp; Profil Usaha
+        </a>
+
+        <a href="{% url 'admin_messages' %}">
             <span class="menu-icon">✉</span> Pesan Pelanggan
         </a>
 
-        <a href="{% url 'produk' %}">
-            <span class="menu-icon">◈</span> Lihat Katalog
+        <a href="{% url 'beranda' %}">
+            <span class="menu-icon">◈</span> Buka Website
         </a>
     </nav>
 
@@ -589,20 +601,44 @@
 
     <section class="quick-links">
 
-        <a href="/admin/app/product/" class="quick-link">
+        <a href="{% url 'admin_products' %}" class="quick-link">
             <span>▣</span>
             <strong>Kelola Produk</strong>
-            <small>Tambah dan ubah produk</small>
+            <small>Tambah &amp; ubah produk</small>
         </a>
 
-        <a href="/admin/app/contactmessage/" class="quick-link">
+        <a href="{% url 'admin_orders' %}" class="quick-link">
+            <span>▤</span>
+            <strong>Pesanan Masuk</strong>
+            <small>Status pesanan pelanggan</small>
+        </a>
+
+        <a href="{% url 'admin_content' %}" class="quick-link">
+            <span>✦</span>
+            <strong>Konten Website (CMS)</strong>
+            <small>Banner hero &amp; info agency</small>
+        </a>
+
+        <a href="{% url 'admin_articles' %}" class="quick-link">
+            <span>✎</span>
+            <strong>Artikel &amp; Edukasi</strong>
+            <small>Publikasi artikel &amp; tips</small>
+        </a>
+
+        <a href="{% url 'admin_customers' %}" class="quick-link">
+            <span>♙</span>
+            <strong>Data Pelanggan</strong>
+            <small>Profil pembeli &amp; usaha</small>
+        </a>
+
+        <a href="{% url 'admin_messages' %}" class="quick-link">
             <span>✉</span>
             <strong>Pesan Pelanggan</strong>
             <small>Periksa pesan masuk</small>
         </a>
 
         <a href="{% url 'admin_register' %}" class="quick-link">
-            <span>♙</span>
+            <span>＋</span>
             <strong>Tambah Anggota</strong>
             <small>Daftarkan admin baru</small>
         </a>

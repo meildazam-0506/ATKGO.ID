@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Pelanggan | ATKGO.ID</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f6f2; color: #26352a; }
+
+        :root {
+            --green: #304b35;
+            --green-light: #e8efe7;
+            --text: #26352a;
+            --muted: #849087;
+            --white: #ffffff;
+            --border: #e8ece7;
+        }
+
+        .sidebar {
+            width: 255px; height: 100vh; position: fixed; top: 0; left: 0;
+            background: var(--green); color: white; padding: 25px 18px;
+            display: flex; flex-direction: column; z-index: 10;
+        }
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            padding: 5px 8px 30px; border-bottom: 1px solid #ffffff25;
+        }
+        .brand img { width: 38px; height: 38px; border-radius: 50%; background: white; object-fit: contain; }
+        .brand h2 { font-size: 16px; font-weight: bold; }
+        .brand small { font-size: 10px; opacity: .7; letter-spacing: 1.5px; }
+
+        .menu-title { font-size: 10px; letter-spacing: 1.5px; color: #a3c2a9; margin: 25px 8px 10px; font-weight: bold; }
+        .menu a {
+            display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+            color: #d1e2d4; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: 500;
+            margin-bottom: 3px; transition: all .2s;
+        }
+        .menu a:hover, .menu a.active { background: #3e5e44; color: white; }
+
+        .main { margin-left: 255px; padding: 30px 40px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .topbar h1 { font-size: 24px; }
+        .topbar p { color: var(--muted); font-size: 13px; }
+
+        .card {
+            background: white; border-radius: 14px; border: 1px solid var(--border);
+            padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .table th, .table td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+        .table th { background: #f8faf7; color: var(--muted); font-weight: bold; }
+
+        .badge {
+            display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;
+        }
+        .badge-warning { background: #fff8e1; color: #b26a00; }
+        .badge-info { background: #e3f2fd; color: #1565c0; }
+        .badge-success { background: #e8f5e9; color: #2e7d32; }
+        .badge-danger { background: #ffebee; color: #c62828; }
+
+        .order-code { font-family: monospace; font-weight: bold; color: var(--green); }
+        .status-select {
+            padding: 5px 8px; border-radius: 6px; border: 1px solid #dce2dc; font-size: 12px;
+        }
+
+        .alert {
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;
+        }
+        .alert.success { background: #effaf2; color: #247a42; border-left: 4px solid #247a42; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo">
+        <div>
+            <h2>ATKGO.ID</h2>
+            <small>ADMIN WORKSPACE</small>
+        </div>
+    </div>
+
+    <p class="menu-title">MENU UTAMA</p>
+    <nav class="menu">
+        <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
+        <a href="{% url 'admin_products' %}">▣ &nbsp; Manajemen Produk</a>
+        <a href="{% url 'admin_orders' %}" class="active">▤ &nbsp; Pesanan Pelanggan</a>
+        <a href="{% url 'admin_articles' %}">✎ &nbsp; Artikel &amp; Edukasi</a>
+        <a href="{% url 'admin_content' %}">✦ &nbsp; Konten Website (CMS)</a>
+        <a href="{% url 'admin_customers' %}">♙ &nbsp; Pelanggan &amp; Usaha</a>
+        <a href="{% url 'admin_messages' %}">✉ &nbsp; Pesan Pelanggan</a>
+        <a href="{% url 'beranda' %}">◈ &nbsp; Buka Website</a>
+    </nav>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div>
+            <h1>Pesanan Pelanggan</h1>
+            <p>Daftar pesanan layanan dan alat tulis yang masuk melalui sistem pembayaran ATKGO.ID.</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>No. Pesanan</th>
+                    <th>Nama Pemesan</th>
+                    <th>Kontak / Bisnis</th>
+                    <th>Detail Layanan</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Tanggal Masuk</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ord in orders %}
+                    <tr>
+                        <td>
+                            <span class="order-code">{{ ord.nomor_pesanan }}</span>
+                            <br><small style="color:#888;">Akun: {{ ord.user.username }}</small>
+                        </td>
+                        <td>
+                            <strong>{{ ord.nama_pemesan }}</strong>
+                            <br><small style="color:#777;">{{ ord.email_pemesan }}</small>
+                        </td>
+                        <td>
+                            <a href="https://wa.me/{{ ord.telepon_pemesan }}" target="_blank" style="color:var(--green); font-weight:bold; text-decoration:none;">
+                                ☎ {{ ord.telepon_pemesan }}
+                            </a>
+                            {% if ord.nama_bisnis %}
+                                <br><small style="color:#555;">Usaha: {{ ord.nama_bisnis }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for item in ord.items.all %}
+                                <div style="font-size:12px;">• {{ item.nama_produk }} (x{{ item.jumlah }})</div>
+                            {% empty %}
+                                <span style="color:#888; font-size:12px;">Pesanan layanan</span>
+                            {% endfor %}
+                            <p style="color:#777; font-size:11px; margin-top:4px;">{{ ord.alamat|truncatechars:45 }}</p>
+                        </td>
+                        <td>
+                            <strong>Rp{{ ord.total_harga|floatformat:0 }}</strong>
+                            <br><small style="color:#888;">{{ ord.metode_pembayaran }}</small>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'admin_order_status' ord.id %}" style="display:flex; align-items:center; gap:6px;">
+                                {% csrf_token %}
+                                <select name="status" class="status-select" onchange="this.form.submit()">
+                                    <option value="Menunggu Konfirmasi" {% if ord.status == 'Menunggu Konfirmasi' %}selected{% endif %}>Menunggu</option>
+                                    <option value="Diproses" {% if ord.status == 'Diproses' %}selected{% endif %}>Diproses</option>
+                                    <option value="Selesai" {% if ord.status == 'Selesai' %}selected{% endif %}>Selesai</option>
+                                    <option value="Dibatalkan" {% if ord.status == 'Dibatalkan' %}selected{% endif %}>Batal</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>{{ ord.dibuat_pada|date:"d M Y, H:i" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #888; padding: 40px 15px;">
+                            Belum ada pesanan yang masuk. Pesanan pelanggan dari halaman pembayaran akan tercatat otomatis di sini.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>

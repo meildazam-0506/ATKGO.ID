@@ -4,14 +4,32 @@
 
 .wrap { width: min(1160px, 92%); margin: auto; }
 
-/* ---------- Header & navigasi ---------- */
-header {
+/* ---------- Header & navigasi Utama ---------- */
+body > header,
+header.site-header {
   position: sticky;
   top: 0;
-  z-index: 20;
-  background: rgba(255, 253, 248, .96);
+  z-index: 1000;
+  background: rgba(255, 253, 248, .98);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
+}
+
+/* Pastikan section judul halaman dan header di dalam main/article tidak ikut menjadi sticky */
+main header,
+article header,
+.payment-heading,
+.cart-heading,
+.article-header,
+.profile-header-card,
+.section-head,
+.article-hero {
+  position: static !important;
+  top: auto !important;
+  z-index: 1 !important;
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom: none;
 }
 
 .nav { min-height: 78px; display: flex; align-items: center; gap: 25px; }

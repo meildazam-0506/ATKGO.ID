@@ -224,3 +224,33 @@ body {
 .logout-button svg {
     display: block;
 }
+
+/* =====================================
+   PROFILE BUTTON NAVBAR
+===================================== */
+.profile-button {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: white;
+    color: #252641;
+    text-decoration: none;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.profile-button:hover {
+    background: #304b35;
+    color: white;
+    border-color: #304b35;
+    transform: translateY(-2px);
+}
+
+.profile-button svg {
+    display: block;
+}

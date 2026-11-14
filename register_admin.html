@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Admin Baru | ATKGO.ID</title>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #343653;
+        }
+
+        .auth-wrap {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 30px;
+            background: #f4f6f2;
+        }
+
+        .auth-card {
+            width: min(900px, 100%);
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 45px #0001;
+        }
+
+        .auth-side {
+            padding: 48px 38px;
+            background: rgb(255, 229, 229);
+            color: #343653;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-side img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .auth-side p { line-height: 1.8; }
+
+        .auth-form { padding: 40px 38px; }
+
+        .auth-form label {
+            display: block;
+            margin: 12px 0 6px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .auth-form input, .auth-form select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #d8ded5;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .password-box {
+            position: relative;
+        }
+
+        .password-box input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-password:hover {
+            color: #405d42;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .auth-form button[type="submit"] {
+            width: 100%;
+            padding: 13px;
+            margin-top: 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #405d42;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .auth-form button[type="submit"]:hover {
+            background: #324a34;
+        }
+
+        .alert {
+            padding: 12px;
+            margin: 12px 0;
+            background: #f1f5ef;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .alert.error {
+            background: #fff0f0;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .alert.success {
+            background: #effaf2;
+            color: #247a42;
+            border-left: 4px solid #247a42;
+        }
+
+        .auth-form a {
+            color: #405d42;
+            text-decoration: none;
+        }
+
+        @media (max-width: 680px) {
+            .auth-card { grid-template-columns: 1fr; }
+            .auth-side, .auth-form { padding: 25px; }
+        }
+    </style>
+</head>
+
+<body>
+<main class="auth-wrap">
+    <div class="auth-card">
+
+        <section class="auth-side">
+            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+            <h1>Admin Workspace</h1>
+            <p>
+                Daftarkan anggota tim baru dengan akses Administrator ke dashboard ATKGO.ID.
+            </p>
+            <small>INTERNAL MANAGEMENT ONLY</small>
+        </section>
+
+        <section class="auth-form">
+            <h2>Tambah Admin Baru</h2>
+            <p>Isi formulir untuk membuat akun administrator baru.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'admin_register' %}">
+                {% csrf_token %}
+
+                <label for="full_name">Nama Lengkap</label>
+                <input type="text" id="full_name" name="full_name" placeholder="Nama staf / admin" required>
+
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username unik admin" required>
+
+                <label for="email">Email Admin</label>
+                <input type="email" id="email" name="email" placeholder="admin@atkgo.id" required>
+
+                <label for="telp">Nomor Telepon</label>
+                <input type="tel" id="telp" name="telp" placeholder="08xxxxxxxxxx">
+
+                <label for="gender">Jenis Kelamin</label>
+                <select id="gender" name="gender">
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+
+                <label for="password">Password</label>
+                <div class="password-box">
+                    <input type="password" id="password" name="password" placeholder="Password aman" required>
+                    <button type="button" class="toggle-password" data-target="password" aria-label="Tampilkan / sembunyikan password">
+                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <label for="confirm_password">Konfirmasi Password</label>
+                <div class="password-box">
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password" required>
+                    <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Tampilkan / sembunyikan konfirmasi password">
+                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="submit">Daftarkan Admin Baru &rarr;</button>
+            </form>
+
+            <p style="margin-top:20px;">
+                <a href="{% url 'admin_dashboard' %}">&larr; Kembali ke Dashboard Admin</a>
+            </p>
+        </section>
+
+    </div>
+</main>
+
+<script>
+    document.querySelectorAll('.toggle-password').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.dataset.target;
+            const input = document.getElementById(targetId);
+            if (!input) return;
+
+            const eyeClosed = this.querySelector('.eye-closed');
+            const eyeOpen = this.querySelector('.eye-open');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (eyeClosed) eyeClosed.style.display = 'none';
+                if (eyeOpen) eyeOpen.style.display = 'block';
+            } else {
+                input.type = 'password';
+                if (eyeClosed) eyeClosed.style.display = 'block';
+                if (eyeOpen) eyeOpen.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+</html>

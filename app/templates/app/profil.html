@@ -1,0 +1,579 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profil Saya | ATKGO.ID</title>
+  <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+  <style>
+    .profile-page {
+      background: #f8f8f6;
+      min-height: 80vh;
+      padding: 40px 20px 80px;
+    }
+
+    .profile-container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    .profile-header-card {
+      background: white;
+      border: 1px solid #eaeaea;
+      border-radius: 16px;
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      flex-shrink: 0;
+    }
+
+    .avatar-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #304b35;
+      background: #eef2ec;
+    }
+
+    .avatar-fallback {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #304b35;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: bold;
+      border: 3px solid #e8efe7;
+    }
+
+    .profile-user-info h1 {
+      margin: 0 0 5px;
+      font-size: 24px;
+      color: #252641;
+    }
+
+    .profile-user-info p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .profile-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 12px;
+      background: #eef5ee;
+      color: #304b35;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .profile-nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .profile-tab-btn {
+      padding: 10px 22px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: white;
+      color: #444;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .profile-tab-btn:hover {
+      background: #f0f0ee;
+      color: #252641;
+    }
+
+    .profile-tab-btn.active {
+      background: #304b35;
+      color: white;
+      border-color: #304b35;
+    }
+
+    .profile-tab-content {
+      display: none;
+      background: white;
+      border: 1px solid #eaeaea;
+      border-radius: 16px;
+      padding: 35px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+
+    .profile-tab-content.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 20px;
+      color: #252641;
+      margin: 0 0 8px;
+    }
+
+    .section-desc {
+      color: #777;
+      font-size: 13px;
+      margin: 0 0 25px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #dce2dc;
+      border-radius: 9px;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      border-color: #304b35;
+      box-shadow: 0 0 0 3px rgba(48,75,53,.1);
+    }
+
+    .form-group textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .password-box {
+      position: relative;
+    }
+
+    .password-box input {
+      padding-right: 45px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: #888;
+    }
+
+    .toggle-password svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .btn-save {
+      padding: 13px 28px;
+      background: #304b35;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .btn-save:hover {
+      background: #253929;
+    }
+
+    .message {
+      padding: 14px 18px;
+      border-radius: 9px;
+      margin-bottom: 25px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .message.success {
+      background: #effaf2;
+      color: #247a42;
+      border-left: 4px solid #247a42;
+    }
+
+    .message.error {
+      background: #fff0f0;
+      color: #c62828;
+      border-left: 4px solid #c62828;
+    }
+
+    @media (max-width: 768px) {
+      .profile-header-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .profile-tab-content {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="{% url 'beranda' %}">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+        <span>ATK<span class="go">GO</span>.ID</span>
+      </a>
+
+      <nav id="mainNav" aria-label="Menu utama">
+        <a href="{% url 'beranda' %}">Beranda</a>
+        <a href="{% url 'produk' %}">Layanan</a>
+        <a href="{% url 'kategori' %}">Kategori</a>
+        <a href="{% url 'artikel_list' %}">Artikel</a>
+        <a href="{% url 'tentang' %}">Tentang</a>
+        <a href="{% url 'kontak' %}">Kontak</a>
+      </nav>
+
+      <a class="nav-cta" href="{% url 'kontak' %}">Hubungi Kami →</a>
+
+      <!-- Tombol Profil Aktif -->
+      <a href="{% url 'profil' %}" class="profile-button" style="background: #304b35; color: white; border-color: #304b35;" aria-label="Profil Akun Saya" title="Profil Saya">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+      </a>
+
+      <!-- Tombol Logout -->
+      <form method="POST" action="{% url 'logout' %}" class="logout-form">
+          {% csrf_token %}
+          <button type="submit" class="logout-button" aria-label="Logout" title="Keluar dari akun">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+          </button>
+      </form>
+
+      <button class="menu" id="menuBtn" type="button" aria-label="Buka menu" aria-controls="mainNav" aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <main class="profile-page">
+    <div class="profile-container">
+
+      <!-- PESAN ALERT -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- KARTU HEADER PROFIL -->
+      <section class="profile-header-card">
+        <div class="avatar-wrapper">
+          {% if profile and profile.photo %}
+            <img src="{{ profile.photo.url }}" alt="{{ request.user.first_name }}" class="avatar-img">
+          {% else %}
+            <div class="avatar-fallback">
+              {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="profile-user-info">
+          <h1>{{ request.user.first_name|default:request.user.username }}</h1>
+          <p>{{ request.user.email }} &bull; Username: <strong>{{ request.user.username }}</strong></p>
+          <span class="profile-badge">
+            {% if profile and profile.nama_usaha %}
+              {{ profile.nama_usaha }} &bull; Mitra Bisnis ATKGO
+            {% else %}
+              Pelanggan Terverifikasi
+            {% endif %}
+          </span>
+        </div>
+      </section>
+
+      <!-- TAB MENU -->
+      <nav class="profile-nav-tabs" aria-label="Navigasi Profil">
+        <button type="button" class="profile-tab-btn active" data-tab="tab-personal">A. Data Pengguna</button>
+        <button type="button" class="profile-tab-btn" data-tab="tab-business">B. Profil Usaha</button>
+        <button type="button" class="profile-tab-btn" data-tab="tab-settings">C. Pengaturan &amp; Keamanan</button>
+      </nav>
+
+      <!-- TAB A: DATA PENGGUNA -->
+      <section id="tab-personal" class="profile-tab-content active">
+        <h2 class="section-title">Data Pengguna &amp; Alamat Pengiriman</h2>
+        <p class="section-desc">Informasi ini digunakan otomatis saat proses pemesanan dan checkout layanan.</p>
+
+        <form method="POST" action="{% url 'profil' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="section" value="personal">
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="first_name">Nama Lengkap *</label>
+              <input type="text" id="first_name" name="first_name" value="{{ request.user.first_name }}" required>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Alamat Email *</label>
+              <input type="email" id="email" name="email" value="{{ request.user.email }}" required>
+            </div>
+
+            <div class="form-group">
+              <label for="telp">Nomor WhatsApp / Telepon *</label>
+              <input type="tel" id="telp" name="telp" value="{{ profile.telp|default:'' }}" placeholder="Contoh: 081234567890" required>
+            </div>
+
+            <div class="form-group">
+              <label for="gender">Jenis Kelamin</label>
+              <select id="gender" name="gender">
+                <option value="">Pilih Jenis Kelamin</option>
+                <option value="Laki-laki" {% if profile.gender == 'Laki-laki' %}selected{% endif %}>Laki-laki</option>
+                <option value="Perempuan" {% if profile.gender == 'Perempuan' %}selected{% endif %}>Perempuan</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label for="photo">Ganti Foto Profil</label>
+              <input type="file" id="photo" name="photo" accept="image/*">
+              <small style="color:#888; font-size:12px;">Format yang didukung: JPG, PNG. Ukuran maksimal 2MB.</small>
+            </div>
+
+            <div class="form-group full">
+              <label for="alamat">Alamat Lengkap Pengiriman</label>
+              <textarea id="alamat" name="alamat" placeholder="Jalan, RT/RW, nomor rumah/kantor, patokan...">{{ profile.alamat|default:'' }}</textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="kabupaten_kota">Kabupaten / Kota</label>
+              <input type="text" id="kabupaten_kota" name="kabupaten_kota" value="{{ profile.kabupaten_kota|default:'' }}" placeholder="Contoh: Jakarta Selatan">
+            </div>
+
+            <div class="form-group">
+              <label for="kecamatan">Kecamatan</label>
+              <input type="text" id="kecamatan" name="kecamatan" value="{{ profile.kecamatan|default:'' }}">
+            </div>
+
+            <div class="form-group">
+              <label for="kelurahan_desa">Kelurahan / Desa</label>
+              <input type="text" id="kelurahan_desa" name="kelurahan_desa" value="{{ profile.kelurahan_desa|default:'' }}">
+            </div>
+
+            <div class="form-group">
+              <label for="kode_pos">Kode Pos</label>
+              <input type="text" id="kode_pos" name="kode_pos" value="{{ profile.kode_pos|default:'' }}">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-save">Simpan Perubahan Data Diri</button>
+        </form>
+      </section>
+
+      <!-- TAB B: PROFIL USAHA -->
+      <section id="tab-business" class="profile-tab-content">
+        <h2 class="section-title">Profil Usaha &amp; Kebutuhan Bisnis</h2>
+        <p class="section-desc">Lengkapi profil bisnis Anda untuk mempermudah penerbitan invoice dan penyesuaian paket layanan ATKGO.ID.</p>
+
+        <form method="POST" action="{% url 'profil' %}">
+          {% csrf_token %}
+          <input type="hidden" name="section" value="business">
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="nama_usaha">Nama Usaha / Brand / Instansi</label>
+              <input type="text" id="nama_usaha" name="nama_usaha" value="{{ profile.nama_usaha|default:'' }}" placeholder="Contoh: PT Kreasi Mandiri Nusantara">
+            </div>
+
+            <div class="form-group">
+              <label for="jenis_usaha">Jenis Usaha / Sektor Industri</label>
+              <input type="text" id="jenis_usaha" name="jenis_usaha" value="{{ profile.jenis_usaha|default:'' }}" placeholder="Contoh: Agensi Kreatif, Kuliner, Sekolah, Kantor Notaris">
+            </div>
+
+            <div class="form-group">
+              <label for="telepon_usaha">Nomor Telepon Kantor / Usaha</label>
+              <input type="tel" id="telepon_usaha" name="telepon_usaha" value="{{ profile.telepon_usaha|default:'' }}" placeholder="Contoh: (021) 1234567 atau 0812xxxx">
+            </div>
+
+            <div class="form-group full">
+              <label for="alamat_usaha">Alamat Operasional Usaha</label>
+              <textarea id="alamat_usaha" name="alamat_usaha" placeholder="Alamat kantor atau lokasi operasional usaha...">{{ profile.alamat_usaha|default:'' }}</textarea>
+            </div>
+
+            <div class="form-group full">
+              <label for="catatan_usaha">Informasi / Kebutuhan Pengadaan Rutin</label>
+              <textarea id="catatan_usaha" name="catatan_usaha" placeholder="Tuliskan jika usaha Anda memiliki kebutuhan ATK berkala, kebutuhan produksi visual mingguan, atau instruksi khusus lainnya...">{{ profile.catatan_usaha|default:'' }}</textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-save">Simpan Profil Usaha</button>
+        </form>
+      </section>
+
+      <!-- TAB C: PENGATURAN & KEAMANAN -->
+      <section id="tab-settings" class="profile-tab-content">
+        <h2 class="section-title">Pengaturan Akun &amp; Keamanan</h2>
+        <p class="section-desc">Kelola keamanan akun dan perbarui password secara berkala.</p>
+
+        <form method="POST" action="{% url 'profil' %}" style="max-width: 550px;">
+          {% csrf_token %}
+          <input type="hidden" name="section" value="password">
+
+          <div class="form-group">
+            <label for="old_password">Password Saat Ini *</label>
+            <div class="password-box">
+              <input type="password" id="old_password" name="old_password" required>
+              <button type="button" class="toggle-password" data-target="old_password" aria-label="Tampilkan password">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="new_password">Password Baru *</label>
+            <div class="password-box">
+              <input type="password" id="new_password" name="new_password" minlength="8" required>
+              <button type="button" class="toggle-password" data-target="new_password" aria-label="Tampilkan password">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm_new_password">Konfirmasi Password Baru *</label>
+            <div class="password-box">
+              <input type="password" id="confirm_new_password" name="confirm_new_password" minlength="8" required>
+              <button type="button" class="toggle-password" data-target="confirm_new_password" aria-label="Tampilkan password">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-save">Perbarui Password</button>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="brand">
+            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+            <span>ATK<span class="go">GO</span>.ID</span>
+          </div>
+          <p>Solusi terpadu pengadaan alat tulis, perlengkapan kantor, dan produksi visual kreatif brand Anda.</p>
+        </div>
+        <div>
+          <h4>Menu Cepat</h4>
+          <a href="{% url 'beranda' %}">Beranda</a>
+          <a href="{% url 'produk' %}">Layanan &amp; Katalog</a>
+          <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
+          <a href="{% url 'tentang' %}">Tentang Kami</a>
+        </div>
+        <div>
+          <h4>Hubungi Kami</h4>
+          <p>Email: hello@atkgo.id</p>
+          <p>WhatsApp: 0812-3456-7890</p>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; 2026 ATKGO.ID. Hak Cipta Dilindungi.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Tab switcher
+    const tabBtns = document.querySelectorAll('.profile-tab-btn');
+    const tabContents = document.querySelectorAll('.profile-tab-content');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-tab');
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        btn.classList.add('active');
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) targetContent.classList.add('active');
+      });
+    });
+
+    // Show/Hide password toggle
+    document.querySelectorAll('.toggle-password').forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = button.dataset.target;
+        const input = document.getElementById(targetId);
+        if (!input) return;
+        input.type = input.type === 'password' ? 'text' : 'password';
+      });
+    });
+  </script>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>

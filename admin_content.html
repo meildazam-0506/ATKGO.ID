@@ -1,0 +1,282 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengelolaan Konten Website (CMS) | ATKGO.ID</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f6f2; color: #26352a; }
+
+        :root {
+            --green: #304b35;
+            --green-light: #e8efe7;
+            --text: #26352a;
+            --muted: #849087;
+            --white: #ffffff;
+            --border: #e8ece7;
+        }
+
+        .sidebar {
+            width: 255px; height: 100vh; position: fixed; top: 0; left: 0;
+            background: var(--green); color: white; padding: 25px 18px;
+            display: flex; flex-direction: column; z-index: 10;
+        }
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            padding: 5px 8px 30px; border-bottom: 1px solid #ffffff25;
+        }
+        .brand img { width: 38px; height: 38px; border-radius: 50%; background: white; object-fit: contain; }
+        .brand h2 { font-size: 16px; font-weight: bold; }
+        .brand small { font-size: 10px; opacity: .7; letter-spacing: 1.5px; }
+
+        .menu-title { font-size: 10px; letter-spacing: 1.5px; color: #a3c2a9; margin: 25px 8px 10px; font-weight: bold; }
+        .menu a {
+            display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+            color: #d1e2d4; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: 500;
+            margin-bottom: 3px; transition: all .2s;
+        }
+        .menu a:hover, .menu a.active { background: #3e5e44; color: white; }
+
+        .main { margin-left: 255px; padding: 30px 40px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .topbar h1 { font-size: 24px; }
+        .topbar p { color: var(--muted); font-size: 13px; }
+
+        .content-card {
+            background: white; border-radius: 14px; border: 1px solid var(--border);
+            padding: 28px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .content-card h2 { font-size: 18px; margin-bottom: 6px; color: var(--green); }
+        .content-card p.desc { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group.full { grid-column: 1 / -1; }
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 7px; }
+        input, textarea {
+            width: 100%; padding: 11px 13px; border: 1px solid #dce2dc;
+            border-radius: 8px; font-family: inherit; font-size: 13px;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+
+        .button {
+            display: inline-block; padding: 12px 22px; background: var(--green);
+            color: white; border: 0; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer;
+        }
+        .button:hover { background: #243a28; }
+
+        .alert {
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;
+        }
+        .alert.success { background: #effaf2; color: #247a42; border-left: 4px solid #247a42; }
+
+        .card-table {
+            width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px;
+        }
+        .card-table th, .card-table td {
+            padding: 12px; border-bottom: 1px solid var(--border); text-align: left;
+        }
+        .card-table th { background: #f8faf7; font-weight: bold; color: var(--muted); }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo">
+        <div>
+            <h2>ATKGO.ID</h2>
+            <small>ADMIN WORKSPACE</small>
+        </div>
+    </div>
+
+    <p class="menu-title">MENU UTAMA</p>
+    <nav class="menu">
+        <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
+        <a href="{% url 'admin_products' %}">▣ &nbsp; Manajemen Produk</a>
+        <a href="{% url 'admin_orders' %}">▤ &nbsp; Pesanan Pelanggan</a>
+        <a href="{% url 'admin_articles' %}">✎ &nbsp; Artikel &amp; Edukasi</a>
+        <a href="{% url 'admin_content' %}" class="active">✦ &nbsp; Konten Website (CMS)</a>
+        <a href="{% url 'admin_customers' %}">♙ &nbsp; Pelanggan &amp; Usaha</a>
+        <a href="{% url 'admin_messages' %}">✉ &nbsp; Pesan Pelanggan</a>
+        <a href="{% url 'beranda' %}">◈ &nbsp; Buka Website</a>
+    </nav>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div>
+            <h1>Pengelolaan Konten Website (CMS)</h1>
+            <p>Ubah teks, banner hero, informasi kontak, dan keunggulan website ATKGO.ID secara langsung.</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 1. PENGELOLAAN BANNER HERO UTAMA -->
+    <section class="content-card">
+        <h2>1. Konten Banner Utama (Hero Section)</h2>
+        <p class="desc">Mengubah judul utama, deskripsi, gambar, dan slogan yang tampil di halaman beranda depan.</p>
+
+        <form method="POST" action="{% url 'admin_content' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_hero">
+
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Teks Kategori Atas (Eyebrow)</label>
+                    <input type="text" name="eyebrow" value="{{ hero.eyebrow|default:'Agensi Strategi & Produksi Visual Kreatif' }}" required>
+                </div>
+
+                <div class="form-group full">
+                    <label>Judul Utama (Headline)</label>
+                    <input type="text" name="judul" value="{{ hero.judul|default:'Lebih cepat, hemat, dan Berdampak.' }}" required>
+                </div>
+
+                <div class="form-group full">
+                    <label>Deskripsi / Paragraf Pembuka</label>
+                    <textarea name="deskripsi" required>{{ hero.deskripsi|default:'ATKGO.ID membantu kebutuhan strategi pemasaran, manajemen media sosial, dan produksi visual Anda dengan proses yang praktis, kreatif, dan profesional.' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Slogan / Tagline Bawah</label>
+                    <input type="text" name="tagline" value="{{ hero.tagline|default:'Satu Agensi untuk seluruh solusi kreatif brand anda.' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Badge Mengambang (Floating Text)</label>
+                    <input type="text" name="badge" value="{{ hero.badge|default:'Kreatif • Strategis • Terpercaya' }}">
+                </div>
+
+                <div class="form-group full">
+                    <label>Gambar Banner Hero</label>
+                    {% if hero.gambar %}
+                        <p style="margin-bottom:8px; font-size:12px; color:#666;">Gambar saat ini: <a href="{{ hero.gambar.url }}" target="_blank">Lihat Gambar</a></p>
+                    {% endif %}
+                    <input type="file" name="gambar" accept="image/*">
+                </div>
+            </div>
+
+            <button type="submit" class="button">Simpan Konten Hero</button>
+        </form>
+    </section>
+
+    <!-- 2. PENGATURAN INFORMASI WEBSITE -->
+    <section class="content-card">
+        <h2>2. Informasi Umum Website &amp; Kontak</h2>
+        <p class="desc">Mengubah informasi kontak, email, alamat kantor, dan jam operasional yang tampil di footer &amp; kontak.</p>
+
+        <form method="POST" action="{% url 'admin_content' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_settings">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nama Website</label>
+                    <input type="text" name="nama_website" value="{{ settings.nama_website|default:'ATKGO.ID' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Kontak</label>
+                    <input type="email" name="email_kontak" value="{{ settings.email_kontak|default:'hello@atkgo.id' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Nomor Telepon / WhatsApp</label>
+                    <input type="text" name="telepon_kontak" value="{{ settings.telepon_kontak|default:'081234567890' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Jam Operasional</label>
+                    <input type="text" name="jam_operasional" value="{{ settings.jam_operasional|default:'Senin - Jumat: 08.00 - 17.00 WIB' }}">
+                </div>
+
+                <div class="form-group full">
+                    <label>Alamat Kantor / Toko</label>
+                    <textarea name="alamat_kantor">{{ settings.alamat_kantor|default:'Jakarta, Indonesia' }}</textarea>
+                </div>
+
+                <div class="form-group full">
+                    <label>Judul Banner Promo Bawah</label>
+                    <input type="text" name="banner_promo_judul" value="{{ settings.banner_promo_judul|default:'Butuh rekomendasi produk atau layanan?' }}">
+                </div>
+
+                <div class="form-group full">
+                    <label>Deskripsi Banner Promo</label>
+                    <textarea name="banner_promo_deskripsi">{{ settings.banner_promo_deskripsi|default:'Hubungi ATKGO.ID untuk mendiskusikan kebutuhan paket visual dan operasional Anda.' }}</textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="button">Simpan Pengaturan Website</button>
+        </form>
+    </section>
+
+    <!-- 3. KEUNGGULAN LAYANAN -->
+    <section class="content-card">
+        <h2>3. Keunggulan Layanan (Kenapa ATKGO.ID)</h2>
+        <p class="desc">Daftar kartu keunggulan yang tampil pada halaman depan.</p>
+
+        <table class="card-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">Ikon</th>
+                    <th>Judul Keunggulan</th>
+                    <th>Deskripsi</th>
+                    <th style="width: 80px;">Status</th>
+                    <th style="width: 100px;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in keunggulan_items %}
+                    <tr>
+                        <td style="font-size:18px; font-weight:bold;">{{ item.ikon }}</td>
+                        <td><strong>{{ item.judul }}</strong></td>
+                        <td>{{ item.deskripsi }}</td>
+                        <td>{% if item.is_active %}<span style="color:#247a42;">Aktif</span>{% else %}<span style="color:#888;">Nonaktif</span>{% endif %}</td>
+                        <td>
+                            <form method="POST" action="{% url 'admin_keunggulan_delete' item.id %}" style="display:inline;" onsubmit="return confirm('Hapus keunggulan ini?');">
+                                {% csrf_token %}
+                                <button type="submit" style="color:#c62828; background:none; border:none; cursor:pointer; font-size:12px; font-weight:bold;">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align:center; color:#888;">Belum ada item keunggulan kustom. Menampilkan nilai default sistem.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- FORM TAMBAH KEUNGGULAN -->
+        <h3 style="font-size:15px; margin: 25px 0 12px; color:var(--green);">+ Tambah Item Keunggulan Baru</h3>
+        <form method="POST" action="{% url 'admin_keunggulan_create' %}">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Simbol Ikon (contoh: ✓, ♡, ↗, ✎, ▣)</label>
+                    <input type="text" name="ikon" value="✓" required>
+                </div>
+                <div class="form-group">
+                    <label>Judul Keunggulan</label>
+                    <input type="text" name="judul" placeholder="Contoh: Praktis dan Efisien" required>
+                </div>
+                <div class="form-group full">
+                    <label>Deskripsi Keunggulan</label>
+                    <textarea name="deskripsi" placeholder="Tuliskan penjelasan keunggulan..." required></textarea>
+                </div>
+            </div>
+            <button type="submit" class="button">+ Tambah Keunggulan</button>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>

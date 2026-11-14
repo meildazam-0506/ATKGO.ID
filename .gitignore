@@ -1,8 +1,36 @@
+# Virtual Environment
 venv/
+env/
+ENV/
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
+
+# Local Environment & Secrets
+.env
+.env.*
+*.bak
+
+# Database & Local Backups
 db.sqlite3
+db.sqlite3-journal
+*.tar.gz
+*.zip
+_backup_auth_repair/
+_backup_*/
+backup_*/
+
+# Static & Media collections
+staticfiles/
 media/*
 !media/.gitkeep
-staticfiles/
-.env
+!media/artikel/
+!media/produk/
+
+# OS / Editor temporary files
+.DS_Store
+Thumbs.db
+*.log

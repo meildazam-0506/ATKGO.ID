@@ -1,0 +1,139 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Kontak | ATKGO.ID</title>
+
+  <meta name="description" content="ATKGO.ID — Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.">
+
+  <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="{% url 'beranda' %}">
+      <img src="{% static 'assets/img/logo.png' %}" width="47" height="48" alt="Logo ATKGO.ID">
+      <span>ATK<span class="go">GO</span>.ID</span>
+    </a>
+
+    <nav id="mainNav" aria-label="Menu utama">
+      <a href="{% url 'beranda' %}">Beranda</a>
+      <a href="{% url 'produk' %}">Layanan</a>
+      <a href="{% url 'kategori' %}">Kategori</a>
+      <a href="{% url 'artikel_list' %}">Artikel</a>
+      <a href="{% url 'tentang' %}">Tentang</a>
+      <a href="{% url 'kontak' %}" class="active" aria-current="page">Kontak</a>
+    </nav>
+
+    <a class="nav-cta" href="{% url 'kontak' %}">Hubungi Kami →</a>
+
+    <!-- Tombol Profil -->
+    <a href="{% url 'profil' %}" class="profile-button" aria-label="Profil Akun Saya" title="Profil Saya">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+    </a>
+
+    <!-- Tombol Logout -->
+    <form method="POST" action="{% url 'logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="logout-button" aria-label="Logout" title="Keluar dari akun">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+        </button>
+    </form>
+
+    <button class="menu" id="menuBtn" type="button"
+      aria-label="Buka menu" aria-controls="mainNav" aria-expanded="false">☰</button>
+  </div>
+</header>
+
+  <main>
+    <section class="section alt">
+      <div class="wrap split">
+        <div>
+          <span class="eyebrow">KONTAK</span>
+          <h1 class="page-title">Ada yang ingin <em>ditanyakan?</em></h1>
+          <p>Isi formulir berikut untuk menyiapkan pesan pesanan atau pertanyaan. Pesan akan dibuka melalui aplikasi email di perangkat kamu.</p>
+          <div class="card">
+            <h3>ATKGO.ID</h3>
+            <p>Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.</p>
+            <p><b class="contact-hours">Jam layanan:</b> Sesuaikan dengan jam operasional toko.</p>
+          </div>
+        </div>
+
+        <form class="form card" id="contactForm">
+           <div class="form-group">
+        <label for="nama">Nama</label>
+        <input
+            type="text"
+            id="nama"
+            name="nama"
+            placeholder="Masukkan nama Anda"
+            required
+        >
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="nama@email.com"
+            required
+        >
+    </div>
+
+          </label>
+          <label>Pesan<textarea id="pesan" required placeholder="Tulis pesan kamu..."></textarea></label>
+          <button class="btn btn-red" type="submit">Lanjut Pembayaran →
+          </button>
+        
+          <small class="notice"></small>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <h3>ATKGO.ID</h3>
+          <p>Mitra cerdas pengadaan alat tulis dan perlengkapan kantor: lebih cepat, hemat, dan terpercaya.</p>
+        </div>
+        <div>
+          <h3>Menu</h3>
+          <div class="footer-links">
+            <a href="{% url 'produk' %}">Katalog Produk</a>
+            <a href="{% url 'kategori' %}">Kategori</a>
+            <a href="{% url 'tentang' %}">Tentang Kami</a>
+          </div>
+        </div>
+        <div>
+          <h3>Kontak</h3>
+          <div class="footer-links">
+            <a href="{% url 'kontak' %}">Hubungi ATKGO.ID</a>
+            <span>Indonesia</span>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">© 2026 ATKGO.ID. Semua hak dilindungi.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>

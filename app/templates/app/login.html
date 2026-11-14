@@ -1,0 +1,553 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if mode == 'register' %}Daftar Akun Baru{% else %}Masuk ke Akun{% endif %} | ATKGO.ID</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: #f8f6f1;
+            color: #252641;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 950px;
+            min-height: 540px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 12px 40px rgba(37,38,65,.12);
+        }
+
+        .login-banner {
+            padding: 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #252641;
+            color: white;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 55px;
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .brand img {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .brand span span {
+            color: #ef3938;
+        }
+
+        .login-banner h1 {
+            margin: 0 0 18px;
+            font-size: 38px;
+            line-height: 1.2;
+        }
+
+        .login-banner h1 em {
+            color: #ef6258;
+            font-style: normal;
+        }
+
+        .login-banner p {
+            color: #e0e0e8;
+            line-height: 1.8;
+        }
+
+        .banner-info {
+            margin-top: 25px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 12px;
+            color: #e0e0e8;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .login-form {
+            padding: 45px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-icon {
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: #fff0ef;
+            color: #ef3938;
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        .login-form h2 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            margin: 0 0 20px;
+            color: #777;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 6px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #ddd;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        input:focus {
+            border-color: #ef3938;
+            box-shadow: 0 0 0 3px rgba(239,57,56,.1);
+        }
+
+        .password-box {
+            position: relative;
+        }
+
+        .password-box input {
+            padding-right: 46px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .toggle-password:hover {
+            color: #ef3938;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+        }
+
+        .login-button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #ef3938;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .login-button:hover {
+            background: #d92f30;
+        }
+
+        .message {
+            margin: 12px 0;
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .message.error {
+            color: #c62828;
+            background: #fff0f0;
+            border-left: 4px solid #c62828;
+        }
+
+        .message.success {
+            color: #247a42;
+            background: #effaf2;
+            border-left: 4px solid #247a42;
+        }
+
+        .message.warning {
+            color: #b26a00;
+            background: #fff8e1;
+            border-left: 4px solid #ffa000;
+        }
+
+        .back-home {
+            display: block;
+            margin-top: 22px;
+            text-align: center;
+            color: #252641;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-home:hover {
+            color: #ef3938;
+        }
+
+        .mode-links {
+            display: flex;
+            gap: 10px;
+            margin: 12px 0 18px;
+        }
+
+        .mode-links a {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            color: #252641;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background .2s, color .2s;
+        }
+
+        .mode-links a.active {
+            background: #252641;
+            color: white;
+            border-color: #252641;
+        }
+
+        @media (max-width: 760px) {
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+
+            .login-banner {
+                padding: 28px;
+            }
+
+            .brand {
+                margin-bottom: 25px;
+            }
+
+            .login-banner h1 {
+                font-size: 28px;
+            }
+
+            .login-form {
+                padding: 30px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="login-container">
+
+    <section class="login-banner">
+        <div class="brand">
+            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+            <span>ATK<span>GO</span>.ID</span>
+        </div>
+
+        <h1>Selamat Datang di <em>ATKGO.ID</em></h1>
+
+        <p>
+            Temukan kebutuhan alat tulis dan perlengkapan kantor
+            dengan pengalaman belanja yang praktis, cepat,
+            dan terpercaya.
+        </p>
+
+        <div class="banner-info">
+            <strong>Belanja Mudah &amp; Aman</strong><br>
+            Masuk ke akun Anda untuk melihat status pesanan,
+            mengelola keranjang, dan melakukan transaksi.
+        </div>
+    </section>
+
+    <section class="login-form">
+
+        <div class="form-icon">
+            {% if mode == 'register' %}✦{% else %}✉{% endif %}
+        </div>
+
+        <h2>{% if mode == 'register' %}Daftar Akun Baru{% else %}Masuk ke Akun{% endif %}</h2>
+
+        <p class="subtitle">
+            {% if mode == 'register' %}
+                Lengkapi formulir berikut untuk mendaftar akun pelanggan ATKGO.ID.
+            {% else %}
+                Masukkan username atau email dan password Anda untuk melanjutkan.
+            {% endif %}
+        </p>
+
+        <!-- PILIHAN TAB LOGIN / DAFTAR -->
+        <div class="mode-links">
+            <a href="{% url 'login' %}?mode=login" class="{% if mode != 'register' %}active{% endif %}">
+                Login
+            </a>
+            <a href="{% url 'login' %}?mode=register" class="{% if mode == 'register' %}active{% endif %}">
+                Daftar
+            </a>
+        </div>
+
+        <!-- PESAN NOTIFIKASI DJANGO -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if mode == 'register' %}
+
+            <!-- FORM PENDAFTARAN PELANGGAN -->
+            <form method="POST" action="{% url 'login' %}?mode=register" id="registerForm">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="register">
+
+                <label for="full_name">Nama Lengkap</label>
+                <input
+                    type="text"
+                    name="full_name"
+                    id="full_name"
+                    value="{{ form_data.full_name|default:'' }}"
+                    placeholder="Contoh: Budi Santoso"
+                    autocomplete="name"
+                    required
+                >
+
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    value="{{ form_data.username|default:'' }}"
+                    placeholder="Contoh: budi_santoso"
+                    autocomplete="username"
+                    required
+                >
+
+                <label for="email">Alamat Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    value="{{ form_data.email|default:'' }}"
+                    placeholder="nama@email.com"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="telp">Nomor Telepon (WhatsApp)</label>
+                <input
+                    type="tel"
+                    name="telp"
+                    id="telp"
+                    value="{{ form_data.telp|default:'' }}"
+                    placeholder="Contoh: 081234567890"
+                    autocomplete="tel"
+                >
+
+                <label for="register_password">Password</label>
+                <div class="password-box">
+                    <input
+                        type="password"
+                        name="password"
+                        id="register_password"
+                        placeholder="Minimal 8 karakter"
+                        autocomplete="new-password"
+                        required
+                    >
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="register_password"
+                        aria-label="Tampilkan atau sembunyikan password"
+                        title="Tampilkan / sembunyikan password"
+                    >
+                        <!-- Ikon Mata Tertutup (Default saat tersembunyi) -->
+                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <!-- Ikon Mata Terbuka (Saat terlihat) -->
+                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <label for="confirm_password">Konfirmasi Password</label>
+                <div class="password-box">
+                    <input
+                        type="password"
+                        name="confirm_password"
+                        id="confirm_password"
+                        placeholder="Ulangi password di atas"
+                        autocomplete="new-password"
+                        required
+                    >
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="confirm_password"
+                        aria-label="Tampilkan atau sembunyikan konfirmasi password"
+                        title="Tampilkan / sembunyikan konfirmasi password"
+                    >
+                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="submit" class="login-button">
+                    Daftar Akun Baru &rarr;
+                </button>
+            </form>
+
+        {% else %}
+
+            <!-- FORM LOGIN PELANGGAN -->
+            <form method="POST" action="{% url 'login' %}?mode=login" id="loginForm">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="login">
+
+                {% if request.GET.next %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                {% endif %}
+
+                <label for="username_or_email">Email atau Username</label>
+                <input
+                    type="text"
+                    name="username_or_email"
+                    id="username_or_email"
+                    placeholder="Masukkan username atau email Anda"
+                    autocomplete="username"
+                    required
+                >
+
+                <label for="login_password">Password</label>
+                <div class="password-box">
+                    <input
+                        type="password"
+                        name="password"
+                        id="login_password"
+                        placeholder="Masukkan password Anda"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="login_password"
+                        aria-label="Tampilkan atau sembunyikan password"
+                        title="Tampilkan / sembunyikan password"
+                    >
+                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="submit" class="login-button">
+                    Masuk ke Akun &rarr;
+                </button>
+            </form>
+
+        {% endif %}
+
+        <a href="{% url 'landing' %}" class="back-home">
+            &larr; Kembali ke Beranda
+        </a>
+
+    </section>
+
+</main>
+
+<script>
+    // Fitur Show/Hide Password dengan ikon mata
+    document.querySelectorAll('.toggle-password').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.dataset.target;
+            const input = document.getElementById(targetId);
+            if (!input) return;
+
+            const eyeClosed = this.querySelector('.eye-closed');
+            const eyeOpen = this.querySelector('.eye-open');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (eyeClosed) eyeClosed.style.display = 'none';
+                if (eyeOpen) eyeOpen.style.display = 'block';
+                this.setAttribute('aria-label', 'Sembunyikan password');
+            } else {
+                input.type = 'password';
+                if (eyeClosed) eyeClosed.style.display = 'block';
+                if (eyeOpen) eyeOpen.style.display = 'none';
+                this.setAttribute('aria-label', 'Tampilkan password');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

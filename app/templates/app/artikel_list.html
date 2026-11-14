@@ -1,0 +1,316 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Artikel & Edukasi | ATKGO.ID</title>
+  <meta name="description" content="Kumpulan artikel, tips, dan wawasan seputar pengadaan alat tulis, strategi visual, dan manajemen operasional dari ATKGO.ID.">
+  <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+  <style>
+    .article-hero {
+      padding: 50px 0 30px;
+      text-align: center;
+      background: #f8f8f6;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .article-hero h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      margin: 10px 0;
+      color: #252641;
+    }
+
+    .article-hero p {
+      max-width: 650px;
+      margin: 0 auto 25px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .filter-pill {
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1px solid #dce2dc;
+      background: white;
+      color: #26352a;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all .2s;
+    }
+
+    .filter-pill:hover,
+    .filter-pill.active {
+      background: #304b35;
+      color: white;
+      border-color: #304b35;
+    }
+
+    .article-search {
+      max-width: 480px;
+      margin: 20px auto 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .article-search input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #dce2dc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .article-search button {
+      padding: 12px 20px;
+      background: #304b35;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      margin: 45px 0 70px;
+    }
+
+    .article-card {
+      background: white;
+      border: 1px solid #eaeaea;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .article-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .article-thumb {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: #eef2ec;
+    }
+
+    .article-thumb-placeholder {
+      width: 100%;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8efe7;
+      color: #304b35;
+      font-size: 28px;
+    }
+
+    .article-body {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .article-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #ef3938;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .article-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      color: #252641;
+      line-height: 1.4;
+    }
+
+    .article-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .article-title a:hover {
+      color: #ef3938;
+    }
+
+    .article-excerpt {
+      color: #666;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+      flex: 1;
+    }
+
+    .article-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid #f0f0f0;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .article-meta strong {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="{% if request.user.is_authenticated %}{% url 'beranda' %}{% else %}{% url 'landing' %}{% endif %}">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+        <span>ATK<span class="go">GO</span>.ID</span>
+      </a>
+
+      <nav id="mainNav" aria-label="Menu utama">
+        <a href="{% if request.user.is_authenticated %}{% url 'beranda' %}{% else %}{% url 'landing' %}{% endif %}">Beranda</a>
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'produk' %}">Layanan</a>
+          <a href="{% url 'kategori' %}">Kategori</a>
+        {% endif %}
+        <a href="{% url 'artikel_list' %}" class="active" aria-current="page">Artikel</a>
+        <a href="{% url 'tentang' %}">Tentang</a>
+        <a href="{% url 'kontak' %}">Kontak</a>
+      </nav>
+
+      {% if request.user.is_authenticated %}
+        <a class="nav-cta" href="{% url 'kontak' %}">Hubungi Kami →</a>
+        <a href="{% url 'profil' %}" class="profile-button" aria-label="Profil Akun Saya" title="Profil Saya">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </a>
+        <form method="POST" action="{% url 'logout' %}" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="logout-button" aria-label="Logout" title="Keluar dari akun">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+            </button>
+        </form>
+      {% else %}
+        <a class="nav-cta" href="{% url 'login' %}">Login / Register</a>
+      {% endif %}
+
+      <button class="menu" id="menuBtn" type="button" aria-label="Buka menu" aria-controls="mainNav" aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="article-hero">
+      <div class="wrap">
+        <span class="eyebrow">WAWASAN &amp; EDUKASI</span>
+        <h1>Artikel &amp; Inspirasi Bisnis</h1>
+        <p>Temukan panduan praktis, tips pengadaan alat tulis, dan strategi visual untuk memajukan brand dan operasional kantor Anda.</p>
+
+        <!-- PENCARIAN ARTIKEL -->
+        <form method="GET" action="{% url 'artikel_list' %}" class="article-search">
+          <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Cari judul artikel atau kata kunci...">
+          <button type="submit">Cari</button>
+        </form>
+
+        <!-- KATEGORI ARTIKEL -->
+        <div class="filter-bar">
+          <a href="{% url 'artikel_list' %}" class="filter-pill {% if not active_category %}active{% endif %}">Semua Kategori</a>
+          {% for cat in categories %}
+            <a href="{% url 'artikel_list' %}?kategori={{ cat.slug }}" class="filter-pill {% if active_category == cat.slug %}active{% endif %}">
+              {{ cat.nama }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <div class="article-grid">
+        {% for article in articles %}
+          <article class="article-card">
+            {% if article.gambar %}
+              <img src="{{ article.gambar.url }}" alt="{{ article.judul }}" class="article-thumb">
+            {% else %}
+              <div class="article-thumb-placeholder">✎</div>
+            {% endif %}
+
+            <div class="article-body">
+              <span class="article-tag">{{ article.kategori.nama|default:"Edukasi" }}</span>
+              <h2 class="article-title">
+                <a href="{% url 'artikel_detail' article.slug %}">{{ article.judul }}</a>
+              </h2>
+              <p class="article-excerpt">{{ article.ringkasan|truncatewords:24 }}</p>
+
+              <div class="article-meta">
+                <span>Oleh <strong>{{ article.nama_penulis|default:article.penulis.first_name|default:"Tim ATKGO" }}</strong></span>
+                <time datetime="{{ article.dibuat_pada|date:'Y-m-d' }}">{{ article.dibuat_pada|date:"d M Y" }}</time>
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: white; border-radius: 12px; border: 1px dashed #ccc;">
+            <h3>Belum Ada Artikel</h3>
+            <p style="color: #777;">Artikel edukasi sedang dipersiapkan oleh tim redaksi ATKGO.ID.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="brand">
+            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+            <span>ATK<span class="go">GO</span>.ID</span>
+          </div>
+          <p>Solusi terpadu pengadaan alat tulis, perlengkapan kantor, dan produksi visual kreatif brand Anda.</p>
+        </div>
+        <div>
+          <h4>Menu Cepat</h4>
+          <a href="{% url 'beranda' %}">Beranda</a>
+          <a href="{% url 'produk' %}">Layanan &amp; Katalog</a>
+          <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
+          <a href="{% url 'tentang' %}">Tentang Kami</a>
+        </div>
+        <div>
+          <h4>Hubungi Kami</h4>
+          <p>Email: hello@atkgo.id</p>
+          <p>WhatsApp: 0812-3456-7890</p>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; 2026 ATKGO.ID. Hak Cipta Dilindungi.
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Pelanggan &amp; Profil Usaha | ATKGO.ID</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f6f2; color: #26352a; }
+
+        :root {
+            --green: #304b35;
+            --green-light: #e8efe7;
+            --text: #26352a;
+            --muted: #849087;
+            --white: #ffffff;
+            --border: #e8ece7;
+        }
+
+        .sidebar {
+            width: 255px; height: 100vh; position: fixed; top: 0; left: 0;
+            background: var(--green); color: white; padding: 25px 18px;
+            display: flex; flex-direction: column; z-index: 10;
+        }
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            padding: 5px 8px 30px; border-bottom: 1px solid #ffffff25;
+        }
+        .brand img { width: 38px; height: 38px; border-radius: 50%; background: white; object-fit: contain; }
+        .brand h2 { font-size: 16px; font-weight: bold; }
+        .brand small { font-size: 10px; opacity: .7; letter-spacing: 1.5px; }
+
+        .menu-title { font-size: 10px; letter-spacing: 1.5px; color: #a3c2a9; margin: 25px 8px 10px; font-weight: bold; }
+        .menu a {
+            display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+            color: #d1e2d4; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: 500;
+            margin-bottom: 3px; transition: all .2s;
+        }
+        .menu a:hover, .menu a.active { background: #3e5e44; color: white; }
+
+        .main { margin-left: 255px; padding: 30px 40px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .topbar h1 { font-size: 24px; }
+        .topbar p { color: var(--muted); font-size: 13px; }
+
+        .card {
+            background: white; border-radius: 14px; border: 1px solid var(--border);
+            padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .table th, .table td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+        .table th { background: #f8faf7; color: var(--muted); font-weight: bold; }
+
+        .user-avatar {
+            width: 36px; height: 36px; border-radius: 50%; background: #e8efe7;
+            color: var(--green); display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo">
+        <div>
+            <h2>ATKGO.ID</h2>
+            <small>ADMIN WORKSPACE</small>
+        </div>
+    </div>
+
+    <p class="menu-title">MENU UTAMA</p>
+    <nav class="menu">
+        <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
+        <a href="{% url 'admin_products' %}">▣ &nbsp; Manajemen Produk</a>
+        <a href="{% url 'admin_orders' %}">▤ &nbsp; Pesanan Pelanggan</a>
+        <a href="{% url 'admin_articles' %}">✎ &nbsp; Artikel &amp; Edukasi</a>
+        <a href="{% url 'admin_content' %}">✦ &nbsp; Konten Website (CMS)</a>
+        <a href="{% url 'admin_customers' %}" class="active">♙ &nbsp; Pelanggan &amp; Usaha</a>
+        <a href="{% url 'admin_messages' %}">✉ &nbsp; Pesan Pelanggan</a>
+        <a href="{% url 'beranda' %}">◈ &nbsp; Buka Website</a>
+    </nav>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div>
+            <h1>Data Pelanggan &amp; Profil Usaha</h1>
+            <p>Daftar pelanggan terdaftar, profil bisnis, nomor kontak, dan alamat operasional.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">Foto</th>
+                    <th>Nama &amp; Username</th>
+                    <th>Kontak / Email</th>
+                    <th>Profil Usaha / Brand</th>
+                    <th>Alamat Pengiriman</th>
+                    <th>Terdaftar Sejak</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in customers %}
+                    <tr>
+                        <td>
+                            {% if c.anggota.photo %}
+                                <img src="{{ c.anggota.photo.url }}" alt="{{ c.username }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                            {% else %}
+                                <div class="user-avatar">{{ c.first_name|default:c.username|slice:":1"|upper }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ c.first_name|default:c.username }}</strong>
+                            <br><small style="color:#888;">@{{ c.username }}</small>
+                        </td>
+                        <td>
+                            <span style="font-weight:600;">{{ c.email }}</span>
+                            <br>
+                            {% if c.anggota.telp %}
+                                <a href="https://wa.me/{{ c.anggota.telp }}" target="_blank" style="color:var(--green); font-size:12px; font-weight:bold; text-decoration:none;">
+                                    ☎ {{ c.anggota.telp }}
+                                </a>
+                            {% else %}
+                                <small style="color:#aaa;">Belum ada telepon</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if c.anggota.nama_usaha %}
+                                <strong style="color:var(--green);">{{ c.anggota.nama_usaha }}</strong>
+                                <br><small style="color:#666;">Bidang: {{ c.anggota.jenis_usaha|default:"Umum" }}</small>
+                            {% else %}
+                                <span style="color:#888; font-style:italic;">Belum mengisi usaha</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if c.anggota.alamat %}
+                                <span style="font-size:12px;">{{ c.anggota.alamat|truncatechars:45 }}</span>
+                                {% if c.anggota.kabupaten_kota %}
+                                    <br><small style="color:#888;">{{ c.anggota.kabupaten_kota }}</small>
+                                {% endif %}
+                            {% else %}
+                                <small style="color:#aaa;">Belum ada alamat</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ c.date_joined|date:"d M Y" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #888; padding: 40px 15px;">
+                            Belum ada akun pelanggan yang terdaftar.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>

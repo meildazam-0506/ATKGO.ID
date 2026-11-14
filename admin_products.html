@@ -126,13 +126,15 @@
     <p class="menu-title">MENU UTAMA</p>
     <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
     <a href="{% url 'admin_products' %}" class="active">▣ &nbsp; Manajemen Produk</a>
-    <a href="{% url 'admin_dashboard' %}">♙ &nbsp; Pelanggan</a>
-    <a href="{% url 'admin_dashboard' %}">▤ &nbsp; Pesanan</a>
-    <a href="{% url 'admin_dashboard' %}">✉ &nbsp; Pesan Pelanggan</a>
+    <a href="{% url 'admin_orders' %}">▤ &nbsp; Pesanan Pelanggan</a>
+    <a href="{% url 'admin_articles' %}">✎ &nbsp; Artikel &amp; Edukasi</a>
+    <a href="{% url 'admin_content' %}">✦ &nbsp; Konten Website (CMS)</a>
+    <a href="{% url 'admin_customers' %}">♙ &nbsp; Pelanggan &amp; Usaha</a>
+    <a href="{% url 'admin_messages' %}">✉ &nbsp; Pesan Pelanggan</a>
 
     <p class="menu-title">MANAJEMEN TIM</p>
     <a href="{% url 'admin_register' %}">＋ &nbsp; Tambah Admin</a>
-    <a href="{% url 'home' %}">↗ &nbsp; Lihat Website</a>
+    <a href="{% url 'beranda' %}">↗ &nbsp; Lihat Website</a>
 
     <form method="POST" action="{% url 'admin_logout' %}">
         {% csrf_token %}
