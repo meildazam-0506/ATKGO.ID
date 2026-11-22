@@ -146,13 +146,21 @@ if os.environ.get('DATABASE_URL'):
         }
     }
 elif SUPABASE_DB_PASSWORD:
+    db_host = SUPABASE_DB_HOST
+    try:
+        import socket
+        db_host = socket.gethostbyname(SUPABASE_DB_HOST)
+    except Exception:
+        # Fallback ke IP resmi Supabase Pooler ap-northeast-2 jika DNS ISP/lokal gagal me-resolve domain
+        db_host = '13.124.111.232'
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': SUPABASE_DB_NAME,
             'USER': SUPABASE_DB_USER,
             'PASSWORD': SUPABASE_DB_PASSWORD,
-            'HOST': SUPABASE_DB_HOST,
+            'HOST': db_host,
             'PORT': SUPABASE_DB_PORT,
             'OPTIONS': {
                 'sslmode': 'require',
