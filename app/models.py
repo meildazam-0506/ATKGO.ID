@@ -271,6 +271,8 @@ class Article(models.Model):
 class Order(models.Model):
     """Pesanan yang dibuat oleh pelanggan."""
     STATUS_CHOICES = [
+        ('Menunggu Pembayaran', 'Menunggu Pembayaran'),
+        ('Dibayar', 'Dibayar'),
         ('Menunggu Konfirmasi', 'Menunggu Konfirmasi'),
         ('Diproses', 'Diproses'),
         ('Selesai', 'Selesai'),
@@ -287,6 +289,7 @@ class Order(models.Model):
     total_harga = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     metode_pembayaran = models.CharField(max_length=100, default='Konsultasi Pembayaran')
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Menunggu Konfirmasi')
+    snap_token = models.CharField(max_length=255, blank=True, null=True)
     catatan = models.TextField(blank=True, null=True)
     dibuat_pada = models.DateTimeField(auto_now_add=True)
 

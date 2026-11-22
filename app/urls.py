@@ -18,6 +18,8 @@ urlpatterns = [
     path('kontak/', views.kontak, name='kontak'),
     path('keranjang/', views.keranjang, name='keranjang'),
     path('pembayaran/', views.pembayaran, name='pembayaran'),
+    path('api/midtrans/notification/', views.midtrans_notification, name='midtrans_notification'),
+    path('midtrans/callback/', views.midtrans_notification, name='midtrans_callback'),
 
     # Halaman Profil Pengguna & Usaha
     path('profil/', views.profil_user, name='profil'),

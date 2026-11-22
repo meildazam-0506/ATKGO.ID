@@ -273,3 +273,21 @@ if os.environ.get('EMAIL_HOST_USER'):
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     DEFAULT_FROM_EMAIL = 'no-reply@atkgo.id'
+
+
+# =====================================
+# KONFIGURASI MIDTRANS PAYMENT GATEWAY
+# =====================================
+MIDTRANS_SERVER_KEY = os.environ.get('MIDTRANS_SERVER_KEY', '')
+MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY', '')
+MIDTRANS_IS_PRODUCTION = os.environ.get('MIDTRANS_IS_PRODUCTION', 'False').lower() in ('true', '1')
+MIDTRANS_SNAP_URL = (
+    'https://app.midtrans.com/snap/v1/transactions'
+    if MIDTRANS_IS_PRODUCTION
+    else 'https://app.sandbox.midtrans.com/snap/v1/transactions'
+)
+MIDTRANS_SNAP_JS = (
+    'https://app.midtrans.com/snap/snap.js'
+    if MIDTRANS_IS_PRODUCTION
+    else 'https://app.sandbox.midtrans.com/snap/snap.js'
+)

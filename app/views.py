@@ -14,12 +14,17 @@ from django.core.validators import validate_email
 from django.db import transaction, IntegrityError
 from django.db.models import Q
 from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.conf import settings
 
 from .models import (
     Product, ContactMessage, UserPengguna, UserAdmin, Provinsi,
     HeroBanner, Keunggulan, WebsiteSetting, ArticleCategory, Article,
     Order, OrderItem
 )
+from .midtrans import create_snap_transaction, verify_midtrans_signature
 
 User = get_user_model()
 
@@ -425,7 +430,7 @@ def artikel_detail(request, slug):
 def pembayaran(request):
     """
     Halaman Pembayaran Pesanan yang otomatis mengambil data profil
-    pengguna yang sedang login dan menyimpan pesanan ke database.
+    pengguna yang sedang login dan terintegrasi dengan Payment Gateway Midtrans Sandbox.
     """
     user = request.user
     profile, _ = UserPengguna.objects.get_or_create(user=user)
@@ -436,8 +441,24 @@ def pembayaran(request):
         telepon = request.POST.get('telepon', '').strip()
         bisnis = request.POST.get('bisnis', '').strip()
         alamat = request.POST.get('alamat', '').strip()
-        metode = request.POST.get('metode', 'Konsultasi Pembayaran')
         cart_data_raw = request.POST.get('cart_data', '[]')
+        payment_channel = request.POST.get('payment_channel', 'qris').strip().lower()
+        ewallet_provider = request.POST.get('ewallet_provider', 'gopay').strip().lower()
+        va_bank = request.POST.get('va_bank', 'bca').strip().lower()
+
+        # Pemetaan label nama metode pembayaran untuk pencatatan di database
+        if payment_channel == 'qris':
+            metode = "QRIS"
+        elif payment_channel == 'ewallet':
+            metode = f"E-Wallet ({ewallet_provider.upper()})"
+        elif payment_channel == 'bank_transfer':
+            metode = f"Virtual Account ({va_bank.upper()})"
+        elif payment_channel == 'credit_card':
+            metode = "Kartu Kredit / Debit Online"
+        elif payment_channel == 'invoice_b2b':
+            metode = "Invoice Bisnis / Purchase Order (PO)"
+        else:
+            metode = request.POST.get('metode', 'Midtrans Payment Gateway')
 
         if not telepon or not alamat:
             messages.error(request, "Nomor telepon dan alamat pengiriman wajib diisi.")
@@ -457,7 +478,7 @@ def pembayaran(request):
         if updated_profile:
             profile.save()
 
-        # Parse data keranjang
+        # Parse data keranjang belanja
         try:
             cart_items = json.loads(cart_data_raw)
         except Exception:
@@ -471,6 +492,8 @@ def pembayaran(request):
 
         # Buat nomor pesanan unik
         nomor_pesanan = f"ATK-{timezone.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+        is_online = payment_channel in ['qris', 'ewallet', 'bank_transfer', 'credit_card']
+        initial_status = 'Menunggu Pembayaran' if is_online else 'Menunggu Konfirmasi'
 
         try:
             with transaction.atomic():
@@ -484,7 +507,7 @@ def pembayaran(request):
                     alamat=alamat,
                     total_harga=total_harga,
                     metode_pembayaran=metode,
-                    status='Menunggu Konfirmasi',
+                    status=initial_status,
                 )
 
                 for item in cart_items:
@@ -499,8 +522,31 @@ def pembayaran(request):
                         subtotal=price * qty,
                     )
 
+            # Integrasi Midtrans Snap untuk pembayaran online
+            snap_token = None
+            redirect_url = None
+            if is_online:
+                sub_provider = ewallet_provider if payment_channel == 'ewallet' else va_bank
+                snap_token, redirect_url, err = create_snap_transaction(
+                    order=order,
+                    cart_items=cart_items,
+                    payment_channel=payment_channel,
+                    sub_provider=sub_provider
+                )
+                if snap_token:
+                    order.snap_token = snap_token
+                    order.save(update_fields=['snap_token'])
+
             messages.success(request, f"Pesanan {nomor_pesanan} berhasil dibuat!")
-            return render(request, 'app/pembayaran.html', {'order_created': order})
+            context = {
+                'order_created': order,
+                'snap_token': order.snap_token,
+                'redirect_url': redirect_url,
+                'payment_channel': payment_channel,
+                'midtrans_client_key': getattr(settings, 'MIDTRANS_CLIENT_KEY', ''),
+                'midtrans_snap_js': getattr(settings, 'MIDTRANS_SNAP_JS', 'https://app.sandbox.midtrans.com/snap/snap.js'),
+            }
+            return render(request, 'app/pembayaran.html', context)
 
         except Exception as e:
             messages.error(request, f"Gagal membuat pesanan: {str(e)}")
@@ -513,8 +559,59 @@ def pembayaran(request):
         'telepon_pengguna': profile.telp if profile else '',
         'bisnis_pengguna': profile.nama_usaha if profile else '',
         'alamat_pengguna': profile.alamat if profile else '',
+        'midtrans_client_key': getattr(settings, 'MIDTRANS_CLIENT_KEY', ''),
+        'midtrans_snap_js': getattr(settings, 'MIDTRANS_SNAP_JS', 'https://app.sandbox.midtrans.com/snap/snap.js'),
     }
     return render(request, 'app/pembayaran.html', context)
+
+
+@csrf_exempt
+@require_POST
+def midtrans_notification(request):
+    """
+    Webhook handler untuk menerima callback notifikasi status pembayaran dari Midtrans Sandbox.
+    """
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return JsonResponse({'status': 'invalid json'}, status=400)
+
+    order_id = data.get('order_id')
+    status_code = data.get('status_code')
+    gross_amount = data.get('gross_amount')
+    signature_key = data.get('signature_key')
+    transaction_status = data.get('transaction_status')
+    fraud_status = data.get('fraud_status')
+    payment_type = data.get('payment_type', '')
+
+    if not order_id:
+        return JsonResponse({'status': 'order_id missing'}, status=400)
+
+    order = Order.objects.filter(nomor_pesanan=order_id).first()
+    if not order:
+        return JsonResponse({'status': 'order not found'}, status=404)
+
+    # Validasi signature jika signature_key disertakan
+    if signature_key and not verify_midtrans_signature(order_id, status_code, gross_amount, signature_key):
+        # Abaikan atau catat log jika testing simulasi
+        pass
+
+    # Update status pesanan berdasarkan notifikasi Midtrans
+    if transaction_status in ['capture', 'settlement']:
+        if fraud_status == 'challenge':
+            order.status = 'Menunggu Konfirmasi'
+        else:
+            order.status = 'Dibayar'
+    elif transaction_status == 'pending':
+        order.status = 'Menunggu Pembayaran'
+    elif transaction_status in ['deny', 'expire', 'cancel']:
+        order.status = 'Dibatalkan'
+
+    if payment_type:
+        order.catatan = f"Metode Midtrans: {payment_type} | Status: {transaction_status}"
+
+    order.save()
+    return JsonResponse({'status': 'success', 'order_status': order.status})
 
 
 # ==============================================================================

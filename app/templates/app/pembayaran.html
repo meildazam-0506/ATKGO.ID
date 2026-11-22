@@ -8,6 +8,9 @@
     <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
+    <!-- Script Midtrans Snap Sandbox -->
+    <script src="{{ midtrans_snap_js|default:'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ midtrans_client_key }}"></script>
+
     <style>
         * { box-sizing: border-box; }
         body {
@@ -378,6 +381,48 @@
             border-color: #d8dfe6;
         }
 
+        /* Dropdown Pemilihan Sub-Metode (E-Wallet & Bank VA) */
+        .method-subselect {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed #dce2dc;
+            animation: fadeInSubselect 0.22s ease-in-out;
+        }
+
+        @keyframes fadeInSubselect {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .method-subselect label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .method-subselect select {
+            width: 100%;
+            max-width: 340px;
+            padding: 9px 14px;
+            border: 1.5px solid #304b35;
+            border-radius: 8px;
+            font-size: 13.5px;
+            background-color: #fff;
+            color: #252641;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(48,75,53,0.06);
+            transition: border-color .2s;
+        }
+
+        .method-subselect select:focus {
+            border-color: #304b35;
+            box-shadow: 0 0 0 3px rgba(48,75,53,0.15);
+        }
+
         @media (max-width: 640px) {
             .payment-card-header {
                 flex-direction: column;
@@ -580,11 +625,26 @@
                     <div class="summary-row summary-total"><span>Total Pembayaran:</span> <span>Rp{{ order_created.total_harga|floatformat:0 }}</span></div>
                 </div>
 
+                {% if snap_token %}
+                    <!-- BOX PEMBAYARAN MIDTRANS SNAP SANDBOX -->
+                    <div style="background: #f3f7f3; border: 1.5px solid #c3dbc3; border-radius: 12px; padding: 22px 20px; margin: 20px 0; text-align: center;">
+                        <p style="margin: 0 0 8px; font-weight: 700; color: #252641; font-size: 15.5px;">
+                            Selesaikan Pembayaran Anda Sekarang
+                        </p>
+                        <p style="margin: 0 0 16px; font-size: 13px; color: #555;">
+                            Klik tombol di bawah untuk membuka jendela pembayaran resmi Midtrans Sandbox.
+                        </p>
+                        <button type="button" id="btn-pay-midtrans" class="btn-confirm" style="width: auto; min-width: 250px; margin: 0 auto; padding: 14px 28px; background: #304b35; font-size: 15px; box-shadow: 0 4px 14px rgba(48,75,53,0.25);">
+                            💳 Bayar Sekarang via Midtrans
+                        </button>
+                    </div>
+                {% endif %}
+
                 <p style="font-size: 13px; color: #888; line-height: 1.6;">
                     Tim ATKGO.ID akan segera menghubungi WhatsApp <strong>{{ order_created.telepon_pemesan }}</strong> Anda untuk konfirmasi invoice dan pengiriman layanan.
                 </p>
 
-                <div style="display: flex; gap: 12px; justify-content: center; margin-top: 25px;">
+                <div style="display: flex; gap: 12px; justify-content: center; margin-top: 25px; flex-wrap: wrap;">
                     <a href="{% url 'beranda' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; text-decoration: none;">Kembali ke Beranda</a>
                     <a href="{% url 'produk' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #edf1ec; color: #304b35; text-decoration: none;">Lihat Layanan Lain</a>
                 </div>
@@ -593,6 +653,43 @@
             <script>
                 // Kosongkan keranjang di localStorage setelah pesanan sukses dibuat
                 try { localStorage.removeItem('atkgo_cart'); } catch(e){}
+
+                {% if snap_token %}
+                (function() {
+                    var token = "{{ snap_token }}";
+                    var btnPay = document.getElementById('btn-pay-midtrans');
+
+                    function openSnapModal() {
+                        if (window.snap && token) {
+                            window.snap.pay(token, {
+                                onSuccess: function(result) {
+                                    alert('Pembayaran Berhasil Diverifikasi! Terima kasih atas pesanan Anda.');
+                                    window.location.reload();
+                                },
+                                onPending: function(result) {
+                                    alert('Menunggu Pembayaran. Silakan selesaikan tagihan Anda sesuai panduan.');
+                                    window.location.reload();
+                                },
+                                onError: function(result) {
+                                    alert('Pembayaran gagal atau dibatalkan.');
+                                },
+                                onClose: function() {
+                                    console.log('Customer menutup jendela pembayaran Midtrans.');
+                                }
+                            });
+                        } else if (!window.snap) {
+                            console.warn('Midtrans Snap SDK sedang dimuat...');
+                        }
+                    }
+
+                    if (btnPay) {
+                        btnPay.addEventListener('click', openSnapModal);
+                    }
+
+                    // Buka otomatis setelah jeda singkat
+                    setTimeout(openSnapModal, 700);
+                })();
+                {% endif %}
             </script>
 
         {% else %}
@@ -693,11 +790,11 @@
                                     </span>
                                 </div>
 
-                                <!-- OPSI 1: QRIS -->
+                                <!-- OPSI 1: QRIS (Hanya QRIS, tanpa badge E-Wallet duplikat) -->
                                 <label class="payment-method-card selected" for="pay-qris" data-payment-type="midtrans" data-submethod="qris">
                                     <div class="payment-card-header">
                                         <div class="payment-radio-wrap">
-                                            <input type="radio" id="pay-qris" name="metode" value="Online Payment Gateway - QRIS (GoPay, ShopeePay, DANA, OVO, BCA)" checked>
+                                            <input type="radio" id="pay-qris" name="metode" value="QRIS" checked>
                                             <div class="payment-info">
                                                 <div class="payment-name-row">
                                                     <strong>QRIS (Semua E-Wallet &amp; Mobile Banking)</strong>
@@ -708,20 +805,15 @@
                                         </div>
                                         <div class="payment-badges-row">
                                             <span class="brand-pill qris-pill">QRIS</span>
-                                            <span class="brand-pill">GoPay</span>
-                                            <span class="brand-pill">ShopeePay</span>
-                                            <span class="brand-pill">DANA</span>
-                                            <span class="brand-pill">OVO</span>
-                                            <span class="brand-pill">BCA Mobile</span>
                                         </div>
                                     </div>
                                 </label>
 
-                                <!-- OPSI 2: VIRTUAL ACCOUNT -->
+                                <!-- OPSI 2: VIRTUAL ACCOUNT (Dengan Dropdown Pilihan Bank) -->
                                 <label class="payment-method-card" for="pay-va" data-payment-type="midtrans" data-submethod="bank_transfer">
                                     <div class="payment-card-header">
                                         <div class="payment-radio-wrap">
-                                            <input type="radio" id="pay-va" name="metode" value="Online Payment Gateway - Virtual Account (BCA, Mandiri, BNI, BRI, Permata)">
+                                            <input type="radio" id="pay-va" name="metode" value="Virtual Account">
                                             <div class="payment-info">
                                                 <div class="payment-name-row">
                                                     <strong>Virtual Account (Transfer Bank Otomatis)</strong>
@@ -738,13 +830,23 @@
                                             <span class="brand-pill">Permata</span>
                                         </div>
                                     </div>
+                                    <div id="va-subselect" class="method-subselect" style="display: none;">
+                                        <label for="va-bank">Pilih Bank Virtual Account:</label>
+                                        <select id="va-bank" name="va_bank">
+                                            <option value="bca">BCA Virtual Account</option>
+                                            <option value="mandiri">Mandiri Bill Payment</option>
+                                            <option value="bni">BNI Virtual Account</option>
+                                            <option value="bri">BRI Virtual Account (BRIVA)</option>
+                                            <option value="permata">Permata Virtual Account</option>
+                                        </select>
+                                    </div>
                                 </label>
 
-                                <!-- OPSI 3: E-WALLET -->
+                                <!-- OPSI 3: E-WALLET (Dengan Dropdown Macam-Macam E-Wallet) -->
                                 <label class="payment-method-card" for="pay-ewallet" data-payment-type="midtrans" data-submethod="ewallet">
                                     <div class="payment-card-header">
                                         <div class="payment-radio-wrap">
-                                            <input type="radio" id="pay-ewallet" name="metode" value="Online Payment Gateway - E-Wallet (GoPay, OVO, DANA, ShopeePay)">
+                                            <input type="radio" id="pay-ewallet" name="metode" value="E-Wallet">
                                             <div class="payment-info">
                                                 <div class="payment-name-row">
                                                     <strong>E-Wallet Instan</strong>
@@ -754,10 +856,21 @@
                                         </div>
                                         <div class="payment-badges-row">
                                             <span class="brand-pill">GoPay</span>
-                                            <span class="brand-pill">OVO</span>
-                                            <span class="brand-pill">DANA</span>
                                             <span class="brand-pill">ShopeePay</span>
+                                            <span class="brand-pill">DANA</span>
+                                            <span class="brand-pill">OVO</span>
+                                            <span class="brand-pill">AstraPay</span>
                                         </div>
+                                    </div>
+                                    <div id="ewallet-subselect" class="method-subselect" style="display: none;">
+                                        <label for="ewallet-provider">Pilih Jenis Dompet Digital (E-Wallet):</label>
+                                        <select id="ewallet-provider" name="ewallet_provider">
+                                            <option value="gopay">GoPay / GoPay Later</option>
+                                            <option value="shopeepay">ShopeePay</option>
+                                            <option value="dana">DANA</option>
+                                            <option value="ovo">OVO</option>
+                                            <option value="astrapay">AstraPay</option>
+                                        </select>
                                     </div>
                                 </label>
 
@@ -992,27 +1105,45 @@
     if (totalElement) totalElement.textContent = rupiah(total);
 
     // ========================================================
-    // INTERAKSI UI METODE PEMBAYARAN & KESIAPAN MIDTRANS SNAP
+    // INTERAKSI UI METODE PEMBAYARAN & INTEGRASI MIDTRANS SNAP
     // ========================================================
     const paymentCards = document.querySelectorAll('.payment-method-card');
     const paymentChannelInput = document.getElementById('payment-channel');
     const guideTitle = document.getElementById('payment-guide-title');
     const guideDesc = document.getElementById('payment-guide-desc');
+    const vaSubselect = document.getElementById('va-subselect');
+    const ewalletSubselect = document.getElementById('ewallet-subselect');
+
+    // Mencegah klik pada elemen dropdown di dalam label memicu event berulang
+    document.querySelectorAll('.method-subselect select').forEach(function (sel) {
+        sel.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+    });
+
+    function toggleSubmethodDropdowns(submethod) {
+        if (vaSubselect) {
+            vaSubselect.style.display = (submethod === 'bank_transfer') ? 'block' : 'none';
+        }
+        if (ewalletSubselect) {
+            ewalletSubselect.style.display = (submethod === 'ewallet') ? 'block' : 'none';
+        }
+    }
 
     const paymentGuides = {
         'qris': {
-            title: 'Pembayaran QRIS (GoPay, ShopeePay, DANA, OVO, BCA Mobile)',
-            desc: 'Kode QRIS resmi akan digenerate otomatis. Buka aplikasi e-wallet atau mobile banking Anda dan pindai untuk menyelesaikan pembayaran instan tanpa biaya admin.',
-            btnText: 'Konfirmasi & Lanjutkan Pembayaran'
+            title: 'Pembayaran QRIS Instan',
+            desc: 'Kode QRIS resmi akan digenerate otomatis. Buka aplikasi perbankan atau e-wallet apa pun di smartphone Anda dan pindai untuk menyelesaikan pembayaran instan tanpa biaya admin.',
+            btnText: 'Konfirmasi & Bayar via QRIS'
         },
         'bank_transfer': {
             title: 'Virtual Account Bank (BCA, Mandiri, BNI, BRI, Permata)',
-            desc: 'Nomor Virtual Account unik akan diterbitkan untuk pembayaran melalui ATM, m-Banking, atau Internet Banking dengan konfirmasi otomatis 24 jam.',
-            btnText: 'Konfirmasi & Dapatkan Virtual Account'
+            desc: 'Nomor Virtual Account unik akan diterbitkan untuk transfer melalui ATM, m-Banking, atau Internet Banking dengan verifikasi otomatis 24 jam.',
+            btnText: 'Konfirmasi & Bayar via Virtual Account'
         },
         'ewallet': {
             title: 'Pembayaran E-Wallet Instan',
-            desc: 'Pembayaran akan langsung terhubung ke aplikasi dompet digital pilihan Anda (GoPay, ShopeePay, DANA, OVO) untuk otorisasi instan di smartphone.',
+            desc: 'Pembayaran akan langsung terhubung ke aplikasi dompet digital pilihan Anda (GoPay, ShopeePay, DANA, OVO, AstraPay) untuk otorisasi instan di smartphone.',
             btnText: 'Konfirmasi & Bayar via E-Wallet'
         },
         'credit_card': {
@@ -1042,6 +1173,8 @@
                 paymentChannelInput.value = submethod;
             }
 
+            toggleSubmethodDropdowns(submethod);
+
             if (paymentGuides[submethod]) {
                 if (guideTitle) guideTitle.textContent = paymentGuides[submethod].title;
                 if (guideDesc) guideDesc.textContent = paymentGuides[submethod].desc;
@@ -1049,6 +1182,9 @@
             }
         });
     });
+
+    // Inisialisasi tampilan awal
+    toggleSubmethodDropdowns('qris');
 
     // ========================================================
     // ARSITEKTUR KESIAPAN INTEGRASI MIDTRANS SNAP:

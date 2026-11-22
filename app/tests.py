@@ -419,4 +419,91 @@ class AuthenticationAndSecurityTests(TestCase):
             res = self.client.get(u)
             self.assertEqual(res.status_code, 200, f"URL {u} menghasilkan status {res.status_code}")
 
+    def test_22_midtrans_qris_checkout_flow(self):
+        """22. Checkout dengan metode QRIS membuat Order dengan status Menunggu Pembayaran dan snap_token."""
+        from app.models import Order
+        self.client.force_login(self.customer)
+        import json
+        cart_items_json = json.dumps([
+            {'name': 'Stempel Trodat Otomatis', 'price': 75000, 'qty': 1}
+        ])
+        res = self.client.post(
+            reverse('pembayaran'),
+            {
+                'nama': 'Budi Santoso',
+                'email': 'budi@example.com',
+                'telepon': '081234567890',
+                'alamat': 'Jl. Jenderal Sudirman No. 10',
+                'payment_channel': 'qris',
+                'cart_data': cart_items_json,
+            }
+        )
+        self.assertEqual(res.status_code, 200)
+        order = Order.objects.filter(user=self.customer, metode_pembayaran='QRIS').first()
+        self.assertIsNotNone(order)
+        self.assertEqual(order.status, 'Menunggu Pembayaran')
+        self.assertIsNotNone(order.snap_token)
+        self.assertIn('snap_token', res.context)
+
+    def test_23_midtrans_ewallet_checkout_flow(self):
+        """23. Checkout dengan metode E-Wallet (GoPay) memproses sub_provider dengan benar."""
+        from app.models import Order
+        self.client.force_login(self.customer)
+        import json
+        cart_items_json = json.dumps([
+            {'name': 'Paket Kop Surat + Amplop', 'price': 150000, 'qty': 2}
+        ])
+        res = self.client.post(
+            reverse('pembayaran'),
+            {
+                'nama': 'Budi Santoso',
+                'email': 'budi@example.com',
+                'telepon': '081234567890',
+                'alamat': 'Jl. Asia Afrika No. 8',
+                'payment_channel': 'ewallet',
+                'ewallet_provider': 'gopay',
+                'cart_data': cart_items_json,
+            }
+        )
+        self.assertEqual(res.status_code, 200)
+        order = Order.objects.filter(user=self.customer, metode_pembayaran='E-Wallet (GOPAY)').first()
+        self.assertIsNotNone(order)
+        self.assertEqual(order.status, 'Menunggu Pembayaran')
+        self.assertEqual(order.total_harga, 300000)
+
+    def test_24_midtrans_webhook_notification_settlement(self):
+        """24. Webhook callback Midtrans berhasil mengubah status Order menjadi Dibayar."""
+        from app.models import Order
+        import json
+        # Buat order uji
+        order = Order.objects.create(
+            user=self.customer,
+            nomor_pesanan='ATK-TEST-WEBHOOK-01',
+            nama_pemesan='Budi Santoso',
+            email_pemesan='budi@example.com',
+            telepon_pemesan='081234567890',
+            alamat='Jl. MH Thamrin',
+            total_harga=100000,
+            metode_pembayaran='QRIS',
+            status='Menunggu Pembayaran',
+        )
+
+        payload = {
+            'order_id': order.nomor_pesanan,
+            'status_code': '200',
+            'gross_amount': '100000.00',
+            'transaction_status': 'settlement',
+            'fraud_status': 'accept',
+            'payment_type': 'qris',
+        }
+        res = self.client.post(
+            reverse('midtrans_notification'),
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 200)
+        order.refresh_from_db()
+        self.assertEqual(order.status, 'Dibayar')
+
+
 
