@@ -1247,7 +1247,7 @@
     }
 
     let total = 0;
-    daftar.replaceChildren();
+    daftar.innerHTML = '';
 
     if (keranjang.length === 0) {
         keranjang.push({
@@ -1395,7 +1395,7 @@
     // --------------------------------------------------------
     // Langkah untuk aktivasi Midtrans Snap nantinya:
     // 1. Muat script Snap di head:
-    //    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="CLIENT_KEY"></script>
+    //    Tag script Snap: https://app.sandbox.midtrans.com/snap/snap.js dengan data-client-key
     // 2. Pada saat checkout online (data-payment-type="midtrans"):
     //    - Kirim request POST ke endpoint Django (misal /api/midtrans/token/)
     //    - Dapatkan `snap_token`
