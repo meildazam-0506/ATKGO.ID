@@ -18,6 +18,30 @@
         }
     }
 
+    const KNOWN_PRICES = {
+        'kreatif & dokumentasi': 250000,
+        'manajemen social media': 150000,
+        'paket layanan agensi': 112000,
+        'produksi visual & desain': 200000,
+        'strategi konten & brand': 1000000
+    };
+
+    function parsePrice(raw, name) {
+        if (typeof raw === 'number' && raw > 0) return raw;
+        let s = String(raw || '').trim().replace(/[^0-9.,]/g, '');
+        if (s.includes('.') && s.includes(',')) {
+            s = s.replace(/\./g, '').replace(',', '.');
+        } else if (s.includes(',')) {
+            s = s.replace(',', '.');
+        }
+        let n = parseFloat(s);
+        if (isNaN(n) || n <= 0) {
+            const k = String(name || '').toLowerCase().trim();
+            n = KNOWN_PRICES[k] || 0;
+        }
+        return Math.round(n);
+    }
+
     function cartCount() {
         const el = document.getElementById('cart-count');
         if (el) {
@@ -37,12 +61,15 @@
 
             const cart = cartRead();
             const name = button.dataset.name || 'Layanan';
-            const price = Number(button.dataset.price) || 0;
+            const price = parsePrice(button.dataset.price, name);
             const qty = Math.max(1, Number(button.dataset.qty) || 1);
 
             const existing = cart.find(item => item.name === name);
             if (existing) {
                 existing.qty = (Number(existing.qty) || 0) + qty;
+                if (!existing.price || Number(existing.price) <= 0) {
+                    existing.price = price;
+                }
             } else {
                 cart.push({
                     name: name,

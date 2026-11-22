@@ -173,8 +173,9 @@
                         <button
                             type="button"
                             class="add"
+                            data-id="{{ product.id }}"
                             data-name="{{ product.nama }}"
-                            data-price="{{ product.harga }}"
+                            data-price="{{ product.harga|floatformat:0 }}"
                             data-qty="1">
                             Tambah Layanan
                         </button>

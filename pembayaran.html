@@ -790,17 +790,17 @@
                                     </span>
                                 </div>
 
-                                <!-- OPSI 1: QRIS (Hanya QRIS, tanpa badge E-Wallet duplikat) -->
+                                <!-- OPSI 1: QRIS (Murni QRIS tanpa teks/badge e-wallet) -->
                                 <label class="payment-method-card selected" for="pay-qris" data-payment-type="midtrans" data-submethod="qris">
                                     <div class="payment-card-header">
                                         <div class="payment-radio-wrap">
                                             <input type="radio" id="pay-qris" name="metode" value="QRIS" checked>
                                             <div class="payment-info">
                                                 <div class="payment-name-row">
-                                                    <strong>QRIS (Semua E-Wallet &amp; Mobile Banking)</strong>
+                                                    <strong>QRIS</strong>
                                                     <span class="badge-feature">Paling Populer</span>
                                                 </div>
-                                                <small>Bayar instan dengan scan kode QRIS melalui aplikasi perbankan atau e-wallet apa pun.</small>
+                                                <small>Bayar instan dengan scan kode QRIS melalui aplikasi perbankan atau mobile banking apa pun.</small>
                                             </div>
                                         </div>
                                         <div class="payment-badges-row">
@@ -830,19 +830,23 @@
                                             <span class="brand-pill">Permata</span>
                                         </div>
                                     </div>
-                                    <div id="va-subselect" class="method-subselect" style="display: none;">
-                                        <label for="va-bank">Pilih Bank Virtual Account:</label>
-                                        <select id="va-bank" name="va_bank">
-                                            <option value="bca">BCA Virtual Account</option>
-                                            <option value="mandiri">Mandiri Bill Payment</option>
-                                            <option value="bni">BNI Virtual Account</option>
-                                            <option value="bri">BRI Virtual Account (BRIVA)</option>
-                                            <option value="permata">Permata Virtual Account</option>
-                                        </select>
+                                    <div id="va-subselect" class="method-subselect">
+                                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                                            <label for="va-bank" style="font-size: 12.5px; font-weight: 700; color: #252641; margin: 0;">
+                                                Pilihan Bank Virtual Account:
+                                            </label>
+                                            <select id="va-bank" name="va_bank" class="custom-select" style="min-width: 220px; padding: 7px 12px; border: 1.5px solid #304b35; border-radius: 8px; font-size: 13px; background: #fff; color: #252641; font-weight: 600; cursor: pointer; outline: none;">
+                                                <option value="bca">BCA Virtual Account</option>
+                                                <option value="mandiri">Mandiri Bill Payment</option>
+                                                <option value="bni">BNI Virtual Account</option>
+                                                <option value="bri">BRI Virtual Account (BRIVA)</option>
+                                                <option value="permata">Permata Virtual Account</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </label>
 
-                                <!-- OPSI 3: E-WALLET (Dengan Dropdown Macam-Macam E-Wallet) -->
+                                <!-- OPSI 3: E-WALLET (Dengan Dropdown Pilihan E-Wallet) -->
                                 <label class="payment-method-card" for="pay-ewallet" data-payment-type="midtrans" data-submethod="ewallet">
                                     <div class="payment-card-header">
                                         <div class="payment-radio-wrap">
@@ -862,15 +866,19 @@
                                             <span class="brand-pill">AstraPay</span>
                                         </div>
                                     </div>
-                                    <div id="ewallet-subselect" class="method-subselect" style="display: none;">
-                                        <label for="ewallet-provider">Pilih Jenis Dompet Digital (E-Wallet):</label>
-                                        <select id="ewallet-provider" name="ewallet_provider">
-                                            <option value="gopay">GoPay / GoPay Later</option>
-                                            <option value="shopeepay">ShopeePay</option>
-                                            <option value="dana">DANA</option>
-                                            <option value="ovo">OVO</option>
-                                            <option value="astrapay">AstraPay</option>
-                                        </select>
+                                    <div id="ewallet-subselect" class="method-subselect">
+                                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                                            <label for="ewallet-provider" style="font-size: 12.5px; font-weight: 700; color: #252641; margin: 0;">
+                                                Pilih Dompet Digital (E-Wallet):
+                                            </label>
+                                            <select id="ewallet-provider" name="ewallet_provider" class="custom-select" style="min-width: 220px; padding: 7px 12px; border: 1.5px solid #304b35; border-radius: 8px; font-size: 13px; background: #fff; color: #252641; font-weight: 600; cursor: pointer; outline: none;">
+                                                <option value="gopay">GoPay / GoPay Later</option>
+                                                <option value="shopeepay">ShopeePay</option>
+                                                <option value="dana">DANA</option>
+                                                <option value="ovo">OVO</option>
+                                                <option value="astrapay">AstraPay</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </label>
 
@@ -1029,6 +1037,30 @@
 
     const KEY = 'atkgo_cart';
 
+    const KNOWN_PRICES = {
+        'kreatif & dokumentasi': 250000,
+        'manajemen social media': 150000,
+        'paket layanan agensi': 112000,
+        'produksi visual & desain': 200000,
+        'strategi konten & brand': 1000000
+    };
+
+    function parsePrice(raw, name) {
+        if (typeof raw === 'number' && raw > 0) return raw;
+        let s = String(raw || '').trim().replace(/[^0-9.,]/g, '');
+        if (s.includes('.') && s.includes(',')) {
+            s = s.replace(/\./g, '').replace(',', '.');
+        } else if (s.includes(',')) {
+            s = s.replace(',', '.');
+        }
+        let n = parseFloat(s);
+        if (isNaN(n) || n <= 0) {
+            const k = String(name || '').toLowerCase().trim();
+            n = KNOWN_PRICES[k] || 0;
+        }
+        return Math.round(n);
+    }
+
     function ambilKeranjang() {
         try {
             return JSON.parse(localStorage.getItem(KEY) || '[]');
@@ -1069,9 +1101,14 @@
         daftar.appendChild(kosong);
         tombol.disabled = true;
     } else {
+        let cartUpdated = false;
         keranjang.forEach(function (layanan) {
             const qty = Math.max(1, Number(layanan.qty) || 1);
-            const harga = Math.max(0, Number(layanan.price) || 0);
+            const harga = parsePrice(layanan.price, layanan.name);
+            if (harga !== Number(layanan.price)) {
+                layanan.price = harga;
+                cartUpdated = true;
+            }
             const sub = harga * qty;
             total += sub;
 
@@ -1096,6 +1133,10 @@
             daftar.appendChild(row);
         });
 
+        if (cartUpdated) {
+            try { localStorage.setItem(KEY, JSON.stringify(keranjang)); } catch(e){}
+        }
+
         if (cartInput) {
             cartInput.value = JSON.stringify(keranjang);
         }
@@ -1111,8 +1152,10 @@
     const paymentChannelInput = document.getElementById('payment-channel');
     const guideTitle = document.getElementById('payment-guide-title');
     const guideDesc = document.getElementById('payment-guide-desc');
-    const vaSubselect = document.getElementById('va-subselect');
-    const ewalletSubselect = document.getElementById('ewallet-subselect');
+    const vaSelect = document.getElementById('va-bank');
+    const ewalletSelect = document.getElementById('ewallet-provider');
+    const payVaCard = document.querySelector('label[for="pay-va"]');
+    const payEwalletCard = document.querySelector('label[for="pay-ewallet"]');
 
     // Mencegah klik pada elemen dropdown di dalam label memicu event berulang
     document.querySelectorAll('.method-subselect select').forEach(function (sel) {
@@ -1121,19 +1164,29 @@
         });
     });
 
-    function toggleSubmethodDropdowns(submethod) {
-        if (vaSubselect) {
-            vaSubselect.style.display = (submethod === 'bank_transfer') ? 'block' : 'none';
-        }
-        if (ewalletSubselect) {
-            ewalletSubselect.style.display = (submethod === 'ewallet') ? 'block' : 'none';
-        }
+    // Otomatis pilih metode saat dropdown dipilih
+    if (vaSelect && payVaCard) {
+        vaSelect.addEventListener('change', function () {
+            payVaCard.click();
+        });
+        vaSelect.addEventListener('focus', function () {
+            payVaCard.click();
+        });
+    }
+
+    if (ewalletSelect && payEwalletCard) {
+        ewalletSelect.addEventListener('change', function () {
+            payEwalletCard.click();
+        });
+        ewalletSelect.addEventListener('focus', function () {
+            payEwalletCard.click();
+        });
     }
 
     const paymentGuides = {
         'qris': {
             title: 'Pembayaran QRIS Instan',
-            desc: 'Kode QRIS resmi akan digenerate otomatis. Buka aplikasi perbankan atau e-wallet apa pun di smartphone Anda dan pindai untuk menyelesaikan pembayaran instan tanpa biaya admin.',
+            desc: 'Kode QRIS resmi akan digenerate otomatis. Buka aplikasi perbankan atau mobile banking apa pun di smartphone Anda dan pindai untuk menyelesaikan pembayaran instan tanpa biaya admin.',
             btnText: 'Konfirmasi & Bayar via QRIS'
         },
         'bank_transfer': {
@@ -1173,8 +1226,6 @@
                 paymentChannelInput.value = submethod;
             }
 
-            toggleSubmethodDropdowns(submethod);
-
             if (paymentGuides[submethod]) {
                 if (guideTitle) guideTitle.textContent = paymentGuides[submethod].title;
                 if (guideDesc) guideDesc.textContent = paymentGuides[submethod].desc;
@@ -1182,9 +1233,6 @@
             }
         });
     });
-
-    // Inisialisasi tampilan awal
-    toggleSubmethodDropdowns('qris');
 
     // ========================================================
     // ARSITEKTUR KESIAPAN INTEGRASI MIDTRANS SNAP:

@@ -485,9 +485,24 @@ def pembayaran(request):
             cart_items = []
 
         total_harga = 0
+        known_prices = {
+            'kreatif & dokumentasi': 250000,
+            'manajemen social media': 150000,
+            'paket layanan agensi': 112000,
+            'produksi visual & desain': 200000,
+            'strategi konten & brand': 1000000,
+        }
         for item in cart_items:
-            price = float(item.get('price', 0))
-            qty = int(item.get('qty', 1))
+            raw_p = str(item.get('price', 0)).replace(',', '.')
+            try:
+                price = float(raw_p)
+            except Exception:
+                price = 0
+            if price <= 0:
+                name_key = str(item.get('name', '')).strip().lower()
+                price = known_prices.get(name_key, 0)
+            item['price'] = price
+            qty = max(1, int(item.get('qty', 1)))
             total_harga += price * qty
 
         # Buat nomor pesanan unik

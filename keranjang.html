@@ -315,6 +315,42 @@
 
     const KEY = "atkgo_cart";
 
+    const KNOWN_PRICES = {
+        'kreatif & dokumentasi': 250000,
+        'manajemen social media': 150000,
+        'paket layanan agensi': 112000,
+        'produksi visual & desain': 200000,
+        'strategi konten & brand': 1000000
+    };
+
+    function parsePrice(val, name) {
+        if (typeof val === 'number' && val > 0) return val;
+        let s = String(val || '').trim().replace(/[^0-9.,]/g, '');
+        if (s.includes('.') && s.includes(',')) {
+            s = s.replace(/\./g, '').replace(',', '.');
+        } else if (s.includes(',')) {
+            const parts = s.split(',');
+            if (parts.length === 2 && parts[1].length <= 2) {
+                s = parts[0] + '.' + parts[1];
+            } else {
+                s = s.replace(/,/g, '');
+            }
+        } else if (s.includes('.')) {
+            const parts = s.split('.');
+            if (parts.length === 2 && parts[1].length === 3) {
+                s = s.replace(/\./g, '');
+            } else if (parts.length > 2) {
+                s = s.replace(/\./g, '');
+            }
+        }
+        let n = parseFloat(s);
+        if (isNaN(n) || n <= 0) {
+            const k = String(name || '').toLowerCase().trim();
+            n = KNOWN_PRICES[k] || 0;
+        }
+        return Math.round(n);
+    }
+
     function ambilKeranjang() {
         try {
             return JSON.parse(localStorage.getItem(KEY) || "[]");
@@ -375,9 +411,14 @@
             tombolBayar.style.pointerEvents = "auto";
             tombolBayar.style.opacity = "1";
 
+            let cartModified = false;
             keranjang.forEach(function (layanan, index) {
                 const qty = Math.max(1, Number(layanan.qty) || 1);
-                const harga = Math.max(0, Number(layanan.price) || 0);
+                const harga = parsePrice(layanan.price, layanan.name);
+                if (harga !== layanan.price) {
+                    layanan.price = harga;
+                    cartModified = true;
+                }
                 const subtotal = harga * qty;
 
                 total += subtotal;
@@ -464,6 +505,10 @@
                 item.append(info, actions);
                 daftar.appendChild(item);
             });
+
+            if (cartModified) {
+                simpanKeranjang(keranjang);
+            }
         }
 
         jumlahLayanan.textContent = jumlah;
