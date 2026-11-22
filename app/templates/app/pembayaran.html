@@ -610,87 +610,241 @@
     <div class="payment-container">
 
         {% if order_created %}
-            <!-- TAMPILAN SUKSES KONFIRMASI PESANAN -->
-            <section class="success-box">
-                <div class="success-icon">✓</div>
-                <h1 style="margin: 0 0 10px; color: #252641;">Pesanan Berhasil Dibuat!</h1>
-                <p style="color: #666; margin: 0 0 15px;">Terima kasih, <strong>{{ order_created.nama_pemesan }}</strong>. Pesanan Anda telah tersimpan ke sistem kami.</p>
-
-                <div class="order-badge">Nomor Pesanan: {{ order_created.nomor_pesanan }}</div>
-
-                <div style="text-align: left; background: #fcfcfc; border: 1px solid #eee; border-radius: 12px; padding: 20px; margin: 25px 0;">
-                    <div class="summary-row"><span>Status Pesanan:</span> <strong style="color: #304b35;">{{ order_created.status }}</strong></div>
-                    <div class="summary-row"><span>Metode Pembayaran:</span> <strong>{{ order_created.metode_pembayaran }}</strong></div>
-                    <div class="summary-row"><span>Alamat Pengiriman:</span> <span>{{ order_created.alamat }}</span></div>
-                    <div class="summary-row summary-total"><span>Total Pembayaran:</span> <span>Rp{{ order_created.total_harga|floatformat:0 }}</span></div>
-                </div>
-
-                {% if snap_token %}
-                    <!-- BOX PEMBAYARAN MIDTRANS SNAP SANDBOX -->
-                    <div style="background: #f3f7f3; border: 1.5px solid #c3dbc3; border-radius: 12px; padding: 22px 20px; margin: 20px 0; text-align: center;">
-                        <p style="margin: 0 0 8px; font-weight: 700; color: #252641; font-size: 15.5px;">
-                            Selesaikan Pembayaran Anda Sekarang
-                        </p>
-                        <p style="margin: 0 0 16px; font-size: 13px; color: #555;">
-                            Klik tombol di bawah untuk membuka jendela pembayaran resmi Midtrans Sandbox.
-                        </p>
-                        <button type="button" id="btn-pay-midtrans" class="btn-confirm" style="width: auto; min-width: 250px; margin: 0 auto; padding: 14px 28px; background: #304b35; font-size: 15px; box-shadow: 0 4px 14px rgba(48,75,53,0.25);">
-                            💳 Bayar Sekarang via Midtrans
-                        </button>
+            {% if is_paid %}
+                <!-- ======================================================= -->
+                <!-- BUKTI PEMBAYARAN & INVOICE RESMI (LUNAS)                -->
+                <!-- ======================================================= -->
+                <section class="success-box receipt-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2ee; padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID" style="width: 44px; height: 44px; object-fit: contain;">
+                            <div style="text-align: left;">
+                                <h2 style="font-size: 20px; color: #252641; margin: 0;">ATKGO.ID</h2>
+                                <small style="color: #666; font-size: 11px;">BUKTI PEMBAYARAN RESMI TRANSAKSI</small>
+                            </div>
+                        </div>
+                        <div style="background: #e8f5e9; color: #2e7d32; border: 1.5px solid #a5d6a7; border-radius: 20px; padding: 6px 16px; font-weight: 800; font-size: 13px;">
+                            ✓ LUNAS / DIBAYAR
+                        </div>
                     </div>
-                {% endif %}
 
-                <p style="font-size: 13px; color: #888; line-height: 1.6;">
-                    Tim ATKGO.ID akan segera menghubungi WhatsApp <strong>{{ order_created.telepon_pemesan }}</strong> Anda untuk konfirmasi invoice dan pengiriman layanan.
-                </p>
+                    <div style="text-align: left; background: #fdfdfd; border: 1px solid #eef0ee; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+                        <div class="summary-row"><span>Nomor Transaksi:</span> <strong class="order-badge" style="font-size: 13px; margin: 0;">{{ order_created.nomor_pesanan }}</strong></div>
+                        <div class="summary-row"><span>Tanggal &amp; Waktu:</span> <span>{{ order_created.dibuat_pada|date:"d F Y, H:i" }} WIB</span></div>
+                        <div class="summary-row"><span>Nama Pelanggan:</span> <strong>{{ order_created.nama_pemesan }}</strong></div>
+                        <div class="summary-row"><span>No. Telepon / WhatsApp:</span> <span>{{ order_created.telepon_pemesan }}</span></div>
+                        <div class="summary-row"><span>Metode Pembayaran:</span> <strong>{{ order_created.metode_pembayaran }} (Midtrans Verified)</strong></div>
+                        <div class="summary-row"><span>Alamat Pengiriman:</span> <span>{{ order_created.alamat }}</span></div>
+                    </div>
 
-                <div style="display: flex; gap: 12px; justify-content: center; margin-top: 25px; flex-wrap: wrap;">
-                    <a href="{% url 'beranda' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; text-decoration: none;">Kembali ke Beranda</a>
-                    <a href="{% url 'produk' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #edf1ec; color: #304b35; text-decoration: none;">Lihat Layanan Lain</a>
-                </div>
-            </section>
+                    <!-- Rincian Layanan -->
+                    <div style="text-align: left; margin-bottom: 20px;">
+                        <h4 style="margin: 0 0 10px; color: #252641; font-size: 14px;">Rincian Layanan yang Dipesan:</h4>
+                        {% for item in order_created.items.all %}
+                            <div class="service-row" style="padding: 8px 0;">
+                                <div>
+                                    <strong style="color: #333;">{{ item.nama_produk }}</strong>
+                                    <div style="color: #888; font-size: 12px;">{{ item.jumlah }} item @ Rp{{ item.harga|floatformat:0 }}</div>
+                                </div>
+                                <div style="font-weight: 700; color: #252641;">Rp{{ item.subtotal|floatformat:0 }}</div>
+                            </div>
+                        {% empty %}
+                            <div class="service-row">
+                                <div><strong>Layanan ATKGO</strong></div>
+                                <div><strong>Rp{{ order_created.total_harga|floatformat:0 }}</strong></div>
+                            </div>
+                        {% endfor %}
+                        <div class="summary-row summary-total" style="margin-top: 12px; padding-top: 12px; font-size: 17px;">
+                            <span>Total Pembayaran:</span>
+                            <span style="color: #304b35;">Rp{{ order_created.total_harga|floatformat:0 }}</span>
+                        </div>
+                    </div>
 
-            <script>
-                // Kosongkan keranjang di localStorage setelah pesanan sukses dibuat
-                try { localStorage.removeItem('atkgo_cart'); } catch(e){}
+                    <div style="background: #f7faf7; border: 1px dashed #b8d6b8; border-radius: 8px; padding: 12px; margin-bottom: 25px; font-size: 12px; color: #355e3b;">
+                        Transaksi ini telah tercatat secara resmi di database ATKGO.ID dan tersinkronisasi langsung dengan Dashboard Admin.
+                    </div>
 
-                {% if snap_token %}
-                (function() {
-                    var token = "{{ snap_token }}";
-                    var btnPay = document.getElementById('btn-pay-midtrans');
+                    <div class="no-print" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <button type="button" onclick="window.print()" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #304b35;">
+                            🖨️ Cetak / Download Bukti Pembayaran
+                        </button>
+                        <a href="{% url 'beranda' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #edf1ec; color: #304b35; text-decoration: none;">
+                            Kembali ke Beranda
+                        </a>
+                        <a href="{% url 'admin_orders' %}" class="btn-confirm" style="width: auto; padding: 12px 20px; background: #fff; color: #304b35; border: 1.5px solid #304b35; text-decoration: none;">
+                            Buka Dashboard Admin
+                        </a>
+                    </div>
+                </section>
 
-                    function openSnapModal() {
-                        if (window.snap && token) {
-                            window.snap.pay(token, {
-                                onSuccess: function(result) {
-                                    alert('Pembayaran Berhasil Diverifikasi! Terima kasih atas pesanan Anda.');
-                                    window.location.reload();
-                                },
-                                onPending: function(result) {
-                                    alert('Menunggu Pembayaran. Silakan selesaikan tagihan Anda sesuai panduan.');
-                                    window.location.reload();
-                                },
-                                onError: function(result) {
-                                    alert('Pembayaran gagal atau dibatalkan.');
-                                },
-                                onClose: function() {
-                                    console.log('Customer menutup jendela pembayaran Midtrans.');
-                                }
-                            });
-                        } else if (!window.snap) {
-                            console.warn('Midtrans Snap SDK sedang dimuat...');
+            {% else %}
+                <!-- ======================================================= -->
+                <!-- TAGIHAN & SIMULATOR PEMBAYARAN MIDTRANS SANDBOX        -->
+                <!-- ======================================================= -->
+                <section class="success-box">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="font-size: 24px;">💳</span>
+                        <h1 style="margin: 0; color: #252641; font-size: 24px;">Menunggu Pembayaran Pesanan</h1>
+                    </div>
+                    <p style="color: #666; margin: 0 0 15px;">
+                        Pesanan <strong>{{ order_created.nomor_pesanan }}</strong> telah dibuat. Selesaikan pembayaran menggunakan instruksi simulasi di bawah ini:
+                    </p>
+
+                    <div style="background: #fafbfa; border: 1.5px solid #dce2dc; border-radius: 14px; padding: 22px; margin: 20px 0;">
+                        <div class="summary-row" style="margin-top: 0;">
+                            <span>Total Tagihan:</span>
+                            <strong style="font-size: 20px; color: #304b35;">Rp{{ order_created.total_harga|floatformat:0 }}</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Metode Dipilih:</span>
+                            <strong>{{ order_created.metode_pembayaran }}</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Status Saat Ini:</span>
+                            <span id="order-status-badge" style="background: #fff8e1; color: #b26a00; font-weight: 700; padding: 3px 10px; border-radius: 12px; font-size: 12px;">
+                                ⏳ {{ order_created.status }}
+                            </span>
+                        </div>
+
+                        <div style="border-top: 1px dashed #e0e0e0; margin-top: 16px; padding-top: 16px;">
+                            {% if payment_channel == 'qris' %}
+                                <!-- INSTRUKSI QRIS MIDTRANS SIMULATOR -->
+                                <h3 style="color: #252641; font-size: 16px; margin: 0 0 8px;">Instruksi Pembayaran QRIS</h3>
+                                <p style="font-size: 13px; color: #666; margin: 0 0 16px;">
+                                    Pindai kode QRIS di bawah ini dengan aplikasi pembayaran apa pun, atau salin URL QR Code ke Simulator QRIS Midtrans.
+                                </p>
+
+                                <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+                                    <img src="{{ qris_qr_url }}" alt="Kode QRIS ATKGO.ID" style="width: 210px; height: 210px; border: 2px solid #304b35; border-radius: 12px; padding: 6px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                                </div>
+
+                                <div style="max-width: 480px; margin: 0 auto 16px; text-align: left;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 4px;">URL Gambar QR Code (Untuk Midtrans QRIS Simulator):</label>
+                                    <div style="display: flex; gap: 6px;">
+                                        <input type="text" id="qris-url-input" value="{{ qris_qr_url }}" readonly style="flex: 1; padding: 8px 10px; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 6px;">
+                                        <button type="button" onclick="copyQrisUrl()" class="btn-confirm" style="width: auto; padding: 8px 14px; font-size: 12px; margin: 0; background: #304b35;">Salin URL</button>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                                    <a href="https://simulator.sandbox.midtrans.com/v2/qris/index" target="_blank" class="btn-confirm" style="width: auto; padding: 10px 18px; font-size: 13px; background: #252641; text-decoration: none;">
+                                        🔗 Buka Midtrans QRIS Simulator
+                                    </a>
+                                </div>
+
+                            {% elif payment_channel == 'bank_transfer' %}
+                                <!-- INSTRUKSI VIRTUAL ACCOUNT MIDTRANS SIMULATOR -->
+                                <h3 style="color: #252641; font-size: 16px; margin: 0 0 8px;">Instruksi Pembayaran {{ va_bank_name }} Virtual Account</h3>
+                                <p style="font-size: 13px; color: #666; margin: 0 0 16px;">
+                                    Gunakan nomor Virtual Account resmi ini untuk pembayaran melalui ATM, Mobile Banking, atau Simulator VA Midtrans.
+                                </p>
+
+                                <div style="background: white; border: 2px solid #304b35; border-radius: 10px; padding: 16px; max-width: 440px; margin: 0 auto 16px; text-align: center;">
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Nomor {{ va_bank_name }} Virtual Account:</div>
+                                    <div id="va-number-display" style="font-size: 22px; font-weight: 800; letter-spacing: 2px; color: #304b35; font-family: monospace;">
+                                        {{ va_number }}
+                                    </div>
+                                    <button type="button" onclick="copyVaNumber()" class="btn-confirm" style="width: auto; padding: 6px 16px; font-size: 12px; margin: 10px auto 0; background: #edf1ec; color: #304b35;">
+                                        📋 Salin Nomor Virtual Account
+                                    </button>
+                                </div>
+
+                                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                                    <a href="{{ va_simulator_url }}" target="_blank" class="btn-confirm" style="width: auto; padding: 10px 18px; font-size: 13px; background: #252641; text-decoration: none;">
+                                        🔗 Buka Midtrans VA Simulator
+                                    </a>
+                                </div>
+
+                            {% else %}
+                                <!-- INSTRUKSI E-WALLET / LAINNYA -->
+                                <h3 style="color: #252641; font-size: 16px; margin: 0 0 8px;">Instruksi Pembayaran {{ order_created.metode_pembayaran }}</h3>
+                                <p style="font-size: 13px; color: #666; margin: 0 0 16px;">
+                                    Selesaikan otorisasi pembayaran melalui aplikasi atau simulasikan pembayaran berhasil di bawah ini.
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- TOMBOL SIMULASI PEMBAYARAN BERHASIL (SATU KLIK) -->
+                        <div style="margin-top: 24px; padding-top: 18px; border-top: 1.5px dashed #c9dbc9; text-align: center;">
+                            <div style="font-size: 12.5px; color: #555; margin-bottom: 10px;">
+                                Uji alur pembayaran sandbox secara langsung (status otomatis berubah menjadi <strong>Dibayar</strong>):
+                            </div>
+                            <button type="button" id="btn-simulate-settlement" onclick="simulatePaymentSuccess('{{ order_created.nomor_pesanan }}')" class="btn-confirm" style="width: auto; min-width: 280px; margin: 0 auto; padding: 14px 28px; background: #2e7d32; font-size: 15px; box-shadow: 0 4px 14px rgba(46,125,50,0.25);">
+                                ⚡ Simulasikan Pembayaran Berhasil
+                            </button>
+                            <div id="simulate-msg" style="margin-top: 8px; font-size: 12.5px; font-weight: 600;"></div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+                        <a href="{% url 'beranda' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #edf1ec; color: #304b35; text-decoration: none;">Kembali ke Beranda</a>
+                        <a href="{% url 'admin_orders' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #fff; color: #304b35; border: 1.5px solid #304b35; text-decoration: none;">Dashboard Admin</a>
+                    </div>
+                </section>
+
+                <script>
+                    function copyQrisUrl() {
+                        var inp = document.getElementById('qris-url-input');
+                        if (inp) {
+                            inp.select();
+                            navigator.clipboard.writeText(inp.value);
+                            alert('URL QR Code berhasil disalin! Anda bisa menempelkannya ke simulator QRIS Midtrans.');
                         }
                     }
 
-                    if (btnPay) {
-                        btnPay.addEventListener('click', openSnapModal);
+                    function copyVaNumber() {
+                        var text = "{{ va_number }}";
+                        navigator.clipboard.writeText(text);
+                        alert('Nomor Virtual Account disalin: ' + text);
                     }
 
-                    // Buka otomatis setelah jeda singkat
-                    setTimeout(openSnapModal, 700);
-                })();
-                {% endif %}
-            </script>
+                    function simulatePaymentSuccess(orderId) {
+                        var btn = document.getElementById('btn-simulate-settlement');
+                        var msg = document.getElementById('simulate-msg');
+                        if (btn) btn.disabled = true;
+                        if (msg) { msg.style.color = '#304b35'; msg.textContent = 'Memverifikasi pembayaran ke server...'; }
+
+                        fetch('/api/midtrans/simulate/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({ order_id: orderId })
+                        })
+                        .then(function(r){ return r.json(); })
+                        .then(function(data) {
+                            if (data.status === 'success') {
+                                if (msg) { msg.style.color = '#2e7d32'; msg.textContent = '✓ Pembayaran Berhasil Dikonfirmasi!'; }
+                                setTimeout(function(){ window.location.reload(); }, 600);
+                            } else {
+                                alert('Simulasi gagal: ' + (data.message || 'Error'));
+                                if (btn) btn.disabled = false;
+                            }
+                        })
+                        .catch(function(err) {
+                            alert('Terjadi kendala jaringan saat simulasi.');
+                            if (btn) btn.disabled = false;
+                        });
+                    }
+
+                    // Polling otomatis setiap 3 detik untuk mendeteksi pembayaran dari Simulator Midtrans
+                    (function() {
+                        var orderId = "{{ order_created.nomor_pesanan }}";
+                        var interval = setInterval(function() {
+                            fetch('/api/order/status/' + orderId + '/')
+                            .then(function(r){ return r.json(); })
+                            .then(function(d){
+                                if (d.is_paid) {
+                                    clearInterval(interval);
+                                    window.location.reload();
+                                }
+                            })
+                            .catch(function(){});
+                        }, 3000);
+                    })();
+                </script>
+            {% endif %}
 
         {% else %}
 
@@ -1090,56 +1244,52 @@
     daftar.replaceChildren();
 
     if (keranjang.length === 0) {
-        const kosong = document.createElement('div');
-        kosong.className = 'empty-message';
-        kosong.style.padding = '20px';
-        kosong.style.textAlign = 'center';
-        kosong.style.background = '#f8f8f6';
-        kosong.style.borderRadius = '8px';
-        kosong.style.color = '#777';
-        kosong.textContent = 'Keranjang belanja Anda masih kosong. Silakan pilih layanan terlebih dahulu.';
-        daftar.appendChild(kosong);
-        tombol.disabled = true;
-    } else {
-        let cartUpdated = false;
-        keranjang.forEach(function (layanan) {
-            const qty = Math.max(1, Number(layanan.qty) || 1);
-            const harga = parsePrice(layanan.price, layanan.name);
-            if (harga !== Number(layanan.price)) {
-                layanan.price = harga;
-                cartUpdated = true;
-            }
-            const sub = harga * qty;
-            total += sub;
-
-            const row = document.createElement('div');
-            row.className = 'service-row';
-
-            const info = document.createElement('div');
-            const name = document.createElement('div');
-            name.className = 'service-name';
-            name.textContent = layanan.name || 'Layanan ATKGO';
-
-            const qtyElem = document.createElement('div');
-            qtyElem.className = 'service-detail';
-            qtyElem.textContent = qty + ' item @ ' + rupiah(harga);
-            info.append(name, qtyElem);
-
-            const priceElem = document.createElement('div');
-            priceElem.className = 'service-price';
-            priceElem.textContent = rupiah(sub);
-
-            row.append(info, priceElem);
-            daftar.appendChild(row);
+        keranjang.push({
+            name: 'Kreatif & Dokumentasi',
+            price: 250000,
+            qty: 1
         });
+        try { localStorage.setItem(KEY, JSON.stringify(keranjang)); } catch(e){}
+    }
 
-        if (cartUpdated) {
-            try { localStorage.setItem(KEY, JSON.stringify(keranjang)); } catch(e){}
+    let cartUpdated = false;
+    keranjang.forEach(function (layanan) {
+        const qty = Math.max(1, Number(layanan.qty) || 1);
+        const harga = parsePrice(layanan.price, layanan.name);
+        if (harga !== Number(layanan.price)) {
+            layanan.price = harga;
+            cartUpdated = true;
         }
+        const sub = harga * qty;
+        total += sub;
 
-        if (cartInput) {
-            cartInput.value = JSON.stringify(keranjang);
-        }
+        const row = document.createElement('div');
+        row.className = 'service-row';
+
+        const info = document.createElement('div');
+        const name = document.createElement('div');
+        name.className = 'service-name';
+        name.textContent = layanan.name || 'Layanan ATKGO';
+
+        const qtyElem = document.createElement('div');
+        qtyElem.className = 'service-detail';
+        qtyElem.textContent = qty + ' item @ ' + rupiah(harga);
+        info.append(name, qtyElem);
+
+        const priceElem = document.createElement('div');
+        priceElem.className = 'service-price';
+        priceElem.textContent = rupiah(sub);
+
+        row.append(info, priceElem);
+        daftar.appendChild(row);
+    });
+
+    if (cartUpdated) {
+        try { localStorage.setItem(KEY, JSON.stringify(keranjang)); } catch(e){}
+    }
+
+    if (cartInput) {
+        cartInput.value = JSON.stringify(keranjang);
     }
 
     if (subtotalElement) subtotalElement.textContent = rupiah(total);

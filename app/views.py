@@ -552,20 +552,19 @@ def pembayaran(request):
                     order.snap_token = snap_token
                     order.save(update_fields=['snap_token'])
 
-            messages.success(request, f"Pesanan {nomor_pesanan} berhasil dibuat!")
-            context = {
-                'order_created': order,
-                'snap_token': order.snap_token,
-                'redirect_url': redirect_url,
-                'payment_channel': payment_channel,
-                'midtrans_client_key': getattr(settings, 'MIDTRANS_CLIENT_KEY', ''),
-                'midtrans_snap_js': getattr(settings, 'MIDTRANS_SNAP_JS', 'https://app.sandbox.midtrans.com/snap/snap.js'),
-            }
-            return render(request, 'app/pembayaran.html', context)
+            return redirect(f"/pembayaran/?order_id={nomor_pesanan}")
 
         except Exception as e:
             messages.error(request, f"Gagal membuat pesanan: {str(e)}")
             return redirect('pembayaran')
+
+    # GET: Cek apakah ada parameter order_id (menampilkan status / bukti pembayaran)
+    order_id_param = request.GET.get('order_id')
+    if order_id_param:
+        order = Order.objects.filter(nomor_pesanan=order_id_param).prefetch_related('items').first()
+        if order and (order.user == user or user.is_staff):
+            context = get_order_payment_context(order)
+            return render(request, 'app/pembayaran.html', context)
 
     # GET: Pre-fill otomatis dari data profil pengguna yang sedang login
     context = {
@@ -578,6 +577,102 @@ def pembayaran(request):
         'midtrans_snap_js': getattr(settings, 'MIDTRANS_SNAP_JS', 'https://app.sandbox.midtrans.com/snap/snap.js'),
     }
     return render(request, 'app/pembayaran.html', context)
+
+
+def get_order_payment_context(order):
+    """Menyiapkan data tagihan, simulator QRIS / Virtual Account Midtrans, dan Bukti Pembayaran."""
+    metode = str(order.metode_pembayaran or '').lower()
+
+    if 'qris' in metode:
+        channel = 'qris'
+    elif 'virtual account' in metode or 'va' in metode:
+        channel = 'bank_transfer'
+    elif 'e-wallet' in metode or 'ewallet' in metode:
+        channel = 'ewallet'
+    elif 'kartu kredit' in metode or 'credit' in metode:
+        channel = 'credit_card'
+    else:
+        channel = 'invoice_b2b'
+
+    # Buat QR Code Image URL simulator untuk QRIS (kompatibel simulator.sandbox.midtrans.com/v2/qris/index)
+    qris_data = f"00020101021226580016ID.CO.MIDTRANS011893600523000001{order.id}520458125303360540{int(order.total_harga)}5802ID5908ATKGO_ID6007JAKARTA62070703A016304"
+    qris_qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={qris_data}"
+
+    # Buat nomor Virtual Account unik sesuai bank pilihan
+    if 'mandiri' in metode:
+        va_bank_name = 'Mandiri'
+        va_number = f"Bill Key: {order.nomor_pesanan.split('-')[-1]} (Biller: 70012)"
+        va_simulator_url = "https://simulator.sandbox.midtrans.com/mandiri/bill/index"
+    elif 'bni' in metode:
+        va_bank_name = 'BNI'
+        va_number = f"988123{order.id:08d}"
+        va_simulator_url = "https://simulator.sandbox.midtrans.com/bni/va/index"
+    elif 'bri' in metode:
+        va_bank_name = 'BRI'
+        va_number = f"12345{order.id:08d}"
+        va_simulator_url = "https://simulator.sandbox.midtrans.com/bri/va/index"
+    elif 'permata' in metode:
+        va_bank_name = 'Permata'
+        va_number = f"8778{order.id:08d}"
+        va_simulator_url = "https://simulator.sandbox.midtrans.com/permata/va/index"
+    else:
+        va_bank_name = 'BCA'
+        va_number = f"80777{order.id:08d}"
+        va_simulator_url = "https://simulator.sandbox.midtrans.com/bca/va/index"
+
+    return {
+        'order_created': order,
+        'is_paid': order.status == 'Dibayar',
+        'payment_channel': channel,
+        'qris_data': qris_data,
+        'qris_qr_url': qris_qr_url,
+        'va_bank_name': va_bank_name,
+        'va_number': va_number,
+        'va_simulator_url': va_simulator_url,
+        'snap_token': order.snap_token,
+        'midtrans_client_key': getattr(settings, 'MIDTRANS_CLIENT_KEY', ''),
+        'midtrans_snap_js': getattr(settings, 'MIDTRANS_SNAP_JS', 'https://app.sandbox.midtrans.com/snap/snap.js'),
+    }
+
+
+@csrf_exempt
+@require_POST
+def midtrans_simulate_payment(request):
+    """
+    Simulator pembayaran sandbox: mengubah status pesanan menjadi 'Dibayar'.
+    Terhubung langsung ke Dashboard Admin & Bukti Pembayaran.
+    """
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        data = request.POST
+
+    order_id = data.get('order_id')
+    if not order_id:
+        return JsonResponse({'status': 'error', 'message': 'order_id wajib diisi'}, status=400)
+
+    order = Order.objects.filter(nomor_pesanan=order_id).first()
+    if not order:
+        return JsonResponse({'status': 'error', 'message': 'Pesanan tidak ditemukan'}, status=404)
+
+    order.status = 'Dibayar'
+    order.save(update_fields=['status'])
+    return JsonResponse({
+        'status': 'success',
+        'message': f'Pesanan {order.nomor_pesanan} berhasil disimulasikan lunas.',
+        'order_status': order.status,
+        'is_paid': True
+    })
+
+
+def check_order_status(request, nomor_pesanan):
+    """Mengecek status terkini dari pesanan untuk polling otomatis di frontend."""
+    order = get_object_or_404(Order, nomor_pesanan=nomor_pesanan)
+    return JsonResponse({
+        'nomor_pesanan': order.nomor_pesanan,
+        'status': order.status,
+        'is_paid': order.status == 'Dibayar',
+    })
 
 
 @csrf_exempt
@@ -888,9 +983,9 @@ def admin_order_status(request, pk):
     order = get_object_or_404(Order, pk=pk)
     if request.method == 'POST':
         status = request.POST.get('status')
-        if status in ['Menunggu Konfirmasi', 'Diproses', 'Selesai', 'Dibatalkan']:
+        if status in ['Menunggu Konfirmasi', 'Menunggu Pembayaran', 'Dibayar', 'Diproses', 'Selesai', 'Dibatalkan']:
             order.status = status
-            order.save()
+            order.save(update_fields=['status'])
             messages.success(request, f"Status pesanan {order.nomor_pesanan} diubah menjadi '{status}'.")
     return redirect('admin_orders')
 

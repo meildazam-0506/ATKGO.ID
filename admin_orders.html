@@ -156,10 +156,25 @@
                             <br><small style="color:#888;">{{ ord.metode_pembayaran }}</small>
                         </td>
                         <td>
+                            <div style="margin-bottom:6px;">
+                                {% if ord.status == 'Dibayar' or ord.status == 'Selesai' %}
+                                    <span class="badge badge-success">✓ {{ ord.status }}</span>
+                                {% elif ord.status == 'Menunggu Pembayaran' or ord.status == 'Menunggu Konfirmasi' %}
+                                    <span class="badge badge-warning">⏳ {{ ord.status }}</span>
+                                {% elif ord.status == 'Diproses' %}
+                                    <span class="badge badge-info">⚙ {{ ord.status }}</span>
+                                {% elif ord.status == 'Dibatalkan' %}
+                                    <span class="badge badge-danger">✕ {{ ord.status }}</span>
+                                {% else %}
+                                    <span class="badge badge-info">{{ ord.status }}</span>
+                                {% endif %}
+                            </div>
                             <form method="POST" action="{% url 'admin_order_status' ord.id %}" style="display:flex; align-items:center; gap:6px;">
                                 {% csrf_token %}
                                 <select name="status" class="status-select" onchange="this.form.submit()">
-                                    <option value="Menunggu Konfirmasi" {% if ord.status == 'Menunggu Konfirmasi' %}selected{% endif %}>Menunggu</option>
+                                    <option value="Menunggu Pembayaran" {% if ord.status == 'Menunggu Pembayaran' %}selected{% endif %}>Menunggu Pembayaran</option>
+                                    <option value="Dibayar" {% if ord.status == 'Dibayar' %}selected{% endif %}>Dibayar (Lunas)</option>
+                                    <option value="Menunggu Konfirmasi" {% if ord.status == 'Menunggu Konfirmasi' %}selected{% endif %}>Menunggu Konfirmasi</option>
                                     <option value="Diproses" {% if ord.status == 'Diproses' %}selected{% endif %}>Diproses</option>
                                     <option value="Selesai" {% if ord.status == 'Selesai' %}selected{% endif %}>Selesai</option>
                                     <option value="Dibatalkan" {% if ord.status == 'Dibatalkan' %}selected{% endif %}>Batal</option>
