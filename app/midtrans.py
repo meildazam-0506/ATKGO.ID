@@ -153,6 +153,63 @@ def create_snap_transaction(order, cart_items=None, payment_channel=None, sub_pr
         return fallback_token, None, str(e)
 
 
+def create_core_api_charge(order, payment_channel='qris', bank='bca'):
+    """
+    Membuat transaksi langsung via Midtrans Core API (/v2/charge).
+    Mengembalikan data transaksi resmi dari Midtrans Sandbox (termasuk official QRIS URL dan VA number).
+    """
+    charge_url = 'https://api.sandbox.midtrans.com/v2/charge'
+    gross_amount = int(round(float(order.total_harga)))
+    if gross_amount <= 0:
+        gross_amount = 250000
+
+    payload = {
+        'transaction_details': {
+            'order_id': order.nomor_pesanan,
+            'gross_amount': gross_amount,
+        },
+        'customer_details': {
+            'first_name': order.nama_pemesan,
+            'email': order.email_pemesan,
+            'phone': order.telepon_pemesan,
+        }
+    }
+
+    if payment_channel == 'qris':
+        payload['payment_type'] = 'qris'
+        payload['qris'] = {'acquirer': 'gopay'}
+    elif payment_channel in ['bank_transfer', 'va']:
+        payload['payment_type'] = 'bank_transfer'
+        bank_clean = str(bank or 'bca').lower()
+        if bank_clean == 'mandiri':
+            payload['echannel'] = {
+                'bill_info1': 'Pembayaran ATKGO',
+                'bill_info2': order.nomor_pesanan
+            }
+        elif bank_clean == 'permata':
+            payload['bank_transfer'] = {'bank': 'permata'}
+        elif bank_clean in ['bni', 'bri']:
+            payload['bank_transfer'] = {'bank': bank_clean}
+        else:
+            payload['bank_transfer'] = {'bank': 'bca'}
+
+    headers = get_midtrans_auth_header()
+
+    try:
+        data_json = json.dumps(payload).encode('utf-8')
+        req = urllib.request.Request(charge_url, data=data_json, headers=headers)
+        with urllib.request.urlopen(req, timeout=12) as res:
+            res_json = json.loads(res.read().decode('utf-8'))
+            return res_json, None
+    except urllib.error.HTTPError as e:
+        body = e.read().decode('utf-8', errors='ignore')
+        logger.warning(f"Midtrans Core API HTTP {e.code}: {body}")
+        return None, f"HTTP {e.code}: {body}"
+    except Exception as e:
+        logger.error(f"Midtrans Core API request exception: {e}")
+        return None, str(e)
+
+
 def verify_midtrans_signature(order_id, status_code, gross_amount, signature_key):
     """
     Verifikasi tanda tangan webhook Midtrans:

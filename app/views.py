@@ -24,7 +24,7 @@ from .models import (
     HeroBanner, Keunggulan, WebsiteSetting, ArticleCategory, Article,
     Order, OrderItem
 )
-from .midtrans import create_snap_transaction, verify_midtrans_signature
+from .midtrans import create_snap_transaction, create_core_api_charge, verify_midtrans_signature
 
 User = get_user_model()
 
@@ -620,6 +620,24 @@ def get_order_payment_context(order):
         va_number = f"80777{order.id:08d}"
         va_simulator_url = "https://simulator.sandbox.midtrans.com/bca/va/index"
 
+    # Hubungkan ke Midtrans Core API jika belum dibayar
+    midtrans_official_connected = False
+    if order.status != 'Dibayar':
+        core_res, core_err = create_core_api_charge(order, payment_channel=channel, bank=va_bank_name)
+        if core_res:
+            midtrans_official_connected = True
+            for act in core_res.get('actions', []):
+                if act.get('name') == 'generate-qr-code':
+                    qris_qr_url = act.get('url')
+                    break
+            va_list = core_res.get('va_numbers', [])
+            if va_list and len(va_list) > 0:
+                va_number = va_list[0].get('va_number', va_number)
+            elif 'permata_va_number' in core_res:
+                va_number = core_res.get('permata_va_number')
+            elif 'bill_key' in core_res:
+                va_number = f"Bill Key: {core_res.get('bill_key')} (Biller: {core_res.get('biller_code', '70012')})"
+
     return {
         'order_created': order,
         'is_paid': order.status == 'Dibayar',
@@ -629,6 +647,7 @@ def get_order_payment_context(order):
         'va_bank_name': va_bank_name,
         'va_number': va_number,
         'va_simulator_url': va_simulator_url,
+        'midtrans_official_connected': midtrans_official_connected,
         'snap_token': order.snap_token,
         'midtrans_client_key': getattr(settings, 'MIDTRANS_CLIENT_KEY', ''),
         'midtrans_snap_js': getattr(settings, 'MIDTRANS_SNAP_JS', 'https://app.sandbox.midtrans.com/snap/snap.js'),
