@@ -11,6 +11,16 @@ from urllib.parse import urlparse
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Muat environment variable dari file .env lokal jika ada
+env_file = BASE_DIR / '.env'
+if env_file.exists():
+    with open(env_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                k, v = line.split('=', 1)
+                os.environ.setdefault(k.strip(), v.strip().strip("'\""))
+
 # Deteksi lingkungan Vercel / Production
 IS_VERCEL = bool(os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'))
 
@@ -104,12 +114,26 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
-# Fleksibel untuk Production Vercel (Remote MySQL / PostgreSQL / URL / SQLite Fallback)
-# dan Local Development (MariaDB Docker port 3309)
+# Fleksibel untuk Supabase PostgreSQL, Remote MySQL / URL, dan Local Development
+
+# =====================================
+# KONFIGURASI SUPABASE ATKGO.ID
+# =====================================
+SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://lfeaawstgowciackssme.supabase.co')
+SUPABASE_PUBLISHABLE_KEY = os.environ.get('SUPABASE_PUBLISHABLE_KEY', '')
+SUPABASE_SECRET_KEY = os.environ.get('SUPABASE_SECRET_KEY', '')
+SUPABASE_JWKS_URL = os.environ.get('SUPABASE_JWKS_URL', 'https://lfeaawstgowciackssme.supabase.co/auth/v1/.well-known/jwks.json')
+
+SUPABASE_DB_HOST = os.environ.get('SUPABASE_DB_HOST', 'aws-0-ap-northeast-2.pooler.supabase.com')
+SUPABASE_DB_PORT = os.environ.get('SUPABASE_DB_PORT', '5432')
+SUPABASE_DB_NAME = os.environ.get('SUPABASE_DB_NAME', 'postgres')
+SUPABASE_DB_USER = os.environ.get('SUPABASE_DB_USER', 'postgres.lfeaawstgowciackssme')
+SUPABASE_DB_PASSWORD = os.environ.get('SUPABASE_DB_PASSWORD')
 
 if os.environ.get('DATABASE_URL'):
     db_url = urlparse(os.environ.get('DATABASE_URL'))
     engine = 'django.db.backends.mysql' if 'mysql' in db_url.scheme else 'django.db.backends.postgresql'
+    options = {'charset': 'utf8mb4'} if 'mysql' in engine else {'sslmode': 'require'}
     DATABASES = {
         'default': {
             'ENGINE': engine,
@@ -118,7 +142,21 @@ if os.environ.get('DATABASE_URL'):
             'PASSWORD': db_url.password or '',
             'HOST': db_url.hostname or '',
             'PORT': str(db_url.port or (3306 if 'mysql' in engine else 5432)),
-            'OPTIONS': {'charset': 'utf8mb4'} if 'mysql' in engine else {},
+            'OPTIONS': options,
+        }
+    }
+elif SUPABASE_DB_PASSWORD:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': SUPABASE_DB_NAME,
+            'USER': SUPABASE_DB_USER,
+            'PASSWORD': SUPABASE_DB_PASSWORD,
+            'HOST': SUPABASE_DB_HOST,
+            'PORT': SUPABASE_DB_PORT,
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
         }
     }
 elif os.environ.get('DB_NAME') and (os.environ.get('DB_HOST') or IS_VERCEL):
