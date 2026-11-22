@@ -33,10 +33,10 @@ def main():
     # Dapatkan password database
     password = os.environ.get('SUPABASE_DB_PASSWORD')
     if len(sys.argv) > 1:
-        password = sys.argv[1]
+        password = sys.argv[1].strip("[]'\"")
     
     if not password:
-        password = getpass.getpass("Masukkan Password Database Supabase Anda: ")
+        password = getpass.getpass("Masukkan Password Database Supabase Anda: ").strip("[]'\"")
 
     if not password:
         print("[ERROR] Password tidak boleh kosong.")
