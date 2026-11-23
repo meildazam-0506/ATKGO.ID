@@ -664,7 +664,7 @@
                     </div>
 
                     <div style="background: #f7faf7; border: 1px dashed #b8d6b8; border-radius: 8px; padding: 12px; margin-bottom: 25px; font-size: 12px; color: #355e3b;">
-                        Transaksi ini telah tercatat secara resmi di database ATKGO.ID dan tersinkronisasi langsung dengan Dashboard Admin.
+                        Transaksi ini telah tercatat secara resmi di sistem ATKGO.ID. Anda dapat memantau progres pengerjaan layanan secara real-time di profil akun Anda.
                     </div>
 
                     <div class="no-print" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
@@ -674,8 +674,8 @@
                         <a href="{% url 'beranda' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #edf1ec; color: #304b35; text-decoration: none;">
                             Kembali ke Beranda
                         </a>
-                        <a href="{% url 'admin_orders' %}" class="btn-confirm" style="width: auto; padding: 12px 20px; background: #fff; color: #304b35; border: 1.5px solid #304b35; text-decoration: none;">
-                            Buka Dashboard Admin
+                        <a href="{% url 'profil' %}?tab=orders" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #fff; color: #304b35; border: 1.5px solid #304b35; text-decoration: none;">
+                            📋 Lihat Riwayat Pesanan Saya
                         </a>
                     </div>
                 </section>
@@ -781,7 +781,7 @@
 
                     <div style="display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
                         <a href="{% url 'beranda' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #edf1ec; color: #304b35; text-decoration: none;">Kembali ke Beranda</a>
-                        <a href="{% url 'admin_orders' %}" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #fff; color: #304b35; border: 1.5px solid #304b35; text-decoration: none;">Dashboard Admin</a>
+                        <a href="{% url 'profil' %}?tab=orders" class="btn-confirm" style="width: auto; padding: 12px 24px; background: #fff; color: #304b35; border: 1.5px solid #304b35; text-decoration: none;">📋 Lihat Status di Profil</a>
                     </div>
                 </section>
 

@@ -379,8 +379,10 @@ def profil_user(request):
             messages.success(request, "Password berhasil diperbarui.")
             return redirect('profil')
 
+    orders = Order.objects.filter(user=user).prefetch_related('items').order_by('-dibuat_pada')
     context = {
         'profile': profile,
+        'orders': orders,
     }
     return render(request, 'app/profil.html', context)
 
@@ -600,7 +602,7 @@ def get_order_payment_context(order):
         channel = 'invoice_b2b'
 
     # 1. Sinkronisasi status langsung dari server Midtrans jika pesanan belum berstatus Dibayar
-    if order.status != 'Dibayar':
+    if order.status in ['Menunggu Pembayaran', 'Menunggu Konfirmasi']:
         status_res, _ = check_midtrans_transaction_status(order.nomor_pesanan)
         if status_res:
             t_status = status_res.get('transaction_status')
@@ -683,8 +685,8 @@ def check_order_status(request, nomor_pesanan):
     """Mengecek status terkini dari pesanan untuk polling otomatis di frontend."""
     order = get_object_or_404(Order, nomor_pesanan=nomor_pesanan)
 
-    # Sinkronisasi langsung ke Midtrans jika belum Dibayar
-    if order.status != 'Dibayar':
+    # Sinkronisasi langsung ke Midtrans jika belum Dibayar/Diproses/Selesai
+    if order.status in ['Menunggu Pembayaran', 'Menunggu Konfirmasi']:
         status_res, _ = check_midtrans_transaction_status(nomor_pesanan)
         if status_res:
             t_status = status_res.get('transaction_status')
@@ -696,7 +698,7 @@ def check_order_status(request, nomor_pesanan):
     return JsonResponse({
         'nomor_pesanan': order.nomor_pesanan,
         'status': order.status,
-        'is_paid': order.status == 'Dibayar',
+        'is_paid': order.status in ['Dibayar', 'Diproses', 'Selesai'],
     })
 
 

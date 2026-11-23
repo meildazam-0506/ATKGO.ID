@@ -263,6 +263,412 @@
         padding: 22px;
       }
     }
+
+    /* Tab D - Riwayat & Status Pesanan */
+    .badge-count {
+      display: inline-block;
+      background: #df332b;
+      color: white;
+      border-radius: 12px;
+      padding: 1px 7px;
+      font-size: 11px;
+      margin-left: 6px;
+      font-weight: 700;
+      vertical-align: middle;
+    }
+
+    .orders-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #edf1ec;
+    }
+
+    .orders-live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #eef7f0;
+      color: #276738;
+      border: 1px solid #cce8d4;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2e7d32;
+      box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.7);
+      animation: pulse-green 1.8s infinite;
+    }
+
+    @keyframes pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(46, 125, 50, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+    }
+
+    .order-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8e1;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 24px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    .order-card:hover {
+      border-color: #b8ccbb;
+      box-shadow: 0 6px 20px rgba(48,75,53,0.06);
+    }
+
+    .order-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f0f3ef;
+      margin-bottom: 18px;
+    }
+
+    .order-id-label {
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: #304b35;
+      letter-spacing: 0.5px;
+    }
+
+    .order-date-label {
+      font-size: 12px;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .status-badge.dibayar {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+
+    .status-badge.diproses {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .status-badge.selesai {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status-badge.menunggu {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .status-badge.dibatalkan {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    /* Stepper Timeline */
+    .timeline-stepper {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin: 22px 0 25px;
+      padding: 0 10px;
+    }
+
+    .timeline-stepper::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 30px;
+      right: 30px;
+      height: 3px;
+      background: #e2e8e1;
+      z-index: 1;
+    }
+
+    .step-item {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      text-align: center;
+    }
+
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #cbd5cb;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .step-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #718096;
+      line-height: 1.3;
+    }
+
+    .step-subtext {
+      font-size: 11px;
+      color: #a0aec0;
+      margin-top: 2px;
+    }
+
+    .step-item.completed .step-circle {
+      background: #304b35;
+      border-color: #304b35;
+      color: white;
+    }
+
+    .step-item.completed .step-label {
+      color: #304b35;
+      font-weight: 700;
+    }
+
+    .step-item.active .step-circle {
+      background: white;
+      border-color: #304b35;
+      color: #304b35;
+      box-shadow: 0 0 0 4px rgba(48,75,53,0.18);
+    }
+
+    .step-item.active .step-label {
+      color: #304b35;
+      font-weight: 700;
+    }
+
+    .order-admin-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #fbfdfb;
+      border: 1px dashed #c0d8c4;
+      border-radius: 10px;
+      padding: 13px 16px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #2c4a31;
+    }
+
+    .order-admin-note.diproses {
+      background: #f0f9ff;
+      border-color: #bae6fd;
+      color: #075985;
+    }
+
+    .order-admin-note.selesai {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #166534;
+    }
+
+    .order-admin-note.menunggu {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+
+    .order-admin-note.dibatalkan {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
+
+    .order-items-box {
+      background: #fafbfa;
+      border: 1px solid #edf1ec;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+
+    .order-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #e6ebe5;
+      font-size: 13px;
+    }
+
+    .order-item-row:last-child {
+      border-bottom: none;
+    }
+
+    .order-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      margin-top: 6px;
+      border-top: 1.5px solid #e1e7e0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #252641;
+    }
+
+    .order-action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 6px;
+    }
+
+    .btn-action-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 18px;
+      background: #304b35;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-action-primary:hover {
+      background: #253b29;
+    }
+
+    .btn-action-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      background: white;
+      color: #304b35;
+      border: 1.5px solid #304b35;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-action-outline:hover {
+      background: #edf3ed;
+    }
+
+    .btn-action-wa {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      background: #25d366;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-action-wa:hover {
+      background: #1ebd5a;
+    }
+
+    .empty-orders-card {
+      text-align: center;
+      padding: 60px 20px;
+      background: #fbfcfb;
+      border: 2px dashed #d5ded5;
+      border-radius: 16px;
+    }
+
+    .empty-orders-card .empty-icon {
+      width: 65px;
+      height: 65px;
+      margin-bottom: 16px;
+      display: inline-block;
+      color: #8da491;
+    }
+
+    @media (max-width: 640px) {
+      .timeline-stepper {
+        flex-direction: column;
+        gap: 16px;
+        padding-left: 20px;
+      }
+      .timeline-stepper::before {
+        top: 15px;
+        bottom: 15px;
+        left: 36px;
+        right: auto;
+        width: 3px;
+        height: auto;
+      }
+      .step-item {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        gap: 14px;
+      }
+      .step-circle {
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+      .order-action-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .order-action-bar > div {
+        width: 100%;
+      }
+      .btn-action-primary,
+      .btn-action-outline,
+      .btn-action-wa {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+    }
   </style>
 </head>
 <body>
@@ -350,6 +756,12 @@
         <button type="button" class="profile-tab-btn active" data-tab="tab-personal">A. Data Pengguna</button>
         <button type="button" class="profile-tab-btn" data-tab="tab-business">B. Profil Usaha</button>
         <button type="button" class="profile-tab-btn" data-tab="tab-settings">C. Pengaturan &amp; Keamanan</button>
+        <button type="button" class="profile-tab-btn" data-tab="tab-orders">
+          D. Riwayat &amp; Status Pesanan
+          {% if orders %}
+            <span class="badge-count">{{ orders.count }}</span>
+          {% endif %}
+        </button>
       </nav>
 
       <!-- TAB A: DATA PENGGUNA -->
@@ -514,6 +926,212 @@
         </form>
       </section>
 
+      <!-- TAB D: RIWAYAT & STATUS PESANAN REAL-TIME -->
+      <section id="tab-orders" class="profile-tab-content">
+        <div class="orders-header-bar">
+          <div>
+            <h2 class="section-title">Riwayat &amp; Status Pesanan Layanan</h2>
+            <p class="section-desc" style="margin-bottom:0;">Pantau progres pengerjaan layanan Anda secara real-time yang dikelola langsung oleh tim admin ATKGO.ID.</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <span class="orders-live-indicator">
+              <span class="live-dot"></span>
+              Live Sync Server Admin
+            </span>
+            <a href="{% url 'profil' %}?tab=orders" class="btn-action-outline" style="padding:7px 14px; font-size:12px;">
+              🔄 Segarkan Status
+            </a>
+          </div>
+        </div>
+
+        {% if not orders %}
+          <div class="empty-orders-card">
+            <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <h3 style="color:#252641; font-size:18px; margin-bottom:8px;">Belum Ada Pesanan Layanan</h3>
+            <p style="color:#777; font-size:14px; max-width:480px; margin:0 auto 20px;">
+              Anda belum memiliki riwayat pemesanan. Pilih berbagai layanan alat tulis, cetak custom, atau pengadaan kantor yang Anda butuhkan.
+            </p>
+            <a href="{% url 'produk' %}" class="btn-action-primary">
+              🛍️ Jelajahi Layanan ATKGO
+            </a>
+          </div>
+        {% else %}
+          {% for ord in orders %}
+            <div class="order-card">
+              <div class="order-card-top">
+                <div>
+                  <div class="order-id-label">Pesanan #{{ ord.nomor_pesanan }}</div>
+                  <div class="order-date-label">📅 Dipesan pada {{ ord.dibuat_pada|date:"d M Y, H:i" }} WIB</div>
+                </div>
+                <div>
+                  {% if ord.status == 'Dibayar' %}
+                    <span class="status-badge dibayar">✓ Pembayaran Berhasil (Lunas)</span>
+                  {% elif ord.status == 'Diproses' %}
+                    <span class="status-badge diproses">⚙ Sedang Dikerjakan Admin</span>
+                  {% elif ord.status == 'Selesai' %}
+                    <span class="status-badge selesai">✓ Layanan Selesai</span>
+                  {% elif ord.status == 'Menunggu Pembayaran' %}
+                    <span class="status-badge menunggu">⏳ Menunggu Pembayaran</span>
+                  {% elif ord.status == 'Menunggu Konfirmasi' %}
+                    <span class="status-badge menunggu">⏳ Menunggu Konfirmasi</span>
+                  {% elif ord.status == 'Dibatalkan' %}
+                    <span class="status-badge dibatalkan">✕ Pesanan Dibatalkan</span>
+                  {% else %}
+                    <span class="status-badge diproses">{{ ord.status }}</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- TIMELINE STEPPER PROGRES REAL-TIME -->
+              {% if ord.status != 'Dibatalkan' %}
+                <div class="timeline-stepper">
+                  <!-- Step 1: Pesanan Dibuat -->
+                  <div class="step-item completed">
+                    <div class="step-circle">✓</div>
+                    <div class="step-label">Pesanan Dibuat</div>
+                    <div class="step-subtext">Sistem ATKGO</div>
+                  </div>
+
+                  <!-- Step 2: Pembayaran Lunas -->
+                  <div class="step-item {% if ord.status == 'Dibayar' or ord.status == 'Diproses' or ord.status == 'Selesai' %}completed{% elif ord.status == 'Menunggu Pembayaran' or ord.status == 'Menunggu Konfirmasi' %}active{% endif %}">
+                    <div class="step-circle">
+                      {% if ord.status == 'Dibayar' or ord.status == 'Diproses' or ord.status == 'Selesai' %}
+                        ✓
+                      {% else %}
+                        2
+                      {% endif %}
+                    </div>
+                    <div class="step-label">
+                      {% if ord.status == 'Dibayar' or ord.status == 'Diproses' or ord.status == 'Selesai' %}
+                        Pembayaran Lunas
+                      {% else %}
+                        Menunggu Bayar
+                      {% endif %}
+                    </div>
+                    <div class="step-subtext">{{ ord.metode_pembayaran|truncatechars:18 }}</div>
+                  </div>
+
+                  <!-- Step 3: Pengerjaan Layanan oleh Admin -->
+                  <div class="step-item {% if ord.status == 'Selesai' %}completed{% elif ord.status == 'Diproses' %}active{% elif ord.status == 'Dibayar' %}active{% endif %}">
+                    <div class="step-circle">
+                      {% if ord.status == 'Selesai' %}
+                        ✓
+                      {% elif ord.status == 'Diproses' %}
+                        ⚙
+                      {% else %}
+                        3
+                      {% endif %}
+                    </div>
+                    <div class="step-label">
+                      {% if ord.status == 'Diproses' %}
+                        Sedang Dikerjakan
+                      {% elif ord.status == 'Selesai' %}
+                        Pengerjaan Selesai
+                      {% else %}
+                        Antrean Layanan
+                      {% endif %}
+                    </div>
+                    <div class="step-subtext">Tim Admin ATKGO</div>
+                  </div>
+
+                  <!-- Step 4: Selesai / Terkirim -->
+                  <div class="step-item {% if ord.status == 'Selesai' %}completed{% endif %}">
+                    <div class="step-circle">
+                      {% if ord.status == 'Selesai' %}✓{% else %}4{% endif %}
+                    </div>
+                    <div class="step-label">Pesanan Selesai</div>
+                    <div class="step-subtext">Layanan Tuntas</div>
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- PEMBERITAHUAN REAL-TIME DARI SERVER ADMIN -->
+              <div class="order-admin-note {% if ord.status == 'Diproses' %}diproses{% elif ord.status == 'Selesai' %}selesai{% elif ord.status == 'Menunggu Pembayaran' or ord.status == 'Menunggu Konfirmasi' %}menunggu{% elif ord.status == 'Dibatalkan' %}dibatalkan{% endif %}">
+                <span style="font-size:18px; flex-shrink:0;">
+                  {% if ord.status == 'Diproses' %}⚙️
+                  {% elif ord.status == 'Selesai' %}🎉
+                  {% elif ord.status == 'Dibayar' %}✅
+                  {% elif ord.status == 'Dibatalkan' %}⚠️
+                  {% else %}⏳
+                  {% endif %}
+                </span>
+                <div>
+                  <strong>Pemberitahuan Status Pengerjaan dari Admin:</strong>
+                  {% if ord.status == 'Diproses' %}
+                    <p style="margin:4px 0 0;">Pesanan Anda sedang dalam proses pengerjaan intensif oleh tim ATKGO. Kami memastikan setiap rincian layanan diselesaikan dengan standar mutu terbaik.</p>
+                  {% elif ord.status == 'Selesai' %}
+                    <p style="margin:4px 0 0;">Seluruh pesanan layanan Anda telah selesai dikerjakan secara tuntas! Anda dapat melihat rincian dan bukti invoice resmi di bawah.</p>
+                  {% elif ord.status == 'Dibayar' %}
+                    <p style="margin:4px 0 0;">Pembayaran berhasil dikonfirmasi. Admin ATKGO telah menerima pesanan Anda dan menjadwalkannya masuk ke tahap pengerjaan.</p>
+                  {% elif ord.status == 'Menunggu Pembayaran' %}
+                    <p style="margin:4px 0 0;">Pesanan telah dibuat dan menunggu pembayaran Anda. Silakan selesaikan pembayaran untuk memulai proses pengerjaan oleh tim ATKGO.</p>
+                  {% elif ord.status == 'Menunggu Konfirmasi' %}
+                    <p style="margin:4px 0 0;">Pesanan menunggu verifikasi admin. Tim kami akan segera meninjau pembayaran dan detail pesanan Anda.</p>
+                  {% elif ord.status == 'Dibatalkan' %}
+                    <p style="margin:4px 0 0;">Pesanan ini telah dibatalkan. Jika ini merupakan kekeliruan, silakan hubungi tim customer service kami.</p>
+                  {% else %}
+                    <p style="margin:4px 0 0;">Status pesanan saat ini: {{ ord.status }}. Tim admin memperbarui status ini secara real-time.</p>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- RINCIAN LAYANAN & ITEM -->
+              <div class="order-items-box">
+                <div style="font-weight:700; color:#304b35; font-size:13px; margin-bottom:8px;">Rincian Layanan &amp; Produk:</div>
+                {% for item in ord.items.all %}
+                  <div class="order-item-row">
+                    <div>
+                      <strong>{{ item.nama_produk }}</strong>
+                      <span style="color:#777; font-size:12px; margin-left:6px;">x{{ item.jumlah }}</span>
+                    </div>
+                    <div style="font-weight:600; color:#252641;">Rp {{ item.subtotal|floatformat:0 }}</div>
+                  </div>
+                {% empty %}
+                  <div class="order-item-row">
+                    <div><strong>Layanan Terpadu ATKGO</strong></div>
+                    <div style="font-weight:600; color:#252641;">Rp {{ ord.total_harga|floatformat:0 }}</div>
+                  </div>
+                {% endfor %}
+
+                <div class="order-summary-row">
+                  <div>
+                    <span>Total Pembayaran:</span>
+                    <span style="font-size:12px; font-weight:normal; color:#666; margin-left:8px;">({{ ord.metode_pembayaran }})</span>
+                  </div>
+                  <div style="font-size:16px; color:#304b35;">Rp {{ ord.total_harga|floatformat:0 }}</div>
+                </div>
+              </div>
+
+              <!-- ACTION BUTTONS -->
+              <div class="order-action-bar">
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <a href="{% url 'pembayaran' %}?order_id={{ ord.nomor_pesanan }}" class="btn-action-primary">
+                    📄 Lihat Bukti Pembayaran / Invoice
+                  </a>
+
+                  {% if ord.status == 'Menunggu Pembayaran' %}
+                    <a href="{% url 'pembayaran' %}?order_id={{ ord.nomor_pesanan }}" class="btn-action-outline" style="border-color:#df332b; color:#df332b;">
+                      💳 Bayar Sekarang
+                    </a>
+                  {% endif %}
+                </div>
+
+                <div>
+                  <a href="https://wa.me/6282278843288?text=Halo%20Admin%20ATKGO,%20saya%20ingin%20menanyakan%20progres%20pesanan%20saya%20nomor%20{{ ord.nomor_pesanan }}" target="_blank" class="btn-action-wa" title="Tanyakan langsung ke admin via WhatsApp">
+                    💬 Hubungi Admin via WhatsApp
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          {% endfor %}
+        {% endif %}
+      </section>
+
     </div>
   </main>
 
@@ -551,17 +1169,40 @@
     const tabBtns = document.querySelectorAll('.profile-tab-btn');
     const tabContents = document.querySelectorAll('.profile-tab-content');
 
+    function activateTab(targetId) {
+      tabBtns.forEach(b => {
+        if (b.getAttribute('data-tab') === targetId) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      tabContents.forEach(c => {
+        if (c.id === targetId) {
+          c.classList.add('active');
+        } else {
+          c.classList.remove('active');
+        }
+      });
+    }
+
     tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-tab');
-        tabBtns.forEach(b => b.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
-
-        btn.classList.add('active');
-        const targetContent = document.getElementById(targetId);
-        if (targetContent) targetContent.classList.add('active');
+        activateTab(targetId);
       });
     });
+
+    // Check URL query param e.g. ?tab=orders or hash #tab-orders
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam === 'orders' || window.location.hash === '#tab-orders') {
+      activateTab('tab-orders');
+    } else if (tabParam === 'business' || window.location.hash === '#tab-business') {
+      activateTab('tab-business');
+    } else if (tabParam === 'settings' || window.location.hash === '#tab-settings') {
+      activateTab('tab-settings');
+    }
 
     // Show/Hide password toggle
     document.querySelectorAll('.toggle-password').forEach(button => {
