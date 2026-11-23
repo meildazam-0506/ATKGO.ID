@@ -24,7 +24,12 @@ from .models import (
     HeroBanner, Keunggulan, WebsiteSetting, ArticleCategory, Article,
     Order, OrderItem
 )
-from .midtrans import create_snap_transaction, create_core_api_charge, verify_midtrans_signature
+from .midtrans import (
+    create_snap_transaction,
+    create_core_api_charge,
+    check_midtrans_transaction_status,
+    verify_midtrans_signature
+)
 
 User = get_user_model()
 
@@ -580,7 +585,7 @@ def pembayaran(request):
 
 
 def get_order_payment_context(order):
-    """Menyiapkan data tagihan, simulator QRIS / Virtual Account Midtrans, dan Bukti Pembayaran."""
+    """Menyiapkan data tagihan, QRIS / Virtual Account Midtrans resmi, dan Bukti Pembayaran / Invoice."""
     metode = str(order.metode_pembayaran or '').lower()
 
     if 'qris' in metode:
@@ -594,11 +599,21 @@ def get_order_payment_context(order):
     else:
         channel = 'invoice_b2b'
 
-    # Buat QR Code Image URL simulator untuk QRIS (kompatibel simulator.sandbox.midtrans.com/v2/qris/index)
+    # 1. Sinkronisasi status langsung dari server Midtrans jika pesanan belum berstatus Dibayar
+    if order.status != 'Dibayar':
+        status_res, _ = check_midtrans_transaction_status(order.nomor_pesanan)
+        if status_res:
+            t_status = status_res.get('transaction_status')
+            f_status = status_res.get('fraud_status')
+            if t_status in ['capture', 'settlement'] and f_status != 'challenge':
+                order.status = 'Dibayar'
+                order.save(update_fields=['status'])
+
+    # 2. Pengaturan QR Code dan Virtual Account resmi
     qris_data = f"00020101021226580016ID.CO.MIDTRANS011893600523000001{order.id}520458125303360540{int(order.total_harga)}5802ID5908ATKGO_ID6007JAKARTA62070703A016304"
     qris_qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={qris_data}"
 
-    # Buat nomor Virtual Account unik sesuai bank pilihan
+    # Default VA bank
     if 'mandiri' in metode:
         va_bank_name = 'Mandiri'
         va_number = f"Bill Key: {order.nomor_pesanan.split('-')[-1]} (Biller: 70012)"
@@ -624,7 +639,7 @@ def get_order_payment_context(order):
     midtrans_official_connected = False
     if order.status != 'Dibayar':
         core_res, core_err = create_core_api_charge(order, payment_channel=channel, bank=va_bank_name)
-        if core_res:
+        if core_res and core_res.get('status_code') in ['200', '201']:
             midtrans_official_connected = True
             for act in core_res.get('actions', []):
                 if act.get('name') == 'generate-qr-code':
@@ -637,6 +652,16 @@ def get_order_payment_context(order):
                 va_number = core_res.get('permata_va_number')
             elif 'bill_key' in core_res:
                 va_number = f"Bill Key: {core_res.get('bill_key')} (Biller: {core_res.get('biller_code', '70012')})"
+        else:
+            # Jika charge mengembalikan conflict / sudah ada transaksi terdaftar, gunakan transaction_id resmi
+            status_check, _ = check_midtrans_transaction_status(order.nomor_pesanan)
+            if status_check and status_check.get('transaction_id'):
+                midtrans_official_connected = True
+                trans_id = status_check.get('transaction_id')
+                qris_qr_url = f"https://api.sandbox.midtrans.com/v2/qris/{trans_id}/qr-code"
+                va_list = status_check.get('va_numbers', [])
+                if va_list and len(va_list) > 0:
+                    va_number = va_list[0].get('va_number', va_number)
 
     return {
         'order_created': order,
@@ -654,39 +679,20 @@ def get_order_payment_context(order):
     }
 
 
-@csrf_exempt
-@require_POST
-def midtrans_simulate_payment(request):
-    """
-    Simulator pembayaran sandbox: mengubah status pesanan menjadi 'Dibayar'.
-    Terhubung langsung ke Dashboard Admin & Bukti Pembayaran.
-    """
-    try:
-        data = json.loads(request.body.decode('utf-8'))
-    except Exception:
-        data = request.POST
-
-    order_id = data.get('order_id')
-    if not order_id:
-        return JsonResponse({'status': 'error', 'message': 'order_id wajib diisi'}, status=400)
-
-    order = Order.objects.filter(nomor_pesanan=order_id).first()
-    if not order:
-        return JsonResponse({'status': 'error', 'message': 'Pesanan tidak ditemukan'}, status=404)
-
-    order.status = 'Dibayar'
-    order.save(update_fields=['status'])
-    return JsonResponse({
-        'status': 'success',
-        'message': f'Pesanan {order.nomor_pesanan} berhasil disimulasikan lunas.',
-        'order_status': order.status,
-        'is_paid': True
-    })
-
-
 def check_order_status(request, nomor_pesanan):
     """Mengecek status terkini dari pesanan untuk polling otomatis di frontend."""
     order = get_object_or_404(Order, nomor_pesanan=nomor_pesanan)
+
+    # Sinkronisasi langsung ke Midtrans jika belum Dibayar
+    if order.status != 'Dibayar':
+        status_res, _ = check_midtrans_transaction_status(nomor_pesanan)
+        if status_res:
+            t_status = status_res.get('transaction_status')
+            f_status = status_res.get('fraud_status')
+            if t_status in ['capture', 'settlement'] and f_status != 'challenge':
+                order.status = 'Dibayar'
+                order.save(update_fields=['status'])
+
     return JsonResponse({
         'nomor_pesanan': order.nomor_pesanan,
         'status': order.status,

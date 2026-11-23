@@ -210,6 +210,27 @@ def create_core_api_charge(order, payment_channel='qris', bank='bca'):
         return None, str(e)
 
 
+def check_midtrans_transaction_status(order_id):
+    """
+    Mengecek status terkini transaksi langsung ke server Midtrans API (/v2/{order_id}/status).
+    Mengembalikan (data_json, error_message).
+    """
+    status_url = f"https://api.sandbox.midtrans.com/v2/{order_id}/status"
+    headers = get_midtrans_auth_header()
+    try:
+        req = urllib.request.Request(status_url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as res:
+            res_json = json.loads(res.read().decode('utf-8'))
+            return res_json, None
+    except urllib.error.HTTPError as e:
+        body = e.read().decode('utf-8', errors='ignore')
+        logger.warning(f"Midtrans Status API HTTP {e.code}: {body}")
+        return None, f"HTTP {e.code}: {body}"
+    except Exception as e:
+        logger.error(f"Midtrans Status API exception: {e}")
+        return None, str(e)
+
+
 def verify_midtrans_signature(order_id, status_code, gross_amount, signature_key):
     """
     Verifikasi tanda tangan webhook Midtrans:

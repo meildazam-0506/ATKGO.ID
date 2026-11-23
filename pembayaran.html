@@ -561,6 +561,9 @@
             .form-grid { grid-template-columns: 1fr; }
             .form-group.full { grid-column: auto; }
         }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -620,7 +623,7 @@
                             <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID" style="width: 44px; height: 44px; object-fit: contain;">
                             <div style="text-align: left;">
                                 <h2 style="font-size: 20px; color: #252641; margin: 0;">ATKGO.ID</h2>
-                                <small style="color: #666; font-size: 11px;">BUKTI PEMBAYARAN RESMI TRANSAKSI</small>
+                                <small style="color: #2e7d32; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;">✓ PEMBAYARAN BERHASIL (INVOICE RESMI)</small>
                             </div>
                         </div>
                         <div style="background: #e8f5e9; color: #2e7d32; border: 1.5px solid #a5d6a7; border-radius: 20px; padding: 6px 16px; font-weight: 800; font-size: 13px;">
@@ -732,12 +735,6 @@
                                     </a>
                                 </div>
 
-                                {% if not midtrans_official_connected %}
-                                    <div style="background: #fff9e6; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #855300; margin: 14px auto 0; max-width: 480px; text-align: left; line-height: 1.5;">
-                                        ℹ️ <strong>Tips Pengujian Sandbox:</strong> Gunakan tombol hijau <strong>"⚡ Simulasikan Pembayaran Berhasil"</strong> di bawah untuk menguji perubahan status otomatis menjadi <strong>Dibayar (Lunas)</strong> dan mencetak Bukti Pembayaran Resmi.
-                                    </div>
-                                {% endif %}
-
                             {% elif payment_channel == 'bank_transfer' %}
                                 <!-- INSTRUKSI VIRTUAL ACCOUNT MIDTRANS SIMULATOR -->
                                 <h3 style="color: #252641; font-size: 16px; margin: 0 0 8px;">Instruksi Pembayaran {{ va_bank_name }} Virtual Account</h3>
@@ -765,20 +762,20 @@
                                 <!-- INSTRUKSI E-WALLET / LAINNYA -->
                                 <h3 style="color: #252641; font-size: 16px; margin: 0 0 8px;">Instruksi Pembayaran {{ order_created.metode_pembayaran }}</h3>
                                 <p style="font-size: 13px; color: #666; margin: 0 0 16px;">
-                                    Selesaikan otorisasi pembayaran melalui aplikasi atau simulasikan pembayaran berhasil di bawah ini.
+                                    Selesaikan otorisasi pembayaran melalui aplikasi atau simulator Midtrans.
                                 </p>
                             {% endif %}
                         </div>
 
-                        <!-- TOMBOL SIMULASI PEMBAYARAN BERHASIL (SATU KLIK) -->
-                        <div style="margin-top: 24px; padding-top: 18px; border-top: 1.5px dashed #c9dbc9; text-align: center;">
-                            <div style="font-size: 12.5px; color: #555; margin-bottom: 10px;">
-                                Uji alur pembayaran sandbox secara langsung (status otomatis berubah menjadi <strong>Dibayar</strong>):
+                        <!-- STATUS VERIFIKASI PEMBAYARAN MIDTRANS OTOMATIS -->
+                        <div style="margin-top: 24px; padding: 18px 20px; background: #f0f7f1; border: 1.5px solid #c8e6c9; border-radius: 12px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; color: #2e7d32; font-size: 14.5px; font-weight: 700;">
+                                <span style="display: inline-block; width: 14px; height: 14px; border: 2.5px solid #2e7d32; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span>
+                                Menunggu Konfirmasi Pembayaran dari Midtrans...
                             </div>
-                            <button type="button" id="btn-simulate-settlement" onclick="simulatePaymentSuccess('{{ order_created.nomor_pesanan }}')" class="btn-confirm" style="width: auto; min-width: 280px; margin: 0 auto; padding: 14px 28px; background: #2e7d32; font-size: 15px; box-shadow: 0 4px 14px rgba(46,125,50,0.25);">
-                                ⚡ Simulasikan Pembayaran Berhasil
-                            </button>
-                            <div id="simulate-msg" style="margin-top: 8px; font-size: 12.5px; font-weight: 600;"></div>
+                            <p style="margin: 8px 0 0; font-size: 12.5px; color: #555; line-height: 1.5;">
+                                Silakan selesaikan pembayaran. Sistem secara otomatis mendeteksi status transaksi dari Midtrans dan langsung <strong>menampilkan Bukti Pembayaran Resmi / Invoice</strong> tanpa perlu refresh manual.
+                            </p>
                         </div>
                     </div>
 
@@ -804,37 +801,7 @@
                         alert('Nomor Virtual Account disalin: ' + text);
                     }
 
-                    function simulatePaymentSuccess(orderId) {
-                        var btn = document.getElementById('btn-simulate-settlement');
-                        var msg = document.getElementById('simulate-msg');
-                        if (btn) btn.disabled = true;
-                        if (msg) { msg.style.color = '#304b35'; msg.textContent = 'Memverifikasi pembayaran ke server...'; }
-
-                        fetch('/api/midtrans/simulate/', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': '{{ csrf_token }}'
-                            },
-                            body: JSON.stringify({ order_id: orderId })
-                        })
-                        .then(function(r){ return r.json(); })
-                        .then(function(data) {
-                            if (data.status === 'success') {
-                                if (msg) { msg.style.color = '#2e7d32'; msg.textContent = '✓ Pembayaran Berhasil Dikonfirmasi!'; }
-                                setTimeout(function(){ window.location.reload(); }, 600);
-                            } else {
-                                alert('Simulasi gagal: ' + (data.message || 'Error'));
-                                if (btn) btn.disabled = false;
-                            }
-                        })
-                        .catch(function(err) {
-                            alert('Terjadi kendala jaringan saat simulasi.');
-                            if (btn) btn.disabled = false;
-                        });
-                    }
-
-                    // Polling otomatis setiap 3 detik untuk mendeteksi pembayaran dari Simulator Midtrans
+                    // Polling otomatis setiap 2 detik untuk mendeteksi konfirmasi pembayaran Midtrans
                     (function() {
                         var orderId = "{{ order_created.nomor_pesanan }}";
                         var interval = setInterval(function() {
@@ -847,7 +814,7 @@
                                 }
                             })
                             .catch(function(){});
-                        }, 3000);
+                        }, 2000);
                     })();
                 </script>
             {% endif %}
