@@ -20,7 +20,6 @@ urlpatterns = [
     path('pembayaran/', views.pembayaran, name='pembayaran'),
     path('api/midtrans/notification/', views.midtrans_notification, name='midtrans_notification'),
     path('midtrans/callback/', views.midtrans_notification, name='midtrans_callback'),
-    path('api/midtrans/simulate/', views.midtrans_simulate_payment, name='midtrans_simulate_payment'),
     path('api/order/status/<str:nomor_pesanan>/', views.check_order_status, name='check_order_status'),
 
     # Halaman Profil Pengguna & Usaha
