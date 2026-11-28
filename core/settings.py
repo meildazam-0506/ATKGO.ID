@@ -78,7 +78,7 @@ SESSION_COOKIE_NAME = 'atkgo_sessionid'
 
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_NAME = 'atkgo_csrftoken'
+CSRF_COOKIE_NAME = 'csrftoken'
 CSRF_COOKIE_AGE = 60 * 60 * 24 * 30
 
 # Custom handler untuk mencegah halaman error 403 jika CSRF token kadaluarsa
@@ -108,6 +108,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'core.middleware.FriendlyCsrfMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

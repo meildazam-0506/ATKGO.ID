@@ -4,42 +4,419 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kontak | ATKGO.ID</title>
-  <meta name="description" content="ATKGO.ID — Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.">
+  <title>Kontak &amp; Konsultasi Agency | ATKGO.ID</title>
+  <meta name="description" content="Hubungi ATKGO.ID untuk kebutuhan pengadaan alat tulis kantor, merchandise, dan layanan branding digital bisnis Anda.">
   <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <style>
+    /* Custom Styling Halaman Kontak & Form Konsultasi Modern */
+    .contact-hero-section {
+      padding: 50px 0 80px;
+      background: linear-gradient(180deg, #fffaf2 0%, #ffffff 100%);
+      min-height: calc(100vh - 180px);
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 40px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+
+    /* Info Kontak Kiri */
+    .contact-info-col .badge-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(239, 57, 56, 0.1);
+      color: #ef3938;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .contact-info-col h1.page-title {
+      font-size: 36px;
+      font-weight: 900;
+      color: #252641;
+      line-height: 1.25;
+      margin: 0 0 16px;
+    }
+    .contact-info-col h1.page-title em {
+      font-style: normal;
+      color: #ef3938;
+    }
+    .contact-info-col p.hero-desc {
+      font-size: 15px;
+      color: #555e68;
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    /* Kartu Info Agency & Keuntungan */
+    .agency-card {
+      background: #ffffff;
+      border: 1.5px solid #edf2f7;
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 0 10px 25px rgba(37, 38, 65, 0.05);
+      margin-bottom: 24px;
+    }
+    .agency-card h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: #252641;
+      margin: 0 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .agency-card p.agency-motto {
+      font-size: 13.5px;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .benefit-pills {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      border: 1px solid #f1f5f9;
+    }
+    .benefit-item .icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .direct-contacts {
+      border-top: 1.5px dashed #e2e8f0;
+      padding-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13.5px;
+      color: #475569;
+    }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .contact-row strong {
+      color: #1e293b;
+      min-width: 90px;
+    }
+    .contact-row a {
+      color: #304b35;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .contact-row a:hover {
+      text-decoration: underline;
+      color: #ef3938;
+    }
+
+    .btn-wa-hotline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: #25D366;
+      color: #ffffff !important;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 13px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      margin-top: 18px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.28);
+    }
+    .btn-wa-hotline:hover {
+      background: #20bd5a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
+      color: #ffffff !important;
+    }
+
+    /* Kartu Form Sisi Kanan */
+    .form-card {
+      background: #ffffff;
+      border: 1.5px solid #edf2f7;
+      border-radius: 20px;
+      padding: 36px 32px;
+      box-shadow: 0 15px 35px rgba(37, 38, 65, 0.07);
+    }
+    .form-card-header {
+      margin-bottom: 24px;
+      border-bottom: 1.5px solid #f1f5f9;
+      padding-bottom: 18px;
+    }
+    .form-card-header h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #252641;
+      margin: 0 0 6px;
+    }
+    .form-card-header p {
+      font-size: 13.5px;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .form-group-modern {
+      margin-bottom: 18px;
+    }
+    .form-group-modern label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 700;
+      font-size: 13px;
+      color: #252641;
+    }
+    .form-group-modern label span.req {
+      color: #ef3938;
+      margin-left: 2px;
+    }
+
+    .form-control-modern {
+      width: 100%;
+      height: 48px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #1e293b;
+      background: #fbfcfe;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    .form-control-modern:focus {
+      outline: none;
+      border-color: #ef3938;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(239, 57, 56, 0.12);
+    }
+    .form-control-modern:disabled,
+    .form-control-modern[readonly] {
+      background: #f1f5f9;
+      color: #64748b;
+      cursor: not-allowed;
+      border-color: #e2e8f0;
+    }
+
+    select.form-control-modern {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+      padding-right: 40px;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    textarea.form-control-modern {
+      height: auto;
+      min-height: 120px;
+      padding: 14px 16px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+
+    .form-two-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .form-two-cols {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .form-card {
+        padding: 24px 20px;
+      }
+    }
+
+    .btn-submit-contact {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 50px;
+      background: #ef3938;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(239, 57, 56, 0.25);
+      margin-top: 8px;
+    }
+    .btn-submit-contact:hover {
+      background: #c53030;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 57, 56, 0.35);
+    }
+    .btn-submit-contact:active {
+      transform: translateY(0);
+    }
+
+    /* Alert Banner Sesi Login */
+    .login-lock-banner {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      font-size: 13.5px;
+      color: #92400e;
+      line-height: 1.6;
+    }
+    .login-lock-banner h4 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #78350f;
+    }
+    .btn-login-to-send {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 50px;
+      background: #ef3938;
+      color: #ffffff !important;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(239, 57, 56, 0.25);
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+    .btn-login-to-send:hover {
+      background: #c53030;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(239, 57, 56, 0.35);
+    }
+  </style>
 </head>
 <body>
   {% include "app/navbar.html" %}
 
   <main>
-    <section class="section alt">
-      <div class="wrap split">
-        <div>
-          <span class="eyebrow">KONTAK</span>
-          <h1 class="page-title">Ada yang ingin <em>ditanyakan?</em></h1>
-          <p>Isi formulir berikut untuk menyampaikan pertanyaan atau kebutuhan pengadaan alat tulis dan layanan branding bisnis Anda. Tim kami akan segera menindaklanjuti pesan Anda.</p>
-          
-          <div class="card" style="margin-top: 20px;">
-            <h3 style="margin-top: 0; color: #252641;">ATKGO.ID</h3>
-            <p>Mitra cerdas pengadaan alat tulis, perlengkapan operasional kantor, dan pemasaran digital.</p>
-            <p style="margin: 8px 0;"><b class="contact-hours">Jam Layanan:</b> Senin – Sabtu, 08:00 – 17:00 WITA</p>
-            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e0e0e0; font-size: 13.5px; color: #555; line-height: 1.6;">
-              <div>📧 <strong>Email:</strong> support@atkgo.id</div>
-              <div>📱 <strong>WhatsApp:</strong> 0822-7884-3288</div>
-              <div>📍 <strong>Lokasi:</strong> Indonesia</div>
+    <section class="contact-hero-section">
+      <div class="wrap contact-grid">
+        
+        <!-- KOLOM KIRI: Informasi Agency, Layanan & Kontak Resmi -->
+        <div class="contact-info-col">
+          <span class="badge-eyebrow">✦ HUBUNGI ATKGO.ID</span>
+          <h1 class="page-title">Ada yang ingin <em>dikonsultasikan?</em></h1>
+          <p class="hero-desc">
+            Sampaikan kebutuhan pengadaan perlengkapan alat tulis kantor (ATK), kebutuhan merchandise instansi, atau layanan branding &amp; visual kreatif bisnis Anda. Tim perwakilan agency kami siap memberikan solusi terbaik.
+          </p>
+
+          <div class="agency-card">
+            <h3>
+              <span>🏢</span>
+              <span>ATKGO.ID Agency Workspace</span>
+            </h3>
+            <p class="agency-motto">
+              Mitra cerdas pengadaan alat tulis, perlengkapan operasional kantor, desain visual brand, dan pemasaran digital UMKM &amp; Perusahaan.
+            </p>
+
+            <!-- Highlight Value / Keuntungan -->
+            <div class="benefit-pills">
+              <div class="benefit-item">
+                <span class="icon">⚡</span>
+                <span><strong>Respons Cepat:</strong> Ditinjau &amp; di-ACC langsung oleh tim agency kami</span>
+              </div>
+              <div class="benefit-item">
+                <span class="icon">💼</span>
+                <span><strong>Konsultasi Gratis:</strong> Diskusi kebutuhan produk &amp; kustomisasi desain</span>
+              </div>
+              <div class="benefit-item">
+                <span class="icon">📄</span>
+                <span><strong>Penawaran Resmi:</strong> Dukungan invoice &amp; proposal resmi berbadan hukum</span>
+              </div>
             </div>
+
+            <!-- Detail Kontak Operasional -->
+            <div class="direct-contacts">
+              <div class="contact-row">
+                <strong>🕒 Jam Kerja:</strong>
+                <span>Senin – Sabtu, 08:00 – 17:00 WITA</span>
+              </div>
+              <div class="contact-row">
+                <strong>📧 Email:</strong>
+                <a href="mailto:support@atkgo.id">support@atkgo.id</a>
+              </div>
+              <div class="contact-row">
+                <strong>📱 WhatsApp:</strong>
+                <a href="https://wa.me/6282278843288?text=Halo%20Admin%20ATKGO.ID%2C%20saya%20ingin%20konsultasi%20pengadaan%20alat%20tulis%20dan%20layanan%20branding" target="_blank" rel="noopener">0822-7884-3288</a>
+              </div>
+              <div class="contact-row">
+                <strong>📍 Lokasi:</strong>
+                <span>Indonesia</span>
+              </div>
+            </div>
+
+            <!-- Tombol Direct WhatsApp -->
+            <a href="https://wa.me/6282278843288?text=Halo%20Admin%20Agency%20ATKGO.ID%2C%20saya%20ingin%20konsultasi%20pengadaan%20alat%20tulis%20dan%20layanan%20branding" target="_blank" rel="noopener" class="btn-wa-hotline">
+              <span>💬</span>
+              <span>Chat WhatsApp Customer Care &rarr;</span>
+            </a>
           </div>
         </div>
 
-        <div class="card" style="padding: 30px;">
+        <!-- KOLOM KANAN: Formulir Permintaan / Konsultasi -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h2>Kirim Formulir Konsultasi</h2>
+            <p>Data pesan Anda akan masuk langsung ke Dashboard Admin Agency ATKGO.ID untuk ditinjau dan di-ACC.</p>
+          </div>
+
           <!-- PESAN ALERT / FLASH MESSAGES -->
           {% if messages %}
             {% for message in messages %}
-              <div style="padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13.5px;
-                {% if message.tags == 'success' %}background:#eef7ee; color:#276738; border-left:4px solid #276738;
-                {% elif message.tags == 'warning' %}background:#fff8e1; color:#8a6d3b; border-left:4px solid #ffa000;
-                {% else %}background:#fee2e2; color:#b91c1c; border-left:4px solid #ef4444;{% endif %}">
+              <div style="padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 13.5px; line-height: 1.5;
+                {% if message.tags == 'success' %}background:#ecfdf5; color:#065f46; border: 1.5px solid #a7f3d0; border-left: 4px solid #10b981;
+                {% elif message.tags == 'warning' %}background:#fffbeb; color:#92400e; border: 1.5px solid #fde68a; border-left: 4px solid #f59e0b;
+                {% else %}background:#fef2f2; color:#991b1b; border: 1.5px solid #fecaca; border-left: 4px solid #ef4444;{% endif %}">
                 {{ message }}
               </div>
             {% endfor %}
@@ -47,72 +424,119 @@
 
           {% if not request.user.is_authenticated %}
             <!-- PEMBERITAHUAN UNTUK PENGUNJUNG YANG BELUM LOGIN -->
-            <div style="background: #fff8e1; border: 1.5px solid #ffe082; border-left: 4px solid #ffa000; border-radius: 8px; padding: 14px 16px; margin-bottom: 22px; font-size: 13px; color: #8a6d3b; line-height: 1.55;">
-              <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 4px;">
+            <div class="login-lock-banner">
+              <h4>
                 <span>🔒</span>
-                <span>Masuk untuk Mengirim Pesan</span>
-              </div>
-              <div>
-                Halaman kontak ini terbuka untuk Anda baca. Namun untuk mengirim pesan atau formulir konsultasi resmi, Anda harus <strong>masuk ke akun</strong> terlebih dahulu.
-              </div>
+                <span>Masuk ke Akun untuk Mengirim Formulir</span>
+              </h4>
+              <p style="margin: 0;">
+                Halaman dan informasi kontak ini dapat dilihat bebas oleh publik. Agar admin agency ATKGO dapat memverifikasi identitas dan meng-ACC permintaan konsultasi bisnis Anda, silakan masuk ke akun terlebih dahulu.
+              </p>
             </div>
           {% endif %}
 
           <form method="POST" action="{% url 'kontak' %}" id="contactForm">
             {% csrf_token %}
 
-            <div class="form-group" style="margin-bottom: 16px;">
-              <label for="nama" style="display:block; margin-bottom:6px; font-weight:600; font-size:13px; color:#252641;">Nama Lengkap *</label>
-              <input
-                type="text"
-                id="nama"
-                name="nama"
-                placeholder="Masukkan nama lengkap Anda"
-                value="{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username }}{% endif %}"
-                {% if not request.user.is_authenticated %}readonly style="background:#f7f9f7; cursor:not-allowed;"{% endif %}
-                required
-              >
+            <div class="form-two-cols">
+              <!-- Field Nama Lengkap -->
+              <div class="form-group-modern">
+                <label for="nama">Nama Lengkap <span class="req">*</span></label>
+                <input
+                  type="text"
+                  id="nama"
+                  name="nama"
+                  class="form-control-modern"
+                  placeholder="Contoh: Sri Meilda Zam"
+                  value="{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username }}{% endif %}"
+                  {% if not request.user.is_authenticated %}readonly{% endif %}
+                  required
+                >
+              </div>
+
+              <!-- Field Alamat Email -->
+              <div class="form-group-modern">
+                <label for="email">Alamat Email <span class="req">*</span></label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-control-modern"
+                  placeholder="nama@email.com"
+                  value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}"
+                  {% if not request.user.is_authenticated %}readonly{% endif %}
+                  required
+                >
+              </div>
             </div>
 
-            <div class="form-group" style="margin-bottom: 16px;">
-              <label for="email" style="display:block; margin-bottom:6px; font-weight:600; font-size:13px; color:#252641;">Alamat Email *</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="nama@email.com"
-                value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}"
-                {% if not request.user.is_authenticated %}readonly style="background:#f7f9f7; cursor:not-allowed;"{% endif %}
-                required
-              >
+            <div class="form-two-cols">
+              <!-- Field No. Telepon / WhatsApp -->
+              <div class="form-group-modern">
+                <label for="telepon">Nomor WhatsApp / Telp <span class="req">*</span></label>
+                <input
+                  type="text"
+                  id="telepon"
+                  name="telepon"
+                  class="form-control-modern"
+                  placeholder="Contoh: 0822-7884-3288"
+                  value="{% if request.user.is_authenticated %}{{ user_telp|default:'' }}{% endif %}"
+                  {% if not request.user.is_authenticated %}readonly{% endif %}
+                  required
+                >
+              </div>
+
+              <!-- Field Layanan yang Diminati -->
+              <div class="form-group-modern">
+                <label for="layanan_minat">Layanan yang Diminati <span class="req">*</span></label>
+                <select
+                  id="layanan_minat"
+                  name="layanan_minat"
+                  class="form-control-modern"
+                  {% if not request.user.is_authenticated %}disabled{% endif %}
+                  required
+                >
+                  <option value="Pengadaan Alat Tulis Kantor (ATK)">Pengadaan Alat Tulis Kantor (ATK)</option>
+                  <option value="Layanan Desain Grafis & Identitas Brand">Layanan Desain Grafis &amp; Identitas Brand</option>
+                  <option value="Jasa Foto Produk & Video Komersial">Jasa Foto Produk &amp; Video Komersial</option>
+                  <option value="Desain Kemasan & Packaging Produk">Desain Kemasan &amp; Packaging Produk</option>
+                  <option value="Konsultasi Khusus & Kemitraan Agensi">Konsultasi Khusus &amp; Kemitraan Agensi</option>
+                  <option value="Pertanyaan Umum Lainnya">Pertanyaan Umum Lainnya</option>
+                </select>
+              </div>
             </div>
 
-            <div class="form-group" style="margin-bottom: 22px;">
-              <label for="pesan" style="display:block; margin-bottom:6px; font-weight:600; font-size:13px; color:#252641;">Pesan atau Pertanyaan *</label>
+            <!-- Field Pesan / Detail Kebutuhan -->
+            <div class="form-group-modern">
+              <label for="pesan">Pesan atau Rincian Kebutuhan <span class="req">*</span></label>
               <textarea
                 id="pesan"
                 name="pesan"
-                rows="5"
-                placeholder="{% if request.user.is_authenticated %}Tulis pesan, pertanyaan, atau kebutuhan pengadaan bisnis Anda di sini...{% else %}Silakan masuk ke akun terlebih dahulu untuk menulis dan mengirimkan pesan ini...{% endif %}"
-                {% if not request.user.is_authenticated %}readonly style="background:#f7f9f7; cursor:not-allowed;"{% endif %}
+                class="form-control-modern"
+                rows="4"
+                placeholder="{% if request.user.is_authenticated %}Tuliskan pertanyaan, kuantitas kebutuhan ATK, atau spesifikasi layanan branding yang ingin Anda konsultasikan kepada tim kami...{% else %}Silakan masuk ke akun terlebih dahulu untuk menuliskan rincian konsultasi bisnis Anda...{% endif %}"
+                {% if not request.user.is_authenticated %}readonly{% endif %}
                 required
               ></textarea>
             </div>
 
             {% if request.user.is_authenticated %}
-              <button class="btn btn-red" type="submit" style="width: 100%; padding: 13px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer;">
-                Kirim Pesan &rarr;
+              <button class="btn-submit-contact" type="submit" id="btnSubmitContact">
+                <span>Kirim Permintaan Konsultasi</span>
+                <span>&rarr;</span>
               </button>
             {% else %}
-              <a href="{% url 'login' %}?mode=login&next={% url 'kontak' %}" class="btn btn-red" style="display: block; width: 100%; text-align: center; text-decoration: none; padding: 13px; font-size: 14.5px; font-weight: bold; border-radius: 8px; background: #c53030; box-sizing: border-box; box-shadow: 0 4px 12px rgba(197,48,48,0.25);">
-                🔒 Masuk untuk Mengirim Pesan &rarr;
+              <a href="{% url 'login' %}?mode=login&next={% url 'kontak' %}" class="btn-login-to-send">
+                <span>🔒 Masuk untuk Mengirim Formulir</span>
+                <span>&rarr;</span>
               </a>
-              <p style="text-align: center; margin: 12px 0 0; font-size: 12.5px; color: #777;">
-                Belum memiliki akun? <a href="{% url 'login' %}?mode=register&next={% url 'kontak' %}" style="color: #304b35; font-weight: 700; text-decoration: underline;">Daftar Akun Baru</a>
+              <p style="text-align: center; margin: 14px 0 0; font-size: 13px; color: #64748b;">
+                Belum memiliki akun? <a href="{% url 'login' %}?mode=register&next={% url 'kontak' %}" style="color: #304b35; font-weight: 700; text-decoration: underline;">Daftar Akun Baru (Gratis)</a>
               </p>
             {% endif %}
           </form>
         </div>
+
       </div>
     </section>
   </main>
@@ -128,8 +552,9 @@
           <h3>Menu</h3>
           <div class="footer-links">
             <a href="{% url 'beranda' %}">Beranda</a>
-            <a href="{% url 'tentang' %}">Tentang Kami</a>
+            <a href="{% url 'produk' %}">Layanan</a>
             <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
+            <a href="{% url 'tentang' %}">Tentang Kami</a>
             <a href="{% url 'kontak' %}">Hubungi Kami</a>
           </div>
         </div>

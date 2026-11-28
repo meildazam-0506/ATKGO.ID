@@ -131,11 +131,24 @@ class Product(models.Model):
 
 
 class ContactMessage(models.Model):
+    STATUS_CHOICES = [
+        ('menunggu', 'Menunggu Review'),
+        ('di_acc', 'Di-ACC / Diterima'),
+        ('dalam_proses', 'Sedang Diproses'),
+        ('selesai', 'Selesai Ditanggapi'),
+        ('ditolak', 'Ditolak'),
+    ]
+
     nama = models.CharField(max_length=120)
     email = models.EmailField(max_length=254)
+    telepon = models.CharField(max_length=30, blank=True, default='')
+    layanan_minat = models.CharField(max_length=120, blank=True, default='Konsultasi Umum')
     pesan = models.TextField()
     dibuat_pada = models.DateTimeField(auto_now_add=True)
     sudah_dibaca = models.BooleanField(default=False)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='menunggu')
+    catatan_admin = models.TextField(blank=True, default='')
+    di_acc_pada = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Pesan Kontak'
@@ -143,7 +156,7 @@ class ContactMessage(models.Model):
         ordering = ['-dibuat_pada']
 
     def __str__(self):
-        return f"{self.nama} ({self.email})"
+        return f"{self.nama} ({self.email}) - {self.get_status_display()}"
 
 
 # ==============================================================================

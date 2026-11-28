@@ -4,29 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pesan Pelanggan | ATKGO.ID</title>
+    <title>Pesan &amp; Formulir Konsultasi | Admin Agency ATKGO.ID</title>
+    <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f4f6f2; color: #26352a; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f6f2; color: #26352a; }
 
         :root {
             --green: #304b35;
+            --green-dark: #223526;
             --green-light: #e8efe7;
+            --red: #ef3938;
             --text: #26352a;
-            --muted: #849087;
+            --muted: #64748b;
             --white: #ffffff;
-            --border: #e8ece7;
+            --border: #e2e8f0;
+            --wa-green: #25D366;
         }
 
+        /* Sidebar Styling */
         .sidebar {
             width: 255px; height: 100vh; position: fixed; top: 0; left: 0;
             background: var(--green); color: white; padding: 25px 18px;
-            display: flex; flex-direction: column; z-index: 10;
+            display: flex; flex-direction: column; z-index: 100;
         }
         .brand {
             display: flex; align-items: center; gap: 12px;
-            padding: 5px 8px 30px; border-bottom: 1px solid #ffffff25;
+            padding: 5px 8px 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
         .brand img { width: 38px; height: 38px; border-radius: 50%; background: white; object-fit: contain; }
         .brand h2 { font-size: 16px; font-weight: bold; }
@@ -40,34 +45,281 @@
         }
         .menu a:hover, .menu a.active { background: #3e5e44; color: white; }
 
-        .main { margin-left: 255px; padding: 30px 40px; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .topbar h1 { font-size: 24px; }
-        .topbar p { color: var(--muted); font-size: 13px; }
+        /* Main Workspace Content */
+        .main { margin-left: 255px; padding: 30px 40px; min-height: 100vh; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .topbar h1 { font-size: 24px; font-weight: 800; color: #1e293b; }
+        .topbar p { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
 
+        /* Stat Cards Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .stat-icon.total { background: #f1f5f9; color: #475569; }
+        .stat-icon.pending { background: #fef3c7; color: #d97706; }
+        .stat-icon.approved { background: #dcfce7; color: #15803d; }
+        .stat-icon.process { background: #e0f2fe; color: #0284c7; }
+        .stat-icon.done { background: #f3e8ff; color: #7e22ce; }
+
+        .stat-info h3 { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; }
+        .stat-info span { font-size: 12px; font-weight: 600; color: #64748b; margin-top: 4px; display: block; }
+
+        /* Filter Tabs & Toolbar */
+        .toolbar-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .filter-tabs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #475569;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .filter-tab:hover { background: #e2e8f0; color: #1e293b; }
+        .filter-tab.active { background: var(--green); color: #ffffff; border-color: var(--green); }
+        .tab-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .filter-tab.active .tab-badge {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-input {
+            height: 38px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0 12px;
+            font-size: 13px;
+            min-width: 240px;
+            outline: none;
+        }
+        .search-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(48, 75, 53, 0.15); }
+        .btn-search {
+            height: 38px;
+            padding: 0 14px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Table Card */
         .card {
             background: white; border-radius: 14px; border: 1px solid var(--border);
-            padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            overflow-x: auto;
         }
 
         .table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .table th, .table td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; }
-        .table th { background: #f8faf7; color: var(--muted); font-weight: bold; }
+        .table th, .table td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+        .table th { background: #f8fafc; color: #475569; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 
+        /* Badges */
         .badge {
-            display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;
+            display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1;
         }
-        .badge-new { background: #e3f2fd; color: #1565c0; }
-        .badge-read { background: #f5f5f5; color: #777; }
+        .badge-menunggu { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .badge-acc { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-proses { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+        .badge-selesai { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .badge-ditolak { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
-        .btn-reply {
-            display: inline-block; padding: 6px 12px; font-size: 12px; font-weight: bold;
-            background: var(--green); color: white; border-radius: 6px; text-decoration: none;
+        .service-tag {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #334155;
+            padding: 4px 9px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        /* Action Buttons */
+        .actions-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 145px;
+        }
+        .btn-acc {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            background: #16a34a;
+            color: #ffffff;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+            transition: all 0.15s ease;
+            width: 100%;
+        }
+        .btn-acc:hover { background: #15803d; transform: translateY(-1px); }
+
+        .btn-wa {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            background: #25D366;
+            color: #ffffff !important;
+            border-radius: 7px;
+            text-decoration: none;
+            width: 100%;
+            transition: all 0.15s ease;
+        }
+        .btn-wa:hover { background: #1eb956; }
+
+        .btn-toggle-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 6px 10px;
+            font-size: 11.5px;
+            font-weight: 600;
+            background: #f8fafc;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-toggle-status:hover { background: #e2e8f0; }
+
+        .status-update-box {
+            display: none;
+            margin-top: 8px;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .status-update-box.open { display: block; }
+        .status-select {
+            width: 100%;
+            height: 32px;
+            font-size: 12px;
+            padding: 0 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+        .status-notes {
+            width: 100%;
+            font-size: 11.5px;
+            padding: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
+            margin-bottom: 6px;
+        }
+        .btn-save-status {
+            padding: 4px 10px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: #dc2626;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            text-align: center;
+            padding: 4px;
+            text-decoration: underline;
+        }
+        .btn-delete:hover { color: #991b1b; }
+
+        .note-bubble {
+            background: #fffbeb;
+            border-left: 3px solid #f59e0b;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11.5px;
+            color: #92400e;
+            margin-top: 6px;
         }
 
         .alert {
-            padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;
-            background: #effaf2; color: #247a42; border-left: 4px solid #247a42;
+            padding: 12px 18px; border-radius: 10px; margin-bottom: 22px; font-size: 13.5px; font-weight: 500;
+            background: #effaf2; color: #247a42; border: 1.5px solid #bbf7d0; border-left: 4px solid #16a34a;
         }
     </style>
 </head>
@@ -90,7 +342,7 @@
         <a href="{% url 'admin_articles' %}">✎ &nbsp; Artikel &amp; Edukasi</a>
         <a href="{% url 'admin_content' %}">✦ &nbsp; Konten Website (CMS)</a>
         <a href="{% url 'admin_customers' %}">♙ &nbsp; Pelanggan &amp; Usaha</a>
-        <a href="{% url 'admin_messages' %}" class="active">✉ &nbsp; Pesan Pelanggan</a>
+        <a href="{% url 'admin_messages' %}" class="active">✉ &nbsp; Pesan &amp; Konsultasi</a>
         <a href="{% url 'beranda' %}">◈ &nbsp; Buka Website</a>
     </nav>
 </aside>
@@ -98,8 +350,8 @@
 <main class="main">
     <div class="topbar">
         <div>
-            <h1>Pesan Masuk Pelanggan</h1>
-            <p>Pesan pertanyaan dan konsultasi yang dikirimkan melalui formulir kontak ATKGO.ID.</p>
+            <h1>Pesan &amp; Formulir Konsultasi</h1>
+            <p>Tinjau pesan masuk, verifikasi kebutuhan klien, dan lakukan ACC permintaan konsultasi agency.</p>
         </div>
     </div>
 
@@ -109,44 +361,231 @@
         {% endfor %}
     {% endif %}
 
+    <!-- 1. STAT CARDS METRIK -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon total">✉</div>
+            <div class="stat-info">
+                <h3>{{ total_pesan }}</h3>
+                <span>Total Permintaan</span>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left: 3px solid #d97706;">
+            <div class="stat-icon pending">⏳</div>
+            <div class="stat-info">
+                <h3>{{ menunggu_count }}</h3>
+                <span>Menunggu ACC</span>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left: 3px solid #15803d;">
+            <div class="stat-icon approved">✓</div>
+            <div class="stat-info">
+                <h3>{{ di_acc_count }}</h3>
+                <span>Telah Di-ACC</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon process">⚙</div>
+            <div class="stat-info">
+                <h3>{{ proses_count }}</h3>
+                <span>Sedang Diproses</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon done">★</div>
+            <div class="stat-info">
+                <h3>{{ selesai_count }}</h3>
+                <span>Selesai Ditanggapi</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. TOOLBAR FILTER TABS & SEARCH -->
+    <div class="toolbar-card">
+        <div class="filter-tabs">
+            <a href="{% url 'admin_messages' %}?status=semua" class="filter-tab {% if filter_status == 'semua' %}active{% endif %}">
+                <span>Semua</span>
+                <span class="tab-badge">{{ total_pesan }}</span>
+            </a>
+            <a href="{% url 'admin_messages' %}?status=menunggu" class="filter-tab {% if filter_status == 'menunggu' %}active{% endif %}">
+                <span>⏳ Menunggu ACC</span>
+                <span class="tab-badge">{{ menunggu_count }}</span>
+            </a>
+            <a href="{% url 'admin_messages' %}?status=di_acc" class="filter-tab {% if filter_status == 'di_acc' %}active{% endif %}">
+                <span>✓ Sudah Di-ACC</span>
+                <span class="tab-badge">{{ di_acc_count }}</span>
+            </a>
+            <a href="{% url 'admin_messages' %}?status=dalam_proses" class="filter-tab {% if filter_status == 'dalam_proses' %}active{% endif %}">
+                <span>⚙ Diproses</span>
+                <span class="tab-badge">{{ proses_count }}</span>
+            </a>
+            <a href="{% url 'admin_messages' %}?status=selesai" class="filter-tab {% if filter_status == 'selesai' %}active{% endif %}">
+                <span>Selesai</span>
+                <span class="tab-badge">{{ selesai_count }}</span>
+            </a>
+        </div>
+
+        <form method="GET" action="{% url 'admin_messages' %}" class="search-box">
+            {% if filter_status != 'semua' %}
+                <input type="hidden" name="status" value="{{ filter_status }}">
+            {% endif %}
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Cari nama, email, nomor WA..." class="search-input">
+            <button type="submit" class="btn-search">Cari</button>
+            {% if search_query %}
+                <a href="{% url 'admin_messages' %}" style="font-size: 12px; color: #dc2626; text-decoration: none;">Reset</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- 3. TABEL DATA PESAN & FITUR ACC -->
     <div class="card">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Pengirim</th>
-                    <th>Email Kontak</th>
-                    <th>Isi Pesan</th>
-                    <th>Status</th>
-                    <th>Waktu Masuk</th>
-                    <th style="width: 120px;">Aksi</th>
+                    <th style="width: 22%;">Klien / Kontak</th>
+                    <th style="width: 18%;">Layanan yang Diminati</th>
+                    <th style="width: 28%;">Detail Permintaan &amp; Catatan</th>
+                    <th style="width: 14%;">Status ACC</th>
+                    <th style="width: 18%;">Aksi Admin Agency</th>
                 </tr>
             </thead>
             <tbody>
                 {% for msg in contact_messages %}
                     <tr>
-                        <td><strong>{{ msg.nama }}</strong></td>
+                        <!-- Kolom 1: Klien / Kontak -->
                         <td>
-                            <a href="mailto:{{ msg.email }}" style="color:var(--green); text-decoration:none; font-weight:600;">
-                                {{ msg.email }}
-                            </a>
+                            <div style="font-weight: 800; font-size: 14px; color: #1e293b; margin-bottom: 3px;">
+                                {{ msg.nama }}
+                            </div>
+                            <div style="font-size: 12px; margin-bottom: 4px;">
+                                <a href="mailto:{{ msg.email }}" style="color: #304b35; text-decoration: none;">
+                                    ✉ {{ msg.email }}
+                                </a>
+                            </div>
+                            {% if msg.telepon %}
+                                <div style="font-size: 12px; color: #475569;">
+                                    📱 {{ msg.telepon }}
+                                </div>
+                            {% endif %}
+                            <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;">
+                                🕒 {{ msg.dibuat_pada|date:"d M Y, H:i" }} WITA
+                            </div>
                         </td>
-                        <td style="line-height:1.5;">{{ msg.pesan }}</td>
+
+                        <!-- Kolom 2: Layanan Minat -->
                         <td>
-                            {% if msg.sudah_dibaca %}
-                                <span class="badge badge-read">Sudah Dibaca</span>
-                            {% else %}
-                                <span class="badge badge-new">Baru</span>
+                            <span class="service-tag">
+                                {{ msg.layanan_minat|default:"Konsultasi Umum" }}
+                            </span>
+                        </td>
+
+                        <!-- Kolom 3: Pesan & Catatan Admin -->
+                        <td>
+                            <div style="line-height: 1.55; color: #334155; font-size: 13px;">
+                                {{ msg.pesan }}
+                            </div>
+
+                            {% if msg.di_acc_pada %}
+                                <div style="font-size: 11px; color: #15803d; font-weight: 700; margin-top: 6px;">
+                                    ✓ Di-ACC pada: {{ msg.di_acc_pada|date:"d M Y, H:i" }}
+                                </div>
+                            {% endif %}
+
+                            {% if msg.catatan_admin %}
+                                <div class="note-bubble">
+                                    <strong>Catatan Admin:</strong> {{ msg.catatan_admin }}
+                                </div>
                             {% endif %}
                         </td>
-                        <td>{{ msg.dibuat_pada|date:"d M Y, H:i" }}</td>
+
+                        <!-- Kolom 4: Status ACC -->
                         <td>
-                            <a href="mailto:{{ msg.email }}?subject=Tanggapan ATKGO.ID untuk {{ msg.nama }}" class="btn-reply">Balas Email</a>
+                            {% if msg.status == 'menunggu' %}
+                                <span class="badge badge-menunggu">⏳ Menunggu ACC</span>
+                            {% elif msg.status == 'di_acc' %}
+                                <span class="badge badge-acc">✓ Telah Di-ACC</span>
+                            {% elif msg.status == 'dalam_proses' %}
+                                <span class="badge badge-proses">⚙ Diproses</span>
+                            {% elif msg.status == 'selesai' %}
+                                <span class="badge badge-selesai">✓ Selesai</span>
+                            {% elif msg.status == 'ditolak' %}
+                                <span class="badge badge-ditolak">✕ Ditolak</span>
+                            {% else %}
+                                <span class="badge badge-menunggu">{{ msg.status }}</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Kolom 5: Aksi Cepat Admin -->
+                        <td>
+                            <div class="actions-cell">
+                                <!-- Tombol ACC Langsung (Jika masih menunggu) -->
+                                {% if msg.status == 'menunggu' %}
+                                    <form method="POST" action="{% url 'admin_message_status' msg.pk %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="acc">
+                                        <button type="submit" class="btn-acc" onclick="return confirm('Apakah Anda yakin ingin meng-ACC permintaan konsultasi dari {{ msg.nama }}?')">
+                                            ✓ ACC Permintaan
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                                <!-- Tombol Chat WhatsApp -->
+                                {% if msg.telepon %}
+                                    <a
+                                        href="https://wa.me/{{ msg.telepon|cut:' '|cut:'-'|cut:'+'|cut:'(' |cut:')' }}?text=Halo%20{{ msg.nama }}%2C%20kami%20dari%20Admin%20Agency%20ATKGO.ID.%20Permintaan%20konsultasi%20Anda%20mengenai%20{{ msg.layanan_minat|urlencode }}%20telah%20kami%20terima%20dan%20di-ACC."
+                                        target="_blank"
+                                        rel="noopener"
+                                        class="btn-wa"
+                                    >
+                                        💬 Hubungi WA
+                                    </a>
+                                {% else %}
+                                    <a href="mailto:{{ msg.email }}?subject=Tanggapan ATKGO.ID: Konsultasi {{ msg.layanan_minat }}" class="btn-wa" style="background: #3b82f6;">
+                                        ✉ Balas Email
+                                    </a>
+                                {% endif %}
+
+                                <!-- Tombol Buka Panel Ubah Status / Catatan -->
+                                <button type="button" class="btn-toggle-status" onclick="toggleStatusBox({{ msg.pk }})">
+                                    ⚙ Kelola Status
+                                </button>
+
+                                <div class="status-update-box" id="statusBox_{{ msg.pk }}">
+                                    <form method="POST" action="{% url 'admin_message_status' msg.pk %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="update_status">
+
+                                        <select name="status" class="status-select">
+                                            <option value="menunggu" {% if msg.status == 'menunggu' %}selected{% endif %}>Menunggu Review</option>
+                                            <option value="di_acc" {% if msg.status == 'di_acc' %}selected{% endif %}>Di-ACC / Diterima</option>
+                                            <option value="dalam_proses" {% if msg.status == 'dalam_proses' %}selected{% endif %}>Sedang Diproses</option>
+                                            <option value="selesai" {% if msg.status == 'selesai' %}selected{% endif %}>Selesai Ditanggapi</option>
+                                            <option value="ditolak" {% if msg.status == 'ditolak' %}selected{% endif %}>Ditolak</option>
+                                        </select>
+
+                                        <textarea name="catatan_admin" class="status-notes" rows="2" placeholder="Catatan admin internal...">{{ msg.catatan_admin }}</textarea>
+
+                                        <button type="submit" class="btn-save-status">Simpan Status</button>
+                                    </form>
+                                </div>
+
+                                <!-- Form Hapus Pesan -->
+                                <form method="POST" action="{% url 'admin_message_status' msg.pk %}" style="text-align: center;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete">
+                                    <button type="submit" class="btn-delete" onclick="return confirm('Hapus permanen pesan dari {{ msg.nama }}?')">
+                                        Hapus Pesan
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="6" style="text-align: center; color: #888; padding: 40px 15px;">
-                            Belum ada pesan masuk dari formulir kontak.
+                        <td colspan="5" style="text-align: center; color: #888; padding: 50px 15px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">📭</div>
+                            <div style="font-size: 15px; font-weight: 700; color: #475569;">Belum ada pesan formulir kontak.</div>
+                            <div style="font-size: 12.5px; color: #94a3b8; margin-top: 4px;">Pesan yang dikirimkan klien melalui halaman /kontak/ akan otomatis muncul di sini.</div>
                         </td>
                     </tr>
                 {% endfor %}
@@ -154,6 +593,15 @@
         </table>
     </div>
 </main>
+
+<script>
+    function toggleStatusBox(id) {
+        const box = document.getElementById('statusBox_' + id);
+        if (box) {
+            box.classList.toggle('open');
+        }
+    }
+</script>
 
 </body>
 </html>

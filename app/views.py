@@ -839,28 +839,41 @@ def tentang(request):
 
 def kontak(request):
     """Halaman dan form pesan kontak (Dapat dilihat publik, kirim pesan membutuhkan login)."""
+    user_telp = ''
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'anggota'):
+            user_telp = request.user.anggota.telp or request.user.anggota.telepon_usaha or ''
+
     if request.method == 'POST':
         if not request.user.is_authenticated:
-            messages.warning(request, "Silakan login terlebih dahulu untuk mengirim pesan ke admin.")
+            messages.warning(request, "Silakan login terlebih dahulu untuk mengirim pesan dan formulir konsultasi.")
             return redirect(f"{reverse('login')}?mode=login&next={reverse('kontak')}")
 
         nama = request.POST.get('nama', '').strip()
         email = request.POST.get('email', '').strip()
+        telepon = request.POST.get('telepon', '').strip()
+        layanan_minat = request.POST.get('layanan_minat', 'Konsultasi Umum').strip()
         pesan = request.POST.get('pesan', '').strip()
 
         if nama and email and pesan:
             ContactMessage.objects.create(
                 nama=nama,
                 email=email,
+                telepon=telepon,
+                layanan_minat=layanan_minat,
                 pesan=pesan,
+                status='menunggu',
                 sudah_dibaca=False
             )
-            messages.success(request, "Pesan Anda berhasil dikirim! Tim kami akan segera merespons.")
+            messages.success(
+                request,
+                f"Terima kasih {nama}! Formulir konsultasi Anda berhasil dikirim ke Admin Agency ATKGO.ID. Tim representatif kami akan segera meninjau dan meng-ACC permintaan Anda."
+            )
             return redirect('kontak')
         else:
-            messages.error(request, "Semua bidang kontak wajib diisi.")
+            messages.error(request, "Harap lengkapi semua bidang wajib yang bertanda bintang (*).")
 
-    return render(request, 'app/kontak.html')
+    return render(request, 'app/kontak.html', {'user_telp': user_telp})
 
 
 @login_required(login_url='login')
@@ -1298,9 +1311,81 @@ def admin_customers(request):
 
 @admin_required
 def admin_messages(request):
-    """Daftar pesan pelanggan dari formulir kontak."""
-    contact_messages = ContactMessage.objects.all().order_by('-dibuat_pada')
-    return render(request, 'admin_messages.html', {'contact_messages': contact_messages})
+    """Daftar pesan dan formulir konsultasi pelanggan untuk ditinjau dan di-ACC oleh Admin Agency."""
+    filter_status = request.GET.get('status', 'semua')
+    search_query = request.GET.get('q', '').strip()
+
+    messages_qs = ContactMessage.objects.all().order_by('-dibuat_pada')
+
+    # Metrik status konsultasi
+    total_pesan = messages_qs.count()
+    menunggu_count = ContactMessage.objects.filter(status='menunggu').count()
+    di_acc_count = ContactMessage.objects.filter(status='di_acc').count()
+    proses_count = ContactMessage.objects.filter(status='dalam_proses').count()
+    selesai_count = ContactMessage.objects.filter(status='selesai').count()
+
+    if filter_status in ['menunggu', 'di_acc', 'dalam_proses', 'selesai', 'ditolak']:
+        messages_qs = messages_qs.filter(status=filter_status)
+
+    if search_query:
+        messages_qs = messages_qs.filter(
+            Q(nama__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(telepon__icontains=search_query) |
+            Q(layanan_minat__icontains=search_query) |
+            Q(pesan__icontains=search_query)
+        )
+
+    context = {
+        'contact_messages': messages_qs,
+        'filter_status': filter_status,
+        'search_query': search_query,
+        'total_pesan': total_pesan,
+        'menunggu_count': menunggu_count,
+        'di_acc_count': di_acc_count,
+        'proses_count': proses_count,
+        'selesai_count': selesai_count,
+    }
+    return render(request, 'admin_messages.html', context)
+
+
+@admin_required
+def admin_message_status(request, pk):
+    """Aksi ACC, pengubahan status proses, dan catatan admin pada pesan konsultasi."""
+    msg = get_object_or_404(ContactMessage, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'acc':
+            msg.status = 'di_acc'
+            msg.di_acc_pada = timezone.now()
+            msg.sudah_dibaca = True
+            catatan = request.POST.get('catatan_admin', '').strip()
+            if catatan:
+                msg.catatan_admin = catatan
+            msg.save()
+            messages.success(request, f"Permintaan konsultasi dari {msg.nama} BERHASIL DI-ACC oleh Admin Agency!")
+
+        elif action == 'update_status':
+            new_status = request.POST.get('status')
+            catatan = request.POST.get('catatan_admin', '').strip()
+            if new_status in dict(ContactMessage.STATUS_CHOICES):
+                msg.status = new_status
+                if new_status == 'di_acc' and not msg.di_acc_pada:
+                    msg.di_acc_pada = timezone.now()
+            if catatan:
+                msg.catatan_admin = catatan
+            msg.sudah_dibaca = True
+            msg.save()
+            messages.success(request, f"Status pesan dari {msg.nama} berhasil diperbarui menjadi '{msg.get_status_display()}'.")
+
+        elif action == 'delete':
+            nama = msg.nama
+            msg.delete()
+            messages.success(request, f"Pesan dari {nama} berhasil dihapus.")
+
+    return redirect('admin_messages')
 
 
 @admin_required

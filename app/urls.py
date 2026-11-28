@@ -58,6 +58,7 @@ urlpatterns = [
     # Manajemen Data Pelanggan & Pesan Admin
     path('admin-area/customers/', views.admin_customers, name='admin_customers'),
     path('admin-area/messages/', views.admin_messages, name='admin_messages'),
+    path('admin-area/messages/<int:pk>/status/', views.admin_message_status, name='admin_message_status'),
 
     # Tambah Admin
     path('admin-area/register/', views.admin_register, name='admin_register'),
