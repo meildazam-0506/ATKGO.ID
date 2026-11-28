@@ -75,11 +75,12 @@
                         {% if product.gambar %}
                             <img
                                 src="{{ product.gambar.url }}"
-                                alt="{{ product.nama }}">
+                                alt="{{ product.nama }}"
+                                onerror="this.onerror=null; this.src='{% static 'assets/img/agensi.png' %}';">
                         {% else %}
-                            <div class="no-image">
-                                Gambar layanan belum tersedia
-                            </div>
+                            <img
+                                src="{% static 'assets/img/agensi.png' %}"
+                                alt="{{ product.nama }}">
                         {% endif %}
 
                     </div>

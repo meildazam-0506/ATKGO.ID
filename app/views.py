@@ -61,43 +61,52 @@ def admin_required(view_func):
 # ==============================================================================
 
 def landing(request):
-    """Halaman pembuka / landing page dengan konten dinamis CMS."""
+    """Halaman pembuka / landing page dengan konten dinamis CMS dan daftar layanan aktif."""
     try:
         hero_banner = HeroBanner.objects.filter(is_active=True).first()
         keunggulan_list = list(Keunggulan.objects.filter(is_active=True).order_by('urutan', 'id'))
         website_setting = WebsiteSetting.objects.first()
         artikel_terbaru = list(Article.objects.filter(is_published=True).order_by('-dibuat_pada')[:3])
+        products = list(Product.objects.filter(is_active=True).order_by('nama'))
     except Exception:
         hero_banner = None
         keunggulan_list = []
         website_setting = None
         artikel_terbaru = []
+        products = []
 
     context = {
         'hero_banner': hero_banner,
         'keunggulan_list': keunggulan_list,
         'website_setting': website_setting,
         'artikel_terbaru': artikel_terbaru,
+        'products': products,
     }
     return render(request, 'app/landing.html', context)
 
 
 @login_required(login_url='login')
 def beranda(request):
-    """Halaman beranda utama konsumen setelah login berhasil."""
+    """Halaman beranda utama konsumen setelah login berhasil dengan katalog layanan aktif."""
     try:
         hero_banner = HeroBanner.objects.filter(is_active=True).first()
         keunggulan_list = list(Keunggulan.objects.filter(is_active=True).order_by('urutan', 'id'))
         website_setting = WebsiteSetting.objects.first()
+        artikel_terbaru = list(Article.objects.filter(is_published=True).order_by('-dibuat_pada')[:3])
+        products = list(Product.objects.filter(is_active=True).order_by('nama'))
     except Exception:
         hero_banner = None
         keunggulan_list = []
         website_setting = None
+        artikel_terbaru = []
+        products = []
 
     context = {
         'hero_banner': hero_banner,
         'keunggulan_list': keunggulan_list,
         'website_setting': website_setting,
+        'artikel_terbaru': artikel_terbaru,
+        'products': products,
     }
     return render(request, 'app/index.html', context)
 
