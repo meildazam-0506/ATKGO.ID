@@ -4,78 +4,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Admin Baru | ATKGO.ID</title>
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <title>Manajemen Tim &amp; Administrator | ATKGO.ID</title>
+    <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
 
     <style>
-        * { box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f6f2; color: #26352a; }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            color: #343653;
+        :root {
+            --green: #304b35;
+            --green-dark: #223526;
+            --green-light: #e8efe7;
+            --red: #ef3938;
+            --text: #26352a;
+            --muted: #64748b;
+            --white: #ffffff;
+            --border: #e2e8f0;
         }
 
-        .auth-wrap {
-            min-height: 100vh;
+        .main { margin-left: 255px; padding: 30px 40px; min-height: 100vh; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .topbar h1 { font-size: 24px; font-weight: 800; color: #1e293b; }
+        .topbar p { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+
+        /* Stats Grid */
+        .stats-grid {
             display: grid;
-            place-items: center;
-            padding: 30px;
-            background: #f4f6f2;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 26px;
         }
-
-        .auth-card {
-            width: min(900px, 100%);
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 45px #0001;
-        }
-
-        .auth-side {
-            padding: 48px 38px;
-            background: rgb(255, 229, 229);
-            color: #343653;
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .stat-icon.total { background: #f1f5f9; color: #475569; }
+        .stat-icon.active-icon { background: #dcfce7; color: #15803d; }
+        .stat-icon.pending-icon { background: #fef3c7; color: #d97706; }
+
+        .stat-info h3 { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; }
+        .stat-info span { font-size: 12px; font-weight: 600; color: #64748b; margin-top: 4px; display: block; }
+
+        /* 2-Column Layout */
+        .team-layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr;
+            gap: 26px;
+            align-items: start;
+        }
+        @media (max-width: 1050px) {
+            .team-layout-grid {
+                grid-template-columns: 1fr;
+            }
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
         }
 
-        .auth-side img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
+        /* Card Form */
+        .card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            padding: 26px 28px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
+        .card-header {
+            margin-bottom: 20px;
+            border-bottom: 1.5px solid #f1f5f9;
+            padding-bottom: 14px;
+        }
+        .card-header h2 { font-size: 18px; font-weight: 800; color: #1e293b; margin: 0 0 5px; }
+        .card-header p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.5; }
 
-        .auth-side p { line-height: 1.8; }
-
-        .auth-form { padding: 40px 38px; }
-
-        .auth-form label {
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
             display: block;
-            margin: 12px 0 6px;
-            font-weight: 600;
-            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            font-size: 12.5px;
+            color: #334155;
         }
-
-        .auth-form input, .auth-form select {
+        .form-control {
             width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #d8ded5;
+            height: 42px;
+            border: 1.5px solid #cbd5e1;
             border-radius: 8px;
-            font-size: 14px;
+            padding: 0 14px;
+            font-size: 13.5px;
+            font-family: inherit;
+            color: #1e293b;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(48, 75, 53, 0.15);
+        }
+        select.form-control {
+            cursor: pointer;
         }
 
         .password-box {
             position: relative;
         }
-
-        .password-box input {
-            padding-right: 45px;
+        .password-box .form-control {
+            padding-right: 42px;
         }
-
         .toggle-password {
             position: absolute;
             right: 12px;
@@ -84,153 +140,357 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            padding: 4px;
-            color: #888;
+            color: #94a3b8;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+        .toggle-password:hover { color: var(--green); }
+        .toggle-password svg { width: 18px; height: 18px; }
 
-        .toggle-password:hover {
-            color: #405d42;
-        }
-
-        .toggle-password svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .auth-form button[type="submit"] {
+        .btn-submit-admin {
             width: 100%;
-            padding: 13px;
-            margin-top: 20px;
-            border: 0;
-            border-radius: 8px;
-            background: #405d42;
-            color: white;
-            font-weight: bold;
+            height: 46px;
+            background: var(--green);
+            color: #ffffff;
+            border: none;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 800;
             cursor: pointer;
-            font-size: 15px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(48, 75, 53, 0.25);
+            margin-top: 10px;
+        }
+        .btn-submit-admin:hover {
+            background: #243a28;
+            transform: translateY(-1px);
         }
 
-        .auth-form button[type="submit"]:hover {
-            background: #324a34;
-        }
-
-        .alert {
-            padding: 12px;
-            margin: 12px 0;
-            background: #f1f5ef;
+        /* Notice Box */
+        .info-tip-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 4px solid #16a34a;
             border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.5;
+            padding: 12px 14px;
+            margin-top: 18px;
+            font-size: 12px;
+            color: #166534;
+            line-height: 1.55;
         }
 
-        .alert.error {
-            background: #fff0f0;
-            color: #c62828;
-            border-left: 4px solid #c62828;
+        /* Table Styling */
+        .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .table th, .table td { padding: 13px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+        .table th { background: #f8fafc; color: #475569; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e8efe7;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
         }
 
-        .alert.success {
-            background: #effaf2;
-            color: #247a42;
-            border-left: 4px solid #247a42;
+        /* Badges */
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1;
+        }
+        .badge-active { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .badge-inactive { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .role-pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+        }
+        .role-pill.superuser {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
         }
 
-        .auth-form a {
-            color: #405d42;
+        /* Action Buttons */
+        .btn-action-sm {
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s ease;
             text-decoration: none;
         }
+        .btn-action-sm:hover { background: #f1f5f9; }
+        .btn-action-sm.danger {
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+        .btn-action-sm.danger:hover { background: #fee2e2; }
 
-        @media (max-width: 680px) {
-            .auth-card { grid-template-columns: 1fr; }
-            .auth-side, .auth-form { padding: 25px; }
+        .alert {
+            padding: 12px 16px; border-radius: 10px; margin-bottom: 22px; font-size: 13.5px; font-weight: 500;
+            background: #effaf2; color: #247a42; border: 1.5px solid #bbf7d0; border-left: 4px solid #16a34a;
+        }
+        .alert.error {
+            background: #fef2f2; color: #991b1b; border: 1.5px solid #fecaca; border-left: 4px solid #ef4444;
         }
     </style>
 </head>
-
 <body>
-<main class="auth-wrap">
-    <div class="auth-card">
 
-        <section class="auth-side">
-            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
-            <h1>Admin Workspace</h1>
-            <p>
-                Daftarkan anggota tim baru dengan akses Administrator ke dashboard ATKGO.ID.
-            </p>
-            <small>INTERNAL MANAGEMENT ONLY</small>
-        </section>
+<!-- SIDEBAR MODULAR KONSISTEN -->
+{% include "admin_sidebar.html" with active_page='team' %}
 
-        <section class="auth-form">
-            <h2>Tambah Admin Baru</h2>
-            <p>Isi formulir untuk membuat akun administrator baru.</p>
+<main class="main">
+    <div class="topbar">
+        <div>
+            <h1>Manajemen Tim &amp; Hak Akses Admin</h1>
+            <p>Daftarkan akun staf atau rekan tim baru secara instan dan pantau konfirmasi login aktivasi mereka.</p>
+        </div>
+    </div>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert {{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}error{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 1. STAT CARDS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon total">👥</div>
+            <div class="stat-info">
+                <h3>{{ total_admins }}</h3>
+                <span>Total Staf Administrator</span>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left: 3px solid #15803d;">
+            <div class="stat-icon active-icon">✓</div>
+            <div class="stat-info">
+                <h3>{{ active_admins }}</h3>
+                <span>Aktif &amp; Sudah Login</span>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left: 3px solid #d97706;">
+            <div class="stat-icon pending-icon">⏳</div>
+            <div class="stat-info">
+                <h3>{{ pending_admins }}</h3>
+                <span>Menunggu Konfirmasi Login</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. GRID KONTEN: FORM DAFTARKAN TEMAN & TABEL TIM -->
+    <div class="team-layout-grid">
+
+        <!-- KOLOM FORM: DAFTARKAN AKUN TEMAN -->
+        <div class="card">
+            <div class="card-header">
+                <h2>+ Daftarkan Rekan Tim Baru</h2>
+                <p>Akun langsung dibuat dan siap diaktivasi ketika teman Anda melakukan login pertama kali.</p>
+            </div>
 
             <form method="POST" action="{% url 'admin_register' %}">
                 {% csrf_token %}
+                <input type="hidden" name="action" value="create">
 
-                <label for="full_name">Nama Lengkap</label>
-                <input type="text" id="full_name" name="full_name" placeholder="Nama staf / admin" required>
-
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Username unik admin" required>
-
-                <label for="email">Email Admin</label>
-                <input type="email" id="email" name="email" placeholder="admin@atkgo.id" required>
-
-                <label for="telp">Nomor Telepon</label>
-                <input type="tel" id="telp" name="telp" placeholder="08xxxxxxxxxx">
-
-                <label for="gender">Jenis Kelamin</label>
-                <select id="gender" name="gender">
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                </select>
-
-                <label for="password">Password</label>
-                <div class="password-box">
-                    <input type="password" id="password" name="password" placeholder="Password aman" required>
-                    <button type="button" class="toggle-password" data-target="password" aria-label="Tampilkan / sembunyikan password">
-                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                            <line x1="1" y1="1" x2="23" y2="23"></line>
-                        </svg>
-                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
+                <div class="form-group">
+                    <label for="full_name">Nama Lengkap Teman / Staf *</label>
+                    <input type="text" id="full_name" name="full_name" class="form-control" placeholder="Contoh: Muhammad Rizky" required>
                 </div>
 
-                <label for="confirm_password">Konfirmasi Password</label>
-                <div class="password-box">
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password" required>
-                    <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Tampilkan / sembunyikan konfirmasi password">
-                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                            <line x1="1" y1="1" x2="23" y2="23"></line>
-                        </svg>
-                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
+                <div class="form-group">
+                    <label for="username">Username Akun *</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Contoh: rizky_admin (tanpa spasi)" required>
                 </div>
 
-                <button type="submit">Daftarkan Admin Baru &rarr;</button>
+                <div class="form-group">
+                    <label for="email">Alamat Email *</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="nama@atkgo.id / email teman" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telp">Nomor WhatsApp / HP</label>
+                    <input type="tel" id="telp" name="telp" class="form-control" placeholder="08xxxxxxxxxx">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label for="role">Tingkat Akses</label>
+                        <select id="role" name="role" class="form-control">
+                            <option value="staff">Staff Administrator</option>
+                            <option value="superuser">Super Administrator</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Jenis Kelamin</label>
+                        <select id="gender" name="gender" class="form-control">
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password Awal *</label>
+                    <div class="password-box">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Minimal 8 karakter aman" required>
+                        <button type="button" class="toggle-password" data-target="password" aria-label="Toggle password">
+                            <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Konfirmasi Password *</label>
+                    <div class="password-box">
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Ulangi password" required>
+                        <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Toggle konfirmasi password">
+                            <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit-admin">
+                    + Daftarkan Akun Teman Sekarang &rarr;
+                </button>
             </form>
 
-            <p style="margin-top:20px;">
-                <a href="{% url 'admin_dashboard' %}">&larr; Kembali ke Dashboard Admin</a>
-            </p>
-        </section>
+            <div class="info-tip-box">
+                <strong>💡 Info Aktivasi:</strong> Setelah berhasil didaftarkan, bagikan username dan password awal kepada rekan Anda. Status akun otomatis terkonfirmasi dan aktif segera setelah rekan Anda melakukan login pertama kali di dashboard.
+            </div>
+        </div>
+
+        <!-- KOLOM TABEL: DAFTAR ANGGOTA TIM & STATUS KONFIRMASI -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Daftar Anggota Tim Administrator</h2>
+                <p>Status konfirmasi login dan riwayat aktivitas login seluruh anggota administrator.</p>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Administrator</th>
+                            <th>Role Akses</th>
+                            <th>Status Aktivasi / Login</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for adm in admin_users %}
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div class="admin-avatar">
+                                            {{ adm.first_name|default:adm.username|slice:":1"|upper }}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 800; color: #1e293b;">
+                                                {{ adm.first_name|default:adm.username }}
+                                                {% if adm.pk == request.user.pk %}
+                                                    <span style="font-size: 10.5px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Anda</span>
+                                                {% endif %}
+                                            </div>
+                                            <div style="font-size: 11.5px; color: #64748b;">
+                                                @{{ adm.username }} • {{ adm.email }}
+                                            </div>
+                                            {% if adm.useradmin.telp %}
+                                                <div style="font-size: 11px; color: #475569; margin-top: 2px;">
+                                                    📱 {{ adm.useradmin.telp }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {% if adm.is_superuser %}
+                                        <span class="role-pill superuser">★ Super Admin</span>
+                                    {% else %}
+                                        <span class="role-pill">Staff Admin</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if not adm.is_active %}
+                                        <span class="badge badge-inactive">✕ Dinonaktifkan</span>
+                                    {% elif adm.last_login %}
+                                        <span class="badge badge-active">✓ Aktif</span>
+                                        <div style="font-size: 10.5px; color: #15803d; margin-top: 4px;">
+                                            Login: {{ adm.last_login|date:"d M, H:i" }}
+                                        </div>
+                                    {% else %}
+                                        <span class="badge badge-pending">⏳ Menunggu Konfirmasi Login</span>
+                                        <div style="font-size: 10.5px; color: #d97706; margin-top: 4px;">
+                                            Belum login pertama
+                                        </div>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                        {% if adm.pk != request.user.pk %}
+                                            <form method="POST" action="{% url 'admin_register' %}" style="display:inline;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="admin_id" value="{{ adm.pk }}">
+                                                <button type="submit" class="btn-action-sm" title="Ubah status akses">
+                                                    {% if adm.is_active %}Nonaktifkan{% else %}Aktifkan{% endif %}
+                                                </button>
+                                            </form>
+
+                                            <form method="POST" action="{% url 'admin_register' %}" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus admin {{ adm.username }}?')">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="delete_admin">
+                                                <input type="hidden" name="admin_id" value="{{ adm.pk }}">
+                                                <button type="submit" class="btn-action-sm danger" title="Hapus akun admin">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span style="font-size: 11px; color: #94a3b8; font-style: italic;">Akun Anda</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 </main>
@@ -258,5 +518,6 @@
         });
     });
 </script>
+
 </body>
 </html>

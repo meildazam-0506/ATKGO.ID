@@ -60,7 +60,8 @@ urlpatterns = [
     path('admin-area/messages/', views.admin_messages, name='admin_messages'),
     path('admin-area/messages/<int:pk>/status/', views.admin_message_status, name='admin_message_status'),
 
-    # Tambah Admin
+    # Manajemen Tim Administrator
+    path('admin-area/team/', views.admin_register, name='admin_team'),
     path('admin-area/register/', views.admin_register, name='admin_register'),
 
     # URL Convenience Aliases (mencegah 404 jika diakses dengan .html atau shortcut URL)

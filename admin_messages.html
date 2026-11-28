@@ -325,27 +325,7 @@
 </head>
 <body>
 
-<aside class="sidebar">
-    <div class="brand">
-        <img src="{% static 'assets/img/logo.png' %}" alt="Logo">
-        <div>
-            <h2>ATKGO.ID</h2>
-            <small>ADMIN WORKSPACE</small>
-        </div>
-    </div>
-
-    <p class="menu-title">MENU UTAMA</p>
-    <nav class="menu">
-        <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
-        <a href="{% url 'admin_products' %}">▣ &nbsp; Manajemen Produk</a>
-        <a href="{% url 'admin_orders' %}">▤ &nbsp; Pesanan Pelanggan</a>
-        <a href="{% url 'admin_articles' %}">✎ &nbsp; Artikel &amp; Edukasi</a>
-        <a href="{% url 'admin_content' %}">✦ &nbsp; Konten Website (CMS)</a>
-        <a href="{% url 'admin_customers' %}">♙ &nbsp; Pelanggan &amp; Usaha</a>
-        <a href="{% url 'admin_messages' %}" class="active">✉ &nbsp; Pesan &amp; Konsultasi</a>
-        <a href="{% url 'beranda' %}">◈ &nbsp; Buka Website</a>
-    </nav>
-</aside>
+{% include "admin_sidebar.html" with active_page='messages' %}
 
 <main class="main">
     <div class="topbar">

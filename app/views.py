@@ -1214,7 +1214,7 @@ def admin_article_delete(request, pk):
 
 @admin_required
 def admin_content(request):
-    """Pengelolaan konten halaman utama dan informasi website."""
+    """Pusat terpadu pengelolaan konten website (CMS): Banner Hero, Artikel & Edukasi, Informasi Kontak, dan Keunggulan."""
     hero = HeroBanner.objects.filter(is_active=True).first()
     if not hero:
         hero = HeroBanner.objects.first()
@@ -1224,6 +1224,8 @@ def admin_content(request):
         settings_obj = WebsiteSetting.objects.create()
 
     keunggulan_items = Keunggulan.objects.all().order_by('urutan', 'id')
+    articles = Article.objects.all().select_related('kategori').order_by('-dibuat_pada')
+    active_tab = request.GET.get('tab', 'hero')
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -1250,7 +1252,7 @@ def admin_content(request):
             hero.save()
 
             messages.success(request, "Konten Banner Hero berhasil disimpan dan langsung tayang di website.")
-            return redirect('admin_content')
+            return redirect(f"{reverse('admin_content')}?tab=hero")
 
         elif action == 'update_settings':
             settings_obj.nama_website = request.POST.get('nama_website', '').strip()
@@ -1263,12 +1265,16 @@ def admin_content(request):
             settings_obj.save()
 
             messages.success(request, "Pengaturan umum website dan kontak berhasil disimpan.")
-            return redirect('admin_content')
+            return redirect(f"{reverse('admin_content')}?tab=settings")
 
     context = {
         'hero': hero,
         'settings': settings_obj,
         'keunggulan_items': keunggulan_items,
+        'articles': articles,
+        'active_tab': active_tab,
+        'total_articles': articles.count(),
+        'published_articles': articles.filter(is_published=True).count(),
     }
     return render(request, 'admin_content.html', context)
 
@@ -1304,9 +1310,44 @@ def admin_keunggulan_delete(request, pk):
 
 @admin_required
 def admin_customers(request):
-    """Daftar pelanggan terdaftar dan profil bisnisnya."""
-    customers = User.objects.filter(is_staff=False, is_superuser=False).select_related('anggota').order_by('-date_joined')
-    return render(request, 'admin_customers.html', {'customers': customers})
+    """Daftar pelanggan terdaftar, profil bisnis, dan riwayat aktivitas login."""
+    customers_qs = User.objects.filter(is_staff=False, is_superuser=False).select_related('anggota').order_by('-date_joined')
+
+    # Metrik pelanggan
+    total_customers = customers_qs.count()
+    active_login_count = User.objects.filter(is_staff=False, is_superuser=False, last_login__isnull=False).count()
+    never_login_count = User.objects.filter(is_staff=False, is_superuser=False, last_login__isnull=True).count()
+    business_profile_count = UserPengguna.objects.filter(nama_usaha__isnull=False).exclude(nama_usaha='').count()
+
+    filter_type = request.GET.get('filter', 'semua')
+    search_query = request.GET.get('q', '').strip()
+
+    if filter_type == 'sudah_login':
+        customers_qs = customers_qs.filter(last_login__isnull=False)
+    elif filter_type == 'belum_login':
+        customers_qs = customers_qs.filter(last_login__isnull=True)
+    elif filter_type == 'profil_usaha':
+        customers_qs = customers_qs.filter(anggota__nama_usaha__isnull=False).exclude(anggota__nama_usaha='')
+
+    if search_query:
+        customers_qs = customers_qs.filter(
+            Q(first_name__icontains=search_query) |
+            Q(username__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(anggota__telp__icontains=search_query) |
+            Q(anggota__nama_usaha__icontains=search_query)
+        )
+
+    context = {
+        'customers': customers_qs,
+        'total_customers': total_customers,
+        'active_login_count': active_login_count,
+        'never_login_count': never_login_count,
+        'business_profile_count': business_profile_count,
+        'filter_type': filter_type,
+        'search_query': search_query,
+    }
+    return render(request, 'admin_customers.html', context)
 
 
 @admin_required
@@ -1390,50 +1431,94 @@ def admin_message_status(request, pk):
 
 @admin_required
 def admin_register(request):
-    """Pendaftaran admin baru oleh tim administrator."""
+    """Manajemen Tim Administrator: Daftarkan akun staf/teman dan pantau konfirmasi login aktivasi."""
     if request.method == 'POST':
-        full_name = request.POST.get('full_name', '').strip()
-        username = request.POST.get('username', '').strip()
-        email = request.POST.get('email', '').strip().lower()
-        password = request.POST.get('password', '')
-        confirm_password = request.POST.get('confirm_password', '')
-        telp = request.POST.get('telp', '').strip()
-        gender = request.POST.get('gender', 'Laki-laki')
+        action = request.POST.get('action', 'create')
 
-        if not full_name or not username or not email or not password:
-            messages.error(request, "Semua data admin wajib diisi.")
-            return render(request, 'register_admin.html')
+        if action == 'delete_admin':
+            admin_id = request.POST.get('admin_id')
+            target_user = get_object_or_404(User, pk=admin_id, is_staff=True)
+            if target_user.pk == request.user.pk:
+                messages.error(request, "Anda tidak dapat menghapus akun Anda sendiri yang sedang aktif.")
+            else:
+                nama = target_user.first_name or target_user.username
+                target_user.delete()
+                messages.success(request, f"Akun admin '{nama}' berhasil dihapus dari sistem tim.")
+            return redirect('admin_register')
 
-        if password != confirm_password:
-            messages.error(request, "Konfirmasi password tidak cocok.")
-            return render(request, 'register_admin.html')
+        elif action == 'toggle_active':
+            admin_id = request.POST.get('admin_id')
+            target_user = get_object_or_404(User, pk=admin_id, is_staff=True)
+            if target_user.pk == request.user.pk:
+                messages.error(request, "Anda tidak dapat menonaktifkan akun Anda sendiri.")
+            else:
+                target_user.is_active = not target_user.is_active
+                target_user.save()
+                status_str = "diaktifkan" if target_user.is_active else "dinonaktifkan"
+                messages.success(request, f"Akses akun admin '{target_user.username}' berhasil {status_str}.")
+            return redirect('admin_register')
 
-        if User.objects.filter(username__iexact=username).exists():
-            messages.error(request, "Username sudah digunakan.")
-            return render(request, 'register_admin.html')
+        else:
+            full_name = request.POST.get('full_name', '').strip()
+            username = request.POST.get('username', '').strip()
+            email = request.POST.get('email', '').strip().lower()
+            password = request.POST.get('password', '')
+            confirm_password = request.POST.get('confirm_password', '')
+            telp = request.POST.get('telp', '').strip()
+            gender = request.POST.get('gender', 'Laki-laki')
+            role = request.POST.get('role', 'staff')
 
-        if User.objects.filter(email__iexact=email).exists():
-            messages.error(request, "Email sudah terdaftar.")
-            return render(request, 'register_admin.html')
+            if not full_name or not username or not email or not password:
+                messages.error(request, "Data nama lengkap, username, email, dan password wajib diisi.")
+                return redirect('admin_register')
 
-        try:
-            with transaction.atomic():
-                user = User.objects.create_user(
-                    username=username,
-                    email=email,
-                    password=password,
-                    first_name=full_name,
-                    is_staff=True,
-                    is_active=True,
+            if password != confirm_password:
+                messages.error(request, "Konfirmasi password tidak cocok dengan password yang dimasukkan.")
+                return redirect('admin_register')
+
+            if User.objects.filter(username__iexact=username).exists():
+                messages.error(request, f"Username '{username}' sudah digunakan. Harap gunakan username lain.")
+                return redirect('admin_register')
+
+            if User.objects.filter(email__iexact=email).exists():
+                messages.error(request, f"Alamat email '{email}' sudah terdaftar di sistem.")
+                return redirect('admin_register')
+
+            try:
+                with transaction.atomic():
+                    new_user = User.objects.create_user(
+                        username=username,
+                        email=email,
+                        password=password,
+                        first_name=full_name,
+                        is_staff=True,
+                        is_superuser=(role == 'superuser'),
+                        is_active=True,
+                    )
+                    UserAdmin.objects.create(
+                        username=new_user,
+                        telp=telp,
+                        gender=gender,
+                    )
+                messages.success(
+                    request,
+                    f"Akun admin untuk '{full_name}' (@{username}) berhasil didaftarkan! Status saat ini 'Menunggu Konfirmasi Login'. Teman Anda dapat langsung login untuk mengaktifkan akunnya."
                 )
-                UserAdmin.objects.create(
-                    username=user,
-                    telp=telp,
-                    gender=gender,
-                )
-            messages.success(request, f"Admin '{username}' berhasil didaftarkan.")
-            return redirect('admin_dashboard')
-        except Exception as e:
-            messages.error(request, f"Gagal mendaftarkan admin: {str(e)}")
+                return redirect('admin_register')
+            except Exception as e:
+                messages.error(request, f"Gagal mendaftarkan akun admin: {str(e)}")
+                return redirect('admin_register')
 
-    return render(request, 'register_admin.html')
+    # Data Daftar Tim Admin
+    admin_users = User.objects.filter(is_staff=True).select_related('useradmin').order_by('-date_joined')
+    total_admins = admin_users.count()
+    active_admins = admin_users.filter(last_login__isnull=False).count()
+    pending_admins = admin_users.filter(last_login__isnull=True).count()
+
+    context = {
+        'admin_users': admin_users,
+        'total_admins': total_admins,
+        'active_admins': active_admins,
+        'pending_admins': pending_admins,
+    }
+    return render(request, 'register_admin.html', context)

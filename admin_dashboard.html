@@ -406,72 +406,7 @@
 
 <body>
 
-<aside class="sidebar">
-
-    <div class="brand">
-        <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
-        <div>
-            <h2>ATKGO.ID</h2>
-            <small>ADMIN WORKSPACE</small>
-        </div>
-    </div>
-
-    <p class="menu-title">MENU UTAMA</p>
-
-    <nav class="menu">
-        <a href="{% url 'admin_dashboard' %}" class="active">
-            <span class="menu-icon">▦</span> Dashboard
-        </a>
-
-        <a href="{% url 'admin_products' %}">
-            <span class="menu-icon">▣</span> Manajemen Produk
-        </a>
-
-        <a href="{% url 'admin_orders' %}">
-            <span class="menu-icon">▤</span> Pesanan Pelanggan
-        </a>
-
-        <a href="{% url 'admin_articles' %}">
-            <span class="menu-icon">✎</span> Artikel &amp; Edukasi
-        </a>
-
-        <a href="{% url 'admin_content' %}">
-            <span class="menu-icon">✦</span> Konten Website (CMS)
-        </a>
-
-        <a href="{% url 'admin_customers' %}">
-            <span class="menu-icon">♙</span> Pelanggan &amp; Profil Usaha
-        </a>
-
-        <a href="{% url 'admin_messages' %}">
-            <span class="menu-icon">✉</span> Pesan Pelanggan
-        </a>
-
-        <a href="{% url 'beranda' %}">
-            <span class="menu-icon">◈</span> Buka Website
-        </a>
-    </nav>
-
-    <p class="menu-title">MANAJEMEN TIM</p>
-
-    <nav class="menu">
-        <a href="{% url 'admin_register' %}">
-            <span class="menu-icon">＋</span> Tambah Admin
-        </a>
-
-        <a href="/admin/">
-            <span class="menu-icon">⚙</span> Pengaturan Admin
-        </a>
-    </nav>
-
-    <div class="sidebar-bottom">
-        <form method="POST" action="{% url 'admin_logout' %}">
-            {% csrf_token %}
-            <button type="submit">↪ Keluar dari Dashboard</button>
-        </form>
-    </div>
-
-</aside>
+{% include "admin_sidebar.html" with active_page='dashboard' %}
 
 <main class="main">
 
@@ -603,44 +538,38 @@
 
         <a href="{% url 'admin_products' %}" class="quick-link">
             <span>▣</span>
-            <strong>Kelola Produk</strong>
-            <small>Tambah &amp; ubah produk</small>
+            <strong>Katalog &amp; Layanan</strong>
+            <small>Kelola stok &amp; paket jasa</small>
         </a>
 
         <a href="{% url 'admin_orders' %}" class="quick-link">
             <span>▤</span>
             <strong>Pesanan Masuk</strong>
-            <small>Status pesanan pelanggan</small>
-        </a>
-
-        <a href="{% url 'admin_content' %}" class="quick-link">
-            <span>✦</span>
-            <strong>Konten Website (CMS)</strong>
-            <small>Banner hero &amp; info agency</small>
-        </a>
-
-        <a href="{% url 'admin_articles' %}" class="quick-link">
-            <span>✎</span>
-            <strong>Artikel &amp; Edukasi</strong>
-            <small>Publikasi artikel &amp; tips</small>
+            <small>Status transaksi pelanggan</small>
         </a>
 
         <a href="{% url 'admin_customers' %}" class="quick-link">
             <span>♙</span>
-            <strong>Data Pelanggan</strong>
-            <small>Profil pembeli &amp; usaha</small>
+            <strong>Data Pelanggan &amp; Usaha</strong>
+            <small>Daftar akun &amp; status login</small>
         </a>
 
         <a href="{% url 'admin_messages' %}" class="quick-link">
             <span>✉</span>
-            <strong>Pesan Pelanggan</strong>
-            <small>Periksa pesan masuk</small>
+            <strong>Pesan &amp; Konsultasi</strong>
+            <small>Tinjau pesan &amp; aksi ACC</small>
+        </a>
+
+        <a href="{% url 'admin_content' %}" class="quick-link">
+            <span>✦</span>
+            <strong>Kelola Website (CMS)</strong>
+            <small>Banner hero, artikel &amp; info</small>
         </a>
 
         <a href="{% url 'admin_register' %}" class="quick-link">
-            <span>＋</span>
-            <strong>Tambah Anggota</strong>
-            <small>Daftarkan admin baru</small>
+            <span>👥</span>
+            <strong>Manajemen Tim</strong>
+            <small>Daftarkan admin &amp; cek login</small>
         </a>
 
     </section>

@@ -4,156 +4,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Pelanggan &amp; Profil Usaha | ATKGO.ID</title>
+    <title>Data Pelanggan &amp; Profil Usaha | ATKGO.ID</title>
+    <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f4f6f2; color: #26352a; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f6f2; color: #26352a; }
 
         :root {
             --green: #304b35;
+            --green-dark: #223526;
             --green-light: #e8efe7;
+            --red: #ef3938;
             --text: #26352a;
-            --muted: #849087;
+            --muted: #64748b;
             --white: #ffffff;
-            --border: #e8ece7;
+            --border: #e2e8f0;
         }
 
-        .sidebar {
-            width: 255px; height: 100vh; position: fixed; top: 0; left: 0;
-            background: var(--green); color: white; padding: 25px 18px;
-            display: flex; flex-direction: column; z-index: 10;
-        }
-        .brand {
-            display: flex; align-items: center; gap: 12px;
-            padding: 5px 8px 30px; border-bottom: 1px solid #ffffff25;
-        }
-        .brand img { width: 38px; height: 38px; border-radius: 50%; background: white; object-fit: contain; }
-        .brand h2 { font-size: 16px; font-weight: bold; }
-        .brand small { font-size: 10px; opacity: .7; letter-spacing: 1.5px; }
+        .main { margin-left: 255px; padding: 30px 40px; min-height: 100vh; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .topbar h1 { font-size: 24px; font-weight: 800; color: #1e293b; }
+        .topbar p { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
 
-        .menu-title { font-size: 10px; letter-spacing: 1.5px; color: #a3c2a9; margin: 25px 8px 10px; font-weight: bold; }
-        .menu a {
-            display: flex; align-items: center; gap: 10px; padding: 11px 12px;
-            color: #d1e2d4; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: 500;
-            margin-bottom: 3px; transition: all .2s;
+        /* Stat Cards Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }
-        .menu a:hover, .menu a.active { background: #3e5e44; color: white; }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .stat-icon.total { background: #f1f5f9; color: #475569; }
+        .stat-icon.login-active { background: #dcfce7; color: #15803d; }
+        .stat-icon.login-never { background: #fef3c7; color: #d97706; }
+        .stat-icon.business { background: #e0f2fe; color: #0284c7; }
 
-        .main { margin-left: 255px; padding: 30px 40px; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .topbar h1 { font-size: 24px; }
-        .topbar p { color: var(--muted); font-size: 13px; }
+        .stat-info h3 { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; }
+        .stat-info span { font-size: 12px; font-weight: 600; color: #64748b; margin-top: 4px; display: block; }
 
+        /* Filter Toolbar */
+        .toolbar-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .filter-tabs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #475569;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .filter-tab:hover { background: #e2e8f0; color: #1e293b; }
+        .filter-tab.active { background: var(--green); color: #ffffff; border-color: var(--green); }
+        .tab-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .filter-tab.active .tab-badge {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-input {
+            height: 38px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0 12px;
+            font-size: 13px;
+            min-width: 240px;
+            outline: none;
+        }
+        .search-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(48, 75, 53, 0.15); }
+        .btn-search {
+            height: 38px;
+            padding: 0 14px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Card & Table */
         .card {
             background: white; border-radius: 14px; border: 1px solid var(--border);
-            padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            overflow-x: auto;
         }
 
         .table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .table th, .table td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; }
-        .table th { background: #f8faf7; color: var(--muted); font-weight: bold; }
+        .table th, .table td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+        .table th { background: #f8fafc; color: #475569; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .user-avatar {
-            width: 36px; height: 36px; border-radius: 50%; background: #e8efe7;
+            width: 38px; height: 38px; border-radius: 50%; background: #e8efe7;
             color: var(--green); display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 14px;
+            font-weight: 800; font-size: 14px; flex-shrink: 0;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1;
+        }
+        .badge-login { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-never { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+        .business-pill {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid #bfdbfe;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 900px) {
+            .main { margin-left: 0; padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-<aside class="sidebar">
-    <div class="brand">
-        <img src="{% static 'assets/img/logo.png' %}" alt="Logo">
-        <div>
-            <h2>ATKGO.ID</h2>
-            <small>ADMIN WORKSPACE</small>
-        </div>
-    </div>
-
-    <p class="menu-title">MENU UTAMA</p>
-    <nav class="menu">
-        <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
-        <a href="{% url 'admin_products' %}">▣ &nbsp; Manajemen Produk</a>
-        <a href="{% url 'admin_orders' %}">▤ &nbsp; Pesanan Pelanggan</a>
-        <a href="{% url 'admin_articles' %}">✎ &nbsp; Artikel &amp; Edukasi</a>
-        <a href="{% url 'admin_content' %}">✦ &nbsp; Konten Website (CMS)</a>
-        <a href="{% url 'admin_customers' %}" class="active">♙ &nbsp; Pelanggan &amp; Usaha</a>
-        <a href="{% url 'admin_messages' %}">✉ &nbsp; Pesan Pelanggan</a>
-        <a href="{% url 'beranda' %}">◈ &nbsp; Buka Website</a>
-    </nav>
-</aside>
+<!-- SIDEBAR MODULAR KONSISTEN -->
+{% include "admin_sidebar.html" with active_page='customers' %}
 
 <main class="main">
     <div class="topbar">
         <div>
             <h1>Data Pelanggan &amp; Profil Usaha</h1>
-            <p>Daftar pelanggan terdaftar, profil bisnis, nomor kontak, dan alamat operasional.</p>
+            <p>Daftar seluruh akun pelanggan terdaftar, profil usaha, kontak WhatsApp, serta status aktivitas login.</p>
         </div>
     </div>
 
+    <!-- 1. STAT CARDS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon total">♙</div>
+            <div class="stat-info">
+                <h3>{{ total_customers }}</h3>
+                <span>Total Akun Terdaftar</span>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left: 3px solid #15803d;">
+            <div class="stat-icon login-active">✓</div>
+            <div class="stat-info">
+                <h3>{{ active_login_count }}</h3>
+                <span>Sudah Pernah Login</span>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left: 3px solid #d97706;">
+            <div class="stat-icon login-never">⏳</div>
+            <div class="stat-info">
+                <h3>{{ never_login_count }}</h3>
+                <span>Belum Pernah Login</span>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left: 3px solid #0284c7;">
+            <div class="stat-icon business">🏢</div>
+            <div class="stat-info">
+                <h3>{{ business_profile_count }}</h3>
+                <span>Profil Usaha Terisi</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. TOOLBAR FILTER TABS & SEARCH -->
+    <div class="toolbar-card">
+        <div class="filter-tabs">
+            <a href="{% url 'admin_customers' %}?filter=semua" class="filter-tab {% if filter_type == 'semua' %}active{% endif %}">
+                <span>Semua Pelanggan</span>
+                <span class="tab-badge">{{ total_customers }}</span>
+            </a>
+            <a href="{% url 'admin_customers' %}?filter=sudah_login" class="filter-tab {% if filter_type == 'sudah_login' %}active{% endif %}">
+                <span>✓ Sudah Login</span>
+                <span class="tab-badge">{{ active_login_count }}</span>
+            </a>
+            <a href="{% url 'admin_customers' %}?filter=belum_login" class="filter-tab {% if filter_type == 'belum_login' %}active{% endif %}">
+                <span>⏳ Belum Login</span>
+                <span class="tab-badge">{{ never_login_count }}</span>
+            </a>
+            <a href="{% url 'admin_customers' %}?filter=profil_usaha" class="filter-tab {% if filter_type == 'profil_usaha' %}active{% endif %}">
+                <span>🏢 Ada Profil Usaha</span>
+                <span class="tab-badge">{{ business_profile_count }}</span>
+            </a>
+        </div>
+
+        <form method="GET" action="{% url 'admin_customers' %}" class="search-box">
+            {% if filter_type != 'semua' %}
+                <input type="hidden" name="filter" value="{{ filter_type }}">
+            {% endif %}
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Cari nama, email, usaha, WA..." class="search-input">
+            <button type="submit" class="btn-search">Cari</button>
+            {% if search_query %}
+                <a href="{% url 'admin_customers' %}" style="font-size: 12px; color: #dc2626; text-decoration: none;">Reset</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- 3. TABEL DATA PELANGGAN -->
     <div class="card">
         <table class="table">
             <thead>
                 <tr>
-                    <th style="width: 50px;">Foto</th>
-                    <th>Nama &amp; Username</th>
-                    <th>Kontak / Email</th>
-                    <th>Profil Usaha / Brand</th>
-                    <th>Alamat Pengiriman</th>
-                    <th>Terdaftar Sejak</th>
+                    <th style="width: 22%;">Pelanggan &amp; Akun</th>
+                    <th style="width: 20%;">Kontak &amp; WhatsApp</th>
+                    <th style="width: 26%;">Profil Usaha / Bisnis</th>
+                    <th style="width: 18%;">Status Aktivitas Login</th>
+                    <th style="width: 14%;">Terdaftar</th>
                 </tr>
             </thead>
             <tbody>
                 {% for c in customers %}
                     <tr>
+                        <!-- Kolom 1: Akun -->
                         <td>
-                            {% if c.anggota.photo %}
-                                <img src="{{ c.anggota.photo.url }}" alt="{{ c.username }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
-                            {% else %}
-                                <div class="user-avatar">{{ c.first_name|default:c.username|slice:":1"|upper }}</div>
-                            {% endif %}
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                {% if c.anggota.photo %}
+                                    <img src="{{ c.anggota.photo.url }}" alt="{{ c.username }}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">
+                                {% else %}
+                                    <div class="user-avatar">{{ c.first_name|default:c.username|slice:":1"|upper }}</div>
+                                {% endif %}
+                                <div>
+                                    <div style="font-weight: 800; font-size: 14px; color: #1e293b;">
+                                        {{ c.first_name|default:c.username }}
+                                    </div>
+                                    <div style="font-size: 12px; color: #64748b;">
+                                        @{{ c.username }}
+                                    </div>
+                                </div>
+                            </div>
                         </td>
+
+                        <!-- Kolom 2: Kontak -->
                         <td>
-                            <strong>{{ c.first_name|default:c.username }}</strong>
-                            <br><small style="color:#888;">@{{ c.username }}</small>
-                        </td>
-                        <td>
-                            <span style="font-weight:600;">{{ c.email }}</span>
-                            <br>
+                            <div style="font-weight: 600; font-size: 13px; color: #334155;">
+                                ✉ {{ c.email }}
+                            </div>
                             {% if c.anggota.telp %}
-                                <a href="https://wa.me/{{ c.anggota.telp }}" target="_blank" style="color:var(--green); font-size:12px; font-weight:bold; text-decoration:none;">
-                                    ☎ {{ c.anggota.telp }}
-                                </a>
+                                <div style="margin-top: 4px;">
+                                    <a href="https://wa.me/{{ c.anggota.telp|cut:' '|cut:'-'|cut:'+' }}" target="_blank" rel="noopener" style="color: #16a34a; font-size: 12.5px; font-weight: 700; text-decoration: none;">
+                                        💬 {{ c.anggota.telp }}
+                                    </a>
+                                </div>
                             {% else %}
-                                <small style="color:#aaa;">Belum ada telepon</small>
+                                <div style="font-size: 11.5px; color: #94a3b8; font-style: italic; margin-top: 4px;">
+                                    Belum isi nomor WA
+                                </div>
                             {% endif %}
                         </td>
+
+                        <!-- Kolom 3: Profil Usaha -->
                         <td>
                             {% if c.anggota.nama_usaha %}
-                                <strong style="color:var(--green);">{{ c.anggota.nama_usaha }}</strong>
-                                <br><small style="color:#666;">Bidang: {{ c.anggota.jenis_usaha|default:"Umum" }}</small>
-                            {% else %}
-                                <span style="color:#888; font-style:italic;">Belum mengisi usaha</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if c.anggota.alamat %}
-                                <span style="font-size:12px;">{{ c.anggota.alamat|truncatechars:45 }}</span>
-                                {% if c.anggota.kabupaten_kota %}
-                                    <br><small style="color:#888;">{{ c.anggota.kabupaten_kota }}</small>
+                                <div style="font-weight: 800; color: #304b35; font-size: 13.5px;">
+                                    🏢 {{ c.anggota.nama_usaha }}
+                                </div>
+                                <div style="font-size: 11.5px; color: #475569; margin-top: 2px;">
+                                    Bidang: {{ c.anggota.jenis_usaha|default:"Umum" }}
+                                </div>
+                                {% if c.anggota.alamat_usaha or c.anggota.alamat %}
+                                    <div style="font-size: 11.5px; color: #64748b; margin-top: 3px;">
+                                        📍 {{ c.anggota.alamat_usaha|default:c.anggota.alamat|truncatechars:45 }}
+                                    </div>
                                 {% endif %}
                             {% else %}
-                                <small style="color:#aaa;">Belum ada alamat</small>
+                                <span style="color: #94a3b8; font-size: 12px; font-style: italic;">
+                                    Belum mengisi profil usaha
+                                </span>
                             {% endif %}
                         </td>
-                        <td>{{ c.date_joined|date:"d M Y" }}</td>
+
+                        <!-- Kolom 4: Status Login -->
+                        <td>
+                            {% if c.last_login %}
+                                <span class="badge badge-login">✓ Sudah Pernah Login</span>
+                                <div style="font-size: 11px; color: #15803d; font-weight: 600; margin-top: 4px;">
+                                    Terakhir: {{ c.last_login|date:"d M Y, H:i" }}
+                                </div>
+                            {% else %}
+                                <span class="badge badge-never">⏳ Belum Pernah Login</span>
+                                <div style="font-size: 11px; color: #d97706; margin-top: 4px;">
+                                    Menunggu login pertama
+                                </div>
+                            {% endif %}
+                        </td>
+
+                        <!-- Kolom 5: Waktu Bergabung -->
+                        <td>
+                            <div style="font-size: 12.5px; font-weight: 600; color: #334155;">
+                                {{ c.date_joined|date:"d M Y" }}
+                            </div>
+                            <div style="font-size: 11px; color: #94a3b8;">
+                                {{ c.date_joined|date:"H:i" }} WITA
+                            </div>
+                        </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="6" style="text-align: center; color: #888; padding: 40px 15px;">
-                            Belum ada akun pelanggan yang terdaftar.
+                        <td colspan="5" style="text-align: center; color: #888; padding: 45px 15px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">👥</div>
+                            <div style="font-size: 15px; font-weight: 700; color: #475569;">Tidak ada data pelanggan yang cocok.</div>
+                            <div style="font-size: 12.5px; color: #94a3b8; margin-top: 4px;">Pelanggan yang mendaftar dan login akan otomatis muncul di sini.</div>
                         </td>
                     </tr>
                 {% endfor %}

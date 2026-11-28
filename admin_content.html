@@ -4,113 +4,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengelolaan Konten Website (CMS) | ATKGO.ID</title>
+    <title>Pusat Kelola Website (CMS) | ATKGO.ID</title>
+    <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f4f6f2; color: #26352a; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f6f2; color: #26352a; }
 
         :root {
             --green: #304b35;
+            --green-dark: #223526;
             --green-light: #e8efe7;
+            --red: #ef3938;
             --text: #26352a;
-            --muted: #849087;
+            --muted: #64748b;
             --white: #ffffff;
-            --border: #e8ece7;
+            --border: #e2e8f0;
         }
 
-        .sidebar {
-            width: 255px; height: 100vh; position: fixed; top: 0; left: 0;
-            background: var(--green); color: white; padding: 25px 18px;
-            display: flex; flex-direction: column; z-index: 10;
-        }
-        .brand {
-            display: flex; align-items: center; gap: 12px;
-            padding: 5px 8px 30px; border-bottom: 1px solid #ffffff25;
-        }
-        .brand img { width: 38px; height: 38px; border-radius: 50%; background: white; object-fit: contain; }
-        .brand h2 { font-size: 16px; font-weight: bold; }
-        .brand small { font-size: 10px; opacity: .7; letter-spacing: 1.5px; }
+        .main { margin-left: 255px; padding: 30px 40px; min-height: 100vh; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+        .topbar h1 { font-size: 24px; font-weight: 800; color: #1e293b; }
+        .topbar p { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
 
-        .menu-title { font-size: 10px; letter-spacing: 1.5px; color: #a3c2a9; margin: 25px 8px 10px; font-weight: bold; }
-        .menu a {
-            display: flex; align-items: center; gap: 10px; padding: 11px 12px;
-            color: #d1e2d4; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: 500;
-            margin-bottom: 3px; transition: all .2s;
+        /* Tabs Navigation */
+        .cms-nav-tabs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
         }
-        .menu a:hover, .menu a.active { background: #3e5e44; color: white; }
+        .cms-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .cms-tab-btn:hover { background: #f1f5f9; color: #1e293b; }
+        .cms-tab-btn.active {
+            background: var(--green);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(48, 75, 53, 0.2);
+        }
+        .tab-count {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: rgba(0,0,0,0.08);
+        }
+        .cms-tab-btn.active .tab-count {
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
 
-        .main { margin-left: 255px; padding: 30px 40px; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .topbar h1 { font-size: 24px; }
-        .topbar p { color: var(--muted); font-size: 13px; }
+        /* Tab Content Panel */
+        .cms-panel {
+            display: none;
+        }
+        .cms-panel.active {
+            display: block;
+        }
 
         .content-card {
             background: white; border-radius: 14px; border: 1px solid var(--border);
-            padding: 28px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            padding: 28px 30px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
-        .content-card h2 { font-size: 18px; margin-bottom: 6px; color: var(--green); }
-        .content-card p.desc { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+        .content-card h2 { font-size: 18px; margin-bottom: 6px; color: #1e293b; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .content-card p.desc { color: var(--muted); font-size: 13px; margin-bottom: 22px; line-height: 1.5; }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .form-group { margin-bottom: 16px; }
         .form-group.full { grid-column: 1 / -1; }
-        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 7px; }
-        input, textarea {
-            width: 100%; padding: 11px 13px; border: 1px solid #dce2dc;
-            border-radius: 8px; font-family: inherit; font-size: 13px;
+        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 7px; color: #334155; }
+        input, textarea, select {
+            width: 100%; padding: 11px 13px; border: 1.5px solid #cbd5e1;
+            border-radius: 8px; font-family: inherit; font-size: 13.5px;
+            background: #ffffff; box-sizing: border-box; transition: all 0.2s;
         }
-        textarea { min-height: 80px; resize: vertical; }
+        input:focus, textarea:focus, select:focus {
+            outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(48, 75, 53, 0.15);
+        }
+        textarea { min-height: 85px; resize: vertical; }
 
         .button {
-            display: inline-block; padding: 12px 22px; background: var(--green);
-            color: white; border: 0; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 12px 22px; background: var(--green);
+            color: white; border: 0; border-radius: 8px; font-size: 13.5px; font-weight: 800; cursor: pointer;
+            transition: all 0.2s; box-shadow: 0 3px 10px rgba(48, 75, 53, 0.2);
+            text-decoration: none;
         }
-        .button:hover { background: #243a28; }
+        .button:hover { background: #243a28; transform: translateY(-1px); }
 
-        .alert {
-            padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;
+        .button-sm {
+            padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 6px;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
         }
-        .alert.success { background: #effaf2; color: #247a42; border-left: 4px solid #247a42; }
+        .button-sm.edit { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+        .button-sm.edit:hover { background: #e2e8f0; }
+        .button-sm.delete { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .button-sm.delete:hover { background: #fca5a5; }
 
         .card-table {
             width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px;
         }
         .card-table th, .card-table td {
-            padding: 12px; border-bottom: 1px solid var(--border); text-align: left;
+            padding: 13px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top;
         }
-        .card-table th { background: #f8faf7; font-weight: bold; color: var(--muted); }
+        .card-table th { background: #f8fafc; font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; }
+
+        .badge-status {
+            display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
+        }
+        .badge-published { background: #dcfce7; color: #166534; }
+        .badge-draft { background: #fef3c7; color: #92400e; }
+
+        .alert {
+            padding: 12px 18px; border-radius: 10px; margin-bottom: 22px; font-size: 13.5px; font-weight: 500;
+            background: #effaf2; color: #247a42; border: 1.5px solid #bbf7d0; border-left: 4px solid #16a34a;
+        }
+
+        @media (max-width: 900px) {
+            .main { margin-left: 0; padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<aside class="sidebar">
-    <div class="brand">
-        <img src="{% static 'assets/img/logo.png' %}" alt="Logo">
-        <div>
-            <h2>ATKGO.ID</h2>
-            <small>ADMIN WORKSPACE</small>
-        </div>
-    </div>
-
-    <p class="menu-title">MENU UTAMA</p>
-    <nav class="menu">
-        <a href="{% url 'admin_dashboard' %}">▦ &nbsp; Dashboard</a>
-        <a href="{% url 'admin_products' %}">▣ &nbsp; Manajemen Produk</a>
-        <a href="{% url 'admin_orders' %}">▤ &nbsp; Pesanan Pelanggan</a>
-        <a href="{% url 'admin_articles' %}">✎ &nbsp; Artikel &amp; Edukasi</a>
-        <a href="{% url 'admin_content' %}" class="active">✦ &nbsp; Konten Website (CMS)</a>
-        <a href="{% url 'admin_customers' %}">♙ &nbsp; Pelanggan &amp; Usaha</a>
-        <a href="{% url 'admin_messages' %}">✉ &nbsp; Pesan Pelanggan</a>
-        <a href="{% url 'beranda' %}">◈ &nbsp; Buka Website</a>
-    </nav>
-</aside>
+<!-- SIDEBAR MODULAR KONSISTEN -->
+{% include "admin_sidebar.html" with active_page='content' %}
 
 <main class="main">
     <div class="topbar">
         <div>
-            <h1>Pengelolaan Konten Website (CMS)</h1>
-            <p>Ubah teks, banner hero, informasi kontak, dan keunggulan website ATKGO.ID secara langsung.</p>
+            <h1>Pusat Kelola Website (CMS Terpadu)</h1>
+            <p>Kelola seluruh tampilan beranda depan, banner hero, artikel &amp; edukasi, dan informasi kontak dalam satu tempat.</p>
         </div>
     </div>
 
@@ -120,163 +163,299 @@
         {% endfor %}
     {% endif %}
 
-    <!-- 1. PENGELOLAAN BANNER HERO UTAMA -->
-    <section class="content-card">
-        <h2>1. Konten Banner Utama (Hero Section)</h2>
-        <p class="desc">Mengubah judul utama, deskripsi, gambar, dan slogan yang tampil di halaman beranda depan.</p>
+    <!-- NAVIGASI TAB KELOLA WEBSITE SATU ATAP -->
+    <div class="cms-nav-tabs">
+        <button type="button" class="cms-tab-btn {% if active_tab == 'hero' %}active{% endif %}" onclick="switchCmsTab('hero')">
+            <span>✦</span>
+            <span>Banner Utama (Hero)</span>
+        </button>
 
-        <form method="POST" action="{% url 'admin_content' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="update_hero">
+        <button type="button" class="cms-tab-btn {% if active_tab == 'articles' %}active{% endif %}" onclick="switchCmsTab('articles')">
+            <span>✎</span>
+            <span>Artikel &amp; Edukasi</span>
+            <span class="tab-count">{{ total_articles }}</span>
+        </button>
 
-            <div class="form-grid">
-                <div class="form-group full">
-                    <label>Teks Kategori Atas (Eyebrow)</label>
-                    <input type="text" name="eyebrow" value="{{ hero.eyebrow|default:'Agensi Strategi & Produksi Visual Kreatif' }}" required>
+        <button type="button" class="cms-tab-btn {% if active_tab == 'settings' %}active{% endif %}" onclick="switchCmsTab('settings')">
+            <span>🏢</span>
+            <span>Informasi Kontak &amp; Footer</span>
+        </button>
+
+        <button type="button" class="cms-tab-btn {% if active_tab == 'keunggulan' %}active{% endif %}" onclick="switchCmsTab('keunggulan')">
+            <span>★</span>
+            <span>Keunggulan Layanan</span>
+            <span class="tab-count">{{ keunggulan_items|length }}</span>
+        </button>
+    </div>
+
+    <!-- 1. TAB BANNER HERO UTAMA -->
+    <div class="cms-panel {% if active_tab == 'hero' %}active{% endif %}" id="panel_hero">
+        <section class="content-card">
+            <h2>
+                <span>✦</span>
+                <span>Banner Utama Halaman Beranda (Hero Section)</span>
+            </h2>
+            <p class="desc">Mengubah judul utama, deskripsi, gambar promosi, dan slogan yang tampil di bagian atas beranda depan website.</p>
+
+            <form method="POST" action="{% url 'admin_content' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_hero">
+
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Kategori Atas (Eyebrow)</label>
+                        <input type="text" name="eyebrow" value="{{ hero.eyebrow|default:'Agensi Strategi & Produksi Visual Kreatif' }}" required>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Judul Utama (Headline)</label>
+                        <input type="text" name="judul" value="{{ hero.judul|default:'Lebih cepat, hemat, dan Berdampak.' }}" required>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Deskripsi / Paragraf Pembuka</label>
+                        <textarea name="deskripsi" required>{{ hero.deskripsi|default:'ATKGO.ID membantu kebutuhan strategi pemasaran, manajemen media sosial, dan produksi visual Anda dengan proses yang praktis, kreatif, dan profesional.' }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Slogan / Tagline Bawah</label>
+                        <input type="text" name="tagline" value="{{ hero.tagline|default:'Satu Agensi untuk seluruh solusi kreatif brand anda.' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Badge Mengambang (Floating Text)</label>
+                        <input type="text" name="badge" value="{{ hero.badge|default:'Kreatif • Strategis • Terpercaya' }}">
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Gambar Banner Hero</label>
+                        {% if hero.gambar %}
+                            <p style="margin-bottom:8px; font-size:12px; color:#666;">Gambar saat ini: <a href="{{ hero.gambar.url }}" target="_blank" style="color:var(--green); font-weight:bold;">Lihat Gambar Aktif</a></p>
+                        {% endif %}
+                        <input type="file" name="gambar" accept="image/*">
+                    </div>
                 </div>
 
-                <div class="form-group full">
-                    <label>Judul Utama (Headline)</label>
-                    <input type="text" name="judul" value="{{ hero.judul|default:'Lebih cepat, hemat, dan Berdampak.' }}" required>
-                </div>
+                <button type="submit" class="button">Simpan Konten Banner Hero</button>
+            </form>
+        </section>
+    </div>
 
-                <div class="form-group full">
-                    <label>Deskripsi / Paragraf Pembuka</label>
-                    <textarea name="deskripsi" required>{{ hero.deskripsi|default:'ATKGO.ID membantu kebutuhan strategi pemasaran, manajemen media sosial, dan produksi visual Anda dengan proses yang praktis, kreatif, dan profesional.' }}</textarea>
+    <!-- 2. TAB ARTIKEL & EDUKASI -->
+    <div class="cms-panel {% if active_tab == 'articles' %}active{% endif %}" id="panel_articles">
+        <section class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h2>
+                        <span>✎</span>
+                        <span>Artikel &amp; Publikasi Edukasi</span>
+                    </h2>
+                    <p class="desc" style="margin-bottom: 0;">Kelola konten artikel tips bisnis, branding, dan pengadaan kantor yang tampil di halaman Artikel.</p>
                 </div>
-
-                <div class="form-group">
-                    <label>Slogan / Tagline Bawah</label>
-                    <input type="text" name="tagline" value="{{ hero.tagline|default:'Satu Agensi untuk seluruh solusi kreatif brand anda.' }}">
-                </div>
-
-                <div class="form-group">
-                    <label>Badge Mengambang (Floating Text)</label>
-                    <input type="text" name="badge" value="{{ hero.badge|default:'Kreatif • Strategis • Terpercaya' }}">
-                </div>
-
-                <div class="form-group full">
-                    <label>Gambar Banner Hero</label>
-                    {% if hero.gambar %}
-                        <p style="margin-bottom:8px; font-size:12px; color:#666;">Gambar saat ini: <a href="{{ hero.gambar.url }}" target="_blank">Lihat Gambar</a></p>
-                    {% endif %}
-                    <input type="file" name="gambar" accept="image/*">
-                </div>
+                <a href="{% url 'admin_article_create' %}" class="button">
+                    <span>+</span>
+                    <span>Tulis Artikel Baru</span>
+                </a>
             </div>
 
-            <button type="submit" class="button">Simpan Konten Hero</button>
-        </form>
-    </section>
-
-    <!-- 2. PENGATURAN INFORMASI WEBSITE -->
-    <section class="content-card">
-        <h2>2. Informasi Umum Website &amp; Kontak</h2>
-        <p class="desc">Mengubah informasi kontak, email, alamat kantor, dan jam operasional yang tampil di footer &amp; kontak.</p>
-
-        <form method="POST" action="{% url 'admin_content' %}">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="update_settings">
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Nama Website</label>
-                    <input type="text" name="nama_website" value="{{ settings.nama_website|default:'ATKGO.ID' }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Email Kontak</label>
-                    <input type="email" name="email_kontak" value="{{ settings.email_kontak|default:'hello@atkgo.id' }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Nomor Telepon / WhatsApp</label>
-                    <input type="text" name="telepon_kontak" value="{{ settings.telepon_kontak|default:'081234567890' }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Jam Operasional</label>
-                    <input type="text" name="jam_operasional" value="{{ settings.jam_operasional|default:'Senin - Jumat: 08.00 - 17.00 WIB' }}">
-                </div>
-
-                <div class="form-group full">
-                    <label>Alamat Kantor / Toko</label>
-                    <textarea name="alamat_kantor">{{ settings.alamat_kantor|default:'Jakarta, Indonesia' }}</textarea>
-                </div>
-
-                <div class="form-group full">
-                    <label>Judul Banner Promo Bawah</label>
-                    <input type="text" name="banner_promo_judul" value="{{ settings.banner_promo_judul|default:'Butuh rekomendasi produk atau layanan?' }}">
-                </div>
-
-                <div class="form-group full">
-                    <label>Deskripsi Banner Promo</label>
-                    <textarea name="banner_promo_deskripsi">{{ settings.banner_promo_deskripsi|default:'Hubungi ATKGO.ID untuk mendiskusikan kebutuhan paket visual dan operasional Anda.' }}</textarea>
-                </div>
-            </div>
-
-            <button type="submit" class="button">Simpan Pengaturan Website</button>
-        </form>
-    </section>
-
-    <!-- 3. KEUNGGULAN LAYANAN -->
-    <section class="content-card">
-        <h2>3. Keunggulan Layanan (Kenapa ATKGO.ID)</h2>
-        <p class="desc">Daftar kartu keunggulan yang tampil pada halaman depan.</p>
-
-        <table class="card-table">
-            <thead>
-                <tr>
-                    <th style="width: 50px;">Ikon</th>
-                    <th>Judul Keunggulan</th>
-                    <th>Deskripsi</th>
-                    <th style="width: 80px;">Status</th>
-                    <th style="width: 100px;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in keunggulan_items %}
+            <table class="card-table">
+                <thead>
                     <tr>
-                        <td style="font-size:18px; font-weight:bold;">{{ item.ikon }}</td>
-                        <td><strong>{{ item.judul }}</strong></td>
-                        <td>{{ item.deskripsi }}</td>
-                        <td>{% if item.is_active %}<span style="color:#247a42;">Aktif</span>{% else %}<span style="color:#888;">Nonaktif</span>{% endif %}</td>
-                        <td>
-                            <form method="POST" action="{% url 'admin_keunggulan_delete' item.id %}" style="display:inline;" onsubmit="return confirm('Hapus keunggulan ini?');">
-                                {% csrf_token %}
-                                <button type="submit" style="color:#c62828; background:none; border:none; cursor:pointer; font-size:12px; font-weight:bold;">Hapus</button>
-                            </form>
-                        </td>
+                        <th style="width: 40%;">Judul Artikel</th>
+                        <th style="width: 20%;">Kategori</th>
+                        <th style="width: 15%;">Penulis</th>
+                        <th style="width: 12%;">Status</th>
+                        <th style="width: 13%;">Aksi</th>
                     </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="5" style="text-align:center; color:#888;">Belum ada item keunggulan kustom. Menampilkan nilai default sistem.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for art in articles %}
+                        <tr>
+                            <td>
+                                <strong style="color: #1e293b; font-size: 13.5px;">{{ art.judul }}</strong>
+                                <br><small style="color: #64748b;">{{ art.ringkasan|truncatechars:70 }}</small>
+                            </td>
+                            <td>
+                                <span style="background: #f1f5f9; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 11.5px;">
+                                    {{ art.kategori.nama|default:"Umum" }}
+                                </span>
+                            </td>
+                            <td>{{ art.nama_penulis }}</td>
+                            <td>
+                                {% if art.is_published %}
+                                    <span class="badge-status badge-published">✓ Terbit</span>
+                                {% else %}
+                                    <span class="badge-status badge-draft">Draft</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 6px;">
+                                    <a href="{% url 'admin_article_edit' art.pk %}" class="button-sm edit">Ubah</a>
+                                    <form method="POST" action="{% url 'admin_article_delete' art.pk %}" style="display:inline;" onsubmit="return confirm('Hapus artikel {{ art.judul }}?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="button-sm delete" style="cursor:pointer;">Hapus</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #888; padding: 40px 15px;">
+                                Belum ada artikel yang dipublikasikan. Klik tombol "+ Tulis Artikel Baru" di atas.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
 
-        <!-- FORM TAMBAH KEUNGGULAN -->
-        <h3 style="font-size:15px; margin: 25px 0 12px; color:var(--green);">+ Tambah Item Keunggulan Baru</h3>
-        <form method="POST" action="{% url 'admin_keunggulan_create' %}">
-            {% csrf_token %}
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Simbol Ikon (contoh: ✓, ♡, ↗, ✎, ▣)</label>
-                    <input type="text" name="ikon" value="✓" required>
+    <!-- 3. TAB PENGATURAN INFORMASI WEBSITE & FOOTER -->
+    <div class="cms-panel {% if active_tab == 'settings' %}active{% endif %}" id="panel_settings">
+        <section class="content-card">
+            <h2>
+                <span>🏢</span>
+                <span>Informasi Umum Website, Kontak &amp; Footer</span>
+            </h2>
+            <p class="desc">Mengubah rincian nama website, email resmi, WhatsApp hotline, alamat fisik, dan jam layanan.</p>
+
+            <form method="POST" action="{% url 'admin_content' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_settings">
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nama Brand / Website</label>
+                        <input type="text" name="nama_website" value="{{ settings.nama_website|default:'ATKGO.ID' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Kontak Resmi</label>
+                        <input type="email" name="email_kontak" value="{{ settings.email_kontak|default:'support@atkgo.id' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nomor WhatsApp / Hotline</label>
+                        <input type="text" name="telepon_kontak" value="{{ settings.telepon_kontak|default:'0822-7884-3288' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jam Operasional Layanan</label>
+                        <input type="text" name="jam_operasional" value="{{ settings.jam_operasional|default:'Senin – Sabtu: 08.00 – 17.00 WITA' }}">
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Alamat Kantor / Operasional</label>
+                        <input type="text" name="alamat_kantor" value="{{ settings.alamat_kantor|default:'Indonesia' }}">
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Judul Banner Promo (Opsional)</label>
+                        <input type="text" name="banner_promo_judul" value="{{ settings.banner_promo_judul|default:'' }}">
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Deskripsi Banner Promo (Opsional)</label>
+                        <textarea name="banner_promo_deskripsi">{{ settings.banner_promo_deskripsi|default:'' }}</textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Judul Keunggulan</label>
-                    <input type="text" name="judul" placeholder="Contoh: Praktis dan Efisien" required>
+
+                <button type="submit" class="button">Simpan Informasi Kontak &amp; Footer</button>
+            </form>
+        </section>
+    </div>
+
+    <!-- 4. TAB POIN KEUNGGULAN LAYANAN -->
+    <div class="cms-panel {% if active_tab == 'keunggulan' %}active{% endif %}" id="panel_keunggulan">
+        <section class="content-card">
+            <h2>
+                <span>★</span>
+                <span>Poin Nilai &amp; Keunggulan Layanan</span>
+            </h2>
+            <p class="desc">Nilai tambah keunggulan ATKGO.ID yang ditampilkan pada section keunggulan beranda.</p>
+
+            <form method="POST" action="{% url 'admin_keunggulan_create' %}">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group" style="max-width: 140px;">
+                        <label>Ikon / Simbol</label>
+                        <input type="text" name="ikon" value="✓" placeholder="✓ / ⚡ / 💼" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Judul Keunggulan</label>
+                        <input type="text" name="judul" placeholder="Contoh: Pengadaan Cepat &amp; Tepat" required>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Deskripsi Singkat</label>
+                        <textarea name="deskripsi" placeholder="Penjelasan singkat keunggulan yang didapatkan klien..." required></textarea>
+                    </div>
                 </div>
-                <div class="form-group full">
-                    <label>Deskripsi Keunggulan</label>
-                    <textarea name="deskripsi" placeholder="Tuliskan penjelasan keunggulan..." required></textarea>
-                </div>
-            </div>
-            <button type="submit" class="button">+ Tambah Keunggulan</button>
-        </form>
-    </section>
+
+                <button type="submit" class="button">+ Tambah Poin Keunggulan</button>
+            </form>
+
+            <h3 style="font-size: 15px; margin-top: 30px; margin-bottom: 12px; color: #1e293b;">Daftar Keunggulan Aktif:</h3>
+            <table class="card-table">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">Ikon</th>
+                        <th style="width: 30%;">Judul Keunggulan</th>
+                        <th style="width: 48%;">Deskripsi</th>
+                        <th style="width: 12%;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in keunggulan_items %}
+                        <tr>
+                            <td style="font-size: 18px; text-align: center;">{{ item.ikon }}</td>
+                            <td><strong>{{ item.judul }}</strong></td>
+                            <td>{{ item.deskripsi }}</td>
+                            <td>
+                                <form method="POST" action="{% url 'admin_keunggulan_delete' item.pk %}" onsubmit="return confirm('Hapus poin keunggulan ini?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button-sm delete" style="cursor: pointer;">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #888; padding: 25px;">
+                                Belum ada poin keunggulan khusus yang ditambahkan.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+
 </main>
+
+<script>
+    function switchCmsTab(tabId) {
+        // Toggle tab buttons
+        document.querySelectorAll('.cms-tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.cms-panel').forEach(panel => panel.classList.remove('active'));
+
+        const targetPanel = document.getElementById('panel_' + tabId);
+        if (targetPanel) {
+            targetPanel.classList.add('active');
+        }
+
+        // Set button active
+        const clickedBtn = Array.from(document.querySelectorAll('.cms-tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+        if (clickedBtn) {
+            clickedBtn.classList.add('active');
+        }
+
+        // Update URL query string without reloading page
+        const url = new URL(window.location);
+        url.searchParams.set('tab', tabId);
+        window.history.replaceState({}, '', url);
+    }
+</script>
 
 </body>
 </html>

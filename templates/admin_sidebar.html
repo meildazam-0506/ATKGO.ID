@@ -1,0 +1,262 @@
+{% load static %}
+<aside class="sidebar admin-sidebar-unified">
+    <!-- Brand Header -->
+    <div class="brand">
+        <a href="{% url 'admin_dashboard' %}" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
+            <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
+            <div>
+                <h2>ATKGO.ID</h2>
+                <small>ADMIN WORKSPACE</small>
+            </div>
+        </a>
+    </div>
+
+    <!-- Navigation Groups -->
+    <div class="sidebar-scrollable-content">
+
+        <!-- KELOMPOK 1: RINGKASAN UTAMA -->
+        <p class="menu-title">NAVIGASI UTAMA</p>
+        <nav class="menu">
+            <a href="{% url 'admin_dashboard' %}" class="{% if active_page == 'dashboard' %}active{% endif %}" title="Dashboard Overview">
+                <span class="menu-icon">▦</span>
+                <span>Dashboard</span>
+            </a>
+        </nav>
+
+        <!-- KELOMPOK 2: PELANGGAN & KONSULTASI -->
+        <p class="menu-title">PELANGGAN &amp; KONSULTASI</p>
+        <nav class="menu">
+            <a href="{% url 'admin_customers' %}" class="{% if active_page == 'customers' %}active{% endif %}" title="Data Pelanggan & Profil Usaha">
+                <span class="menu-icon">♙</span>
+                <span>Pelanggan &amp; Usaha</span>
+            </a>
+            <a href="{% url 'admin_messages' %}" class="{% if active_page == 'messages' %}active{% endif %}" title="Pesan Kontak & Permintaan ACC">
+                <span class="menu-icon">✉</span>
+                <span>Pesan &amp; Konsultasi</span>
+            </a>
+        </nav>
+
+        <!-- KELOMPOK 3: TRANSAKSI & PRODUK -->
+        <p class="menu-title">TRANSAKSI &amp; PRODUK</p>
+        <nav class="menu">
+            <a href="{% url 'admin_orders' %}" class="{% if active_page == 'orders' %}active{% endif %}" title="Pesanan & Pembayaran Pelanggan">
+                <span class="menu-icon">▤</span>
+                <span>Pesanan Pelanggan</span>
+            </a>
+            <a href="{% url 'admin_products' %}" class="{% if active_page == 'products' %}active{% endif %}" title="Manajemen Produk & Layanan">
+                <span class="menu-icon">▣</span>
+                <span>Katalog &amp; Layanan</span>
+            </a>
+        </nav>
+
+        <!-- KELOMPOK 4: KELOLA WEBSITE (CMS TERPADU) -->
+        <p class="menu-title">KELOLA WEBSITE</p>
+        <nav class="menu">
+            <a href="{% url 'admin_content' %}" class="{% if active_page == 'content' or active_page == 'articles' %}active{% endif %}" title="Pusat Pengelolaan Konten Website & Artikel">
+                <span class="menu-icon">✦</span>
+                <span>Kelola Website (CMS)</span>
+            </a>
+        </nav>
+
+        <!-- KELOMPOK 5: MANAJEMEN TIM -->
+        <p class="menu-title">MANAJEMEN TIM</p>
+        <nav class="menu">
+            <a href="{% url 'admin_register' %}" class="{% if active_page == 'team' %}active{% endif %}" title="Daftarkan & Kelola Tim Administrator">
+                <span class="menu-icon">👥</span>
+                <span>Manajemen Tim</span>
+            </a>
+            <a href="/admin/" target="_blank" rel="noopener" title="Django Core Administration">
+                <span class="menu-icon">⚙</span>
+                <span>Sistem Database</span>
+            </a>
+        </nav>
+
+        <!-- KELOMPOK 6: PINTASAN WEBSITE -->
+        <p class="menu-title">PINTASAN</p>
+        <nav class="menu">
+            <a href="{% url 'beranda' %}" target="_blank" rel="noopener" title="Buka Halaman Depan Website">
+                <span class="menu-icon">◈</span>
+                <span>Buka Website Publik</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <!-- Sidebar Bottom: Logout -->
+    <div class="sidebar-bottom">
+        <form method="POST" action="{% url 'admin_logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-sidebar-logout" title="Keluar dari sesi Administrator">
+                <span>↪</span>
+                <span>Keluar dari Dashboard</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+<style>
+    /* Styling Terpadu Sidebar Admin ATKGO.ID */
+    .admin-sidebar-unified {
+        width: 255px !important;
+        height: 100vh !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        background: #304b35 !important;
+        color: #ffffff !important;
+        padding: 22px 16px 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        z-index: 1000 !important;
+        box-sizing: border-box !important;
+        box-shadow: 2px 0 16px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .admin-sidebar-unified .brand {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 4px 6px 20px !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+        flex-shrink: 0 !important;
+    }
+    .admin-sidebar-unified .brand img {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 8px !important;
+        background: #ffffff !important;
+        object-fit: contain !important;
+        padding: 2px !important;
+        flex-shrink: 0 !important;
+    }
+    .admin-sidebar-unified .brand h2 {
+        font-size: 16.5px !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.5px !important;
+        color: #ffffff !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
+    }
+    .admin-sidebar-unified .brand small {
+        font-size: 10px !important;
+        opacity: 0.7 !important;
+        letter-spacing: 1.5px !important;
+        color: #d1e2d4 !important;
+        font-weight: 600 !important;
+        display: block !important;
+        margin-top: 3px !important;
+    }
+
+    /* Scrollable Area */
+    .admin-sidebar-unified .sidebar-scrollable-content {
+        flex: 1 1 auto !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-right: 4px !important;
+        margin-top: 10px !important;
+        margin-bottom: 12px !important;
+    }
+    .admin-sidebar-unified .sidebar-scrollable-content::-webkit-scrollbar {
+        width: 4px !important;
+    }
+    .admin-sidebar-unified .sidebar-scrollable-content::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-radius: 4px !important;
+    }
+
+    /* Kategori Header */
+    .admin-sidebar-unified .menu-title {
+        font-size: 10px !important;
+        letter-spacing: 1.4px !important;
+        color: #a3c2a9 !important;
+        margin: 18px 8px 6px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+    }
+    .admin-sidebar-unified .menu-title:first-child {
+        margin-top: 4px !important;
+    }
+
+    /* Link Item */
+    .admin-sidebar-unified .menu {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        list-style: none !important;
+    }
+    .admin-sidebar-unified .menu a {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 9px 12px !important;
+        color: #d1e2d4 !important;
+        text-decoration: none !important;
+        border-radius: 8px !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        transition: all 0.18s ease !important;
+        line-height: 1.3 !important;
+    }
+    .admin-sidebar-unified .menu a:hover {
+        background: rgba(255, 255, 255, 0.12) !important;
+        color: #ffffff !important;
+        transform: translateX(2px) !important;
+    }
+    .admin-sidebar-unified .menu a.active {
+        background: #3e5e44 !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+    }
+    .admin-sidebar-unified .menu-icon {
+        width: 18px !important;
+        font-size: 14px !important;
+        text-align: center !important;
+        flex-shrink: 0 !important;
+        opacity: 0.9 !important;
+    }
+
+    /* Bottom Logout */
+    .admin-sidebar-unified .sidebar-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+        padding-top: 14px !important;
+        flex-shrink: 0 !important;
+    }
+    .admin-sidebar-unified .btn-sidebar-logout {
+        width: 100% !important;
+        padding: 10px 12px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        color: #ffffff !important;
+        background: rgba(239, 57, 56, 0.85) !important;
+        cursor: pointer !important;
+        font-size: 12.5px !important;
+        font-weight: 700 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        transition: background 0.2s, transform 0.1s !important;
+    }
+    .admin-sidebar-unified .btn-sidebar-logout:hover {
+        background: #ef3938 !important;
+        transform: translateY(-1px) !important;
+    }
+    .admin-sidebar-unified .btn-sidebar-logout:active {
+        transform: translateY(0) !important;
+    }
+
+    @media (max-width: 800px) {
+        .admin-sidebar-unified {
+            width: 100% !important;
+            height: auto !important;
+            position: relative !important;
+            box-shadow: none !important;
+        }
+        .admin-sidebar-unified .sidebar-scrollable-content {
+            overflow-y: visible !important;
+        }
+    }
+</style>
