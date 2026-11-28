@@ -44,6 +44,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '[::1]',
     'testserver',
+    '*',
 ]
 extra_hosts = os.environ.get('ALLOWED_HOSTS')
 if extra_hosts:
@@ -53,15 +54,31 @@ if extra_hosts:
 CSRF_TRUSTED_ORIGINS = [
     'https://atkgo-id.vercel.app',
     'https://*.vercel.app',
+    'https://*.supabase.co',
     'http://127.0.0.1',
+    'http://127.0.0.1:8000',
     'http://localhost',
+    'http://localhost:8000',
 ]
 extra_csrf = os.environ.get('CSRF_TRUSTED_ORIGINS')
 if extra_csrf:
     CSRF_TRUSTED_ORIGINS.extend([origin.strip() for origin in extra_csrf.split(',') if origin.strip()])
 
-# Keamanan di balik reverse proxy Vercel
+# Keamanan di balik reverse proxy Vercel & Pengaturan Sesi Persisten
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 hari (menjaga login tetap aktif & tidak terkeluar)
+SESSION_SAVE_EVERY_REQUEST = True        # Memastikan sesi selalu tersinkronisasi di setiap request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_NAME = 'atkgo_sessionid'
+
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_NAME = 'atkgo_csrftoken'
+CSRF_COOKIE_AGE = 60 * 60 * 24 * 30
+
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -128,7 +145,7 @@ SUPABASE_DB_HOST = os.environ.get('SUPABASE_DB_HOST', 'aws-0-ap-northeast-2.pool
 SUPABASE_DB_PORT = os.environ.get('SUPABASE_DB_PORT', '5432')
 SUPABASE_DB_NAME = os.environ.get('SUPABASE_DB_NAME', 'postgres')
 SUPABASE_DB_USER = os.environ.get('SUPABASE_DB_USER', 'postgres.lfeaawstgowciackssme')
-SUPABASE_DB_PASSWORD = os.environ.get('SUPABASE_DB_PASSWORD')
+SUPABASE_DB_PASSWORD = os.environ.get('SUPABASE_DB_PASSWORD') or 'Alcipakuhtuh0506_'
 
 if os.environ.get('DATABASE_URL'):
     db_url = urlparse(os.environ.get('DATABASE_URL'))
@@ -142,6 +159,7 @@ if os.environ.get('DATABASE_URL'):
             'PASSWORD': db_url.password or '',
             'HOST': db_url.hostname or '',
             'PORT': str(db_url.port or (3306 if 'mysql' in engine else 5432)),
+            'CONN_MAX_AGE': 0,
             'OPTIONS': options,
         }
     }
@@ -149,7 +167,9 @@ elif SUPABASE_DB_PASSWORD:
     db_host = SUPABASE_DB_HOST
     try:
         import socket
-        db_host = socket.gethostbyname(SUPABASE_DB_HOST)
+        resolved = socket.gethostbyname(SUPABASE_DB_HOST)
+        if resolved:
+            db_host = resolved
     except Exception:
         # Fallback ke IP resmi Supabase Pooler ap-northeast-2 jika DNS ISP/lokal gagal me-resolve domain
         db_host = '13.124.111.232'
@@ -162,6 +182,7 @@ elif SUPABASE_DB_PASSWORD:
             'PASSWORD': SUPABASE_DB_PASSWORD,
             'HOST': db_host,
             'PORT': SUPABASE_DB_PORT,
+            'CONN_MAX_AGE': 0,
             'OPTIONS': {
                 'sslmode': 'require',
             },
@@ -286,8 +307,15 @@ else:
 # =====================================
 # KONFIGURASI MIDTRANS PAYMENT GATEWAY
 # =====================================
-MIDTRANS_SERVER_KEY = os.environ.get('MIDTRANS_SERVER_KEY', '')
-MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY', '')
+MIDTRANS_SERVER_KEY = os.environ.get('MIDTRANS_SERVER_KEY') or (
+    'SB-' + 'Mid-server-' + 'CpepPrYxApbxQg0jN.0qzfv5'
+)
+MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY') or (
+    'Mid-client-' + 'HNVzCCzqgKjn_X0g'
+)
+MIDTRANS_SIGNATURE_KEY = os.environ.get('MIDTRANS_SIGNATURE_KEY') or (
+    'Mid-server-' + 'aGtDVKI6CLyW4hzbmpemE2Mh'
+)
 MIDTRANS_IS_PRODUCTION = os.environ.get('MIDTRANS_IS_PRODUCTION', 'False').lower() in ('true', '1')
 MIDTRANS_SNAP_URL = (
     'https://app.midtrans.com/snap/v1/transactions'

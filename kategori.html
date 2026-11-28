@@ -14,31 +14,7 @@
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 </head>
 <body>
-  <header>
-  <div class="wrap nav">
-
-    <a class="brand" href="{% url 'home' %}">
-      <img src="{% static 'assets/img/logo.png' %}" width="47" height="48" alt="Logo ATKGO.ID">
-      <span>ATK<span class="go">GO</span>.ID</span>
-    </a>
-
-    <nav id="mainNav" aria-label="Menu utama">
-      <a href="{% url 'home' %}">Beranda</a>
-      <a href="{% url 'produk' %}">Layanan</a>
-      <a href="{% url 'kategori' %}" class="active" aria-current="page">Kategori</a>
-      <a href="{% url 'tentang' %}">Tentang</a>
-      <a href="{% url 'kontak' %}">Kontak</a>
-    </nav>
-
-    <a class="nav-cta" href="{% url 'kontak' %}">Hubungi Kami →</a>
-
-    <button class="menu" id="menuBtn" type="button"
-      aria-label="Buka menu"
-      aria-controls="mainNav"
-      aria-expanded="false">☰</button>
-
-  </div>
-</header>
+  {% include "app/navbar.html" %}
 
   <main>
     <section class="section alt">

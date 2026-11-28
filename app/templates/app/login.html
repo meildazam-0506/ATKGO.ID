@@ -345,12 +345,23 @@
             {% endfor %}
         {% endif %}
 
+        {% if request.GET.next %}
+            <div style="background:#eef7f0; border-left:4px solid #304b35; padding:12px 16px; border-radius:8px; font-size:13px; color:#27522f; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                <span style="font-size:16px;">🔒</span>
+                <span>Silakan masuk atau daftar akun terlebih dahulu untuk mengakses halaman tersebut.</span>
+            </div>
+        {% endif %}
+
         {% if mode == 'register' %}
 
             <!-- FORM PENDAFTARAN PELANGGAN -->
             <form method="POST" action="{% url 'login' %}?mode=register" id="registerForm">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="register">
+
+                {% if request.GET.next %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                {% endif %}
 
                 <label for="full_name">Nama Lengkap</label>
                 <input

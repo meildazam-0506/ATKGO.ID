@@ -205,6 +205,9 @@ def login_page(request):
                     )
 
                 messages.success(request, "Pendaftaran berhasil! Akun Anda telah aktif, silakan masuk.")
+                next_param = request.POST.get('next') or request.GET.get('next')
+                if next_param:
+                    return redirect(f"{reverse('login')}?mode=login&next={next_param}")
                 return redirect(f"{reverse('login')}?mode=login")
 
             except IntegrityError:
@@ -391,6 +394,7 @@ def profil_user(request):
 # 4. HALAMAN ARTIKEL & EDUKASI KONSUMEN
 # ==============================================================================
 
+@login_required(login_url='login')
 def artikel_list(request):
     """Daftar artikel edukasi dan wawasan ATKGO.ID."""
     query = request.GET.get('q', '').strip()
@@ -423,6 +427,7 @@ def artikel_list(request):
     return render(request, 'app/artikel_list.html', context)
 
 
+@login_required(login_url='login')
 def artikel_detail(request, slug):
     """Halaman detail artikel edukasi lengkap."""
     article = get_object_or_404(Article, slug=slug, is_published=True)

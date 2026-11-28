@@ -111,54 +111,7 @@
 </head>
 
 <body>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a class="brand"
-        href="{% if request.user.is_authenticated %}{% url 'beranda' %}{% else %}{% url 'landing' %}{% endif %}">
-        <img src="{% static 'assets/img/logo.png' %}" alt="Logo ATKGO.ID">
-        <span>ATK<span class="go">GO</span>.ID</span>
-      </a>
-
-      <nav id="mainNav" aria-label="Menu utama">
-        <a
-          href="{% if request.user.is_authenticated %}{% url 'beranda' %}{% else %}{% url 'landing' %}{% endif %}">Beranda</a>
-        {% if request.user.is_authenticated %}
-        <a href="{% url 'produk' %}">Layanan</a>
-        <a href="{% url 'kategori' %}">Kategori</a>
-        {% endif %}
-        <a href="{% url 'artikel_list' %}" class="active">Artikel</a>
-        <a href="{% url 'tentang' %}">Tentang</a>
-        <a href="{% url 'kontak' %}">Kontak</a>
-      </nav>
-
-      {% if request.user.is_authenticated %}
-      <a class="nav-cta" href="{% url 'kontak' %}">Hubungi Kami →</a>
-      <a href="{% url 'profil' %}" class="profile-button" aria-label="Profil Akun Saya" title="Profil Saya">
-        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-      </a>
-      <form method="POST" action="{% url 'logout' %}" class="logout-form">
-        {% csrf_token %}
-        <button type="submit" class="logout-button" aria-label="Logout" title="Keluar dari akun">
-          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-        </button>
-      </form>
-      {% else %}
-      <a class="nav-cta" href="{% url 'login' %}">Login / Register</a>
-      {% endif %}
-
-      <button class="menu" id="menuBtn" type="button" aria-label="Buka menu" aria-controls="mainNav"
-        aria-expanded="false">☰</button>
-    </div>
-  </header>
+  {% include "app/navbar.html" %}
 
   <main>
     <article class="article-container">
