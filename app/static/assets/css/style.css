@@ -188,9 +188,99 @@ body {
 }
 
 /* =====================================
-   LOGOUT BUTTON NAVBAR
+   NAVBAR USER ACTIONS (Keranjang, Profil, Logout)
 ===================================== */
 
+.nav-user-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 15px;
+}
+
+/* 1. Ikon Keranjang Belanja */
+.cart-nav {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #252641;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+.cart-nav:hover {
+    background: #fff5f5;
+    color: #ef3938;
+    border-color: #ef3938;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 57, 56, 0.15);
+}
+
+.cart-nav svg {
+    display: block;
+}
+
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #ef3938;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+/* 2. Tombol Profil Pengguna */
+.profile-button {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #252641;
+    text-decoration: none;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+.profile-button:hover,
+.profile-button.active {
+    background: #304b35;
+    color: #ffffff;
+    border-color: #304b35;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(48, 75, 53, 0.2);
+}
+
+.profile-button svg {
+    display: block;
+}
+
+/* 3. Tombol Logout */
 .logout-form {
     display: flex;
     align-items: center;
@@ -200,57 +290,27 @@ body {
 .logout-button {
     width: 42px;
     height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 1px solid #e5e5e5;
-    border-radius: 10px;
-
-    background: white;
-    color: #252641;
-
-    cursor: pointer;
-    transition: all 0.25s ease;
-}
-
-.logout-button:hover {
-    background: #ef3938;
-    color: white;
-    border-color: #ef3938;
-    transform: translateY(-2px);
-}
-
-.logout-button svg {
-    display: block;
-}
-
-/* =====================================
-   PROFILE BUTTON NAVBAR
-===================================== */
-.profile-button {
-    width: 42px;
-    height: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: 1px solid #e5e5e5;
     border-radius: 10px;
-    background: white;
+    background: #ffffff;
     color: #252641;
-    text-decoration: none;
-    margin-right: 8px;
     cursor: pointer;
-    transition: all 0.25s ease;
+    margin: 0;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
 }
 
-.profile-button:hover {
-    background: #304b35;
-    color: white;
-    border-color: #304b35;
+.logout-button:hover {
+    background: #ef3938;
+    color: #ffffff;
+    border-color: #ef3938;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 57, 56, 0.2);
 }
 
-.profile-button svg {
+.logout-button svg {
     display: block;
 }

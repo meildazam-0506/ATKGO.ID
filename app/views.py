@@ -827,10 +827,9 @@ def produk(request):
     return render(request, 'app/produk.html', {'products': products})
 
 
-@login_required(login_url='login')
 def kategori(request):
-    """Halaman kategori layanan."""
-    return render(request, 'app/kategori.html')
+    """Halaman kategori telah dihapus, dialihkan langsung ke layanan produk."""
+    return redirect('produk')
 
 
 def tentang(request):

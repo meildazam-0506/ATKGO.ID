@@ -99,45 +99,134 @@ main.container { flex: 1; padding-top: 32px; padding-bottom: 32px; }
     text-align: center;
 }
 
-/* IKON KERANJANG NAVBAR */
+/* =====================================
+   NAVBAR USER ACTIONS (Keranjang, Profil, Logout)
+===================================== */
+.nav-user-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 15px;
+}
+
 .cart-nav {
     position: relative;
+    width: 42px;
+    height: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 42px;
-    color: inherit;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #252641;
     text-decoration: none;
-    border-radius: 50%;
-    transition: background 0.2s ease;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
 }
 
 .cart-nav:hover {
-    background: rgba(0, 0, 0, 0.07);
+    background: #fff5f5;
+    color: #ef3938;
+    border-color: #ef3938;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 57, 56, 0.15);
+}
+
+.cart-nav svg {
+    display: block;
 }
 
 .cart-count {
     position: absolute;
-    top: -3px;
-    right: -3px;
+    top: -6px;
+    right: -6px;
     min-width: 19px;
     height: 19px;
     padding: 0 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50px;
-    background: #df332b;
-    color: #fff;
+    border-radius: 999px;
+    background: #ef3938;
+    color: #ffffff;
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 800;
+    line-height: 1;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+.profile-button {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #252641;
+    text-decoration: none;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+.profile-button:hover,
+.profile-button.active {
+    background: #304b35;
+    color: #ffffff;
+    border-color: #304b35;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(48, 75, 53, 0.2);
+}
+
+.profile-button svg {
+    display: block;
+}
+
+.logout-form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.logout-button {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #252641;
+    cursor: pointer;
+    margin: 0;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+.logout-button:hover {
+    background: #ef3938;
+    color: #ffffff;
+    border-color: #ef3938;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 57, 56, 0.2);
+}
+
+.logout-button svg {
+    display: block;
 }
 
 /* Penyesuaian navbar di layar kecil */
 @media (max-width: 768px) {
-    .cart-nav {
+    .nav-user-actions {
         margin-left: auto;
-        margin-right: 10px;
+        gap: 8px;
     }
 }
