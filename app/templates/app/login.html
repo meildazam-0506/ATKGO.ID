@@ -83,7 +83,7 @@
 
         .banner-info {
             margin-top: 25px;
-            padding: 15px;
+            padding: 16px;
             border: 1px solid rgba(255,255,255,.2);
             border-radius: 12px;
             color: #e0e0e8;
@@ -92,35 +92,36 @@
         }
 
         .login-form {
-            padding: 45px 40px;
+            padding: 42px 38px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
         .form-icon {
-            width: 52px;
-            height: 52px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 14px;
             background: #fff0ef;
             color: #ef3938;
-            font-size: 25px;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 18px;
         }
 
         .login-form h2 {
-            margin: 0 0 8px;
-            font-size: 28px;
+            margin: 0 0 6px;
+            font-size: 26px;
+            color: #252641;
         }
 
         .subtitle {
-            margin: 0 0 20px;
+            margin: 0 0 18px;
             color: #777;
             line-height: 1.6;
-            font-size: 14px;
+            font-size: 13.5px;
         }
 
         label {
@@ -128,21 +129,30 @@
             margin: 14px 0 6px;
             font-weight: bold;
             font-size: 13px;
+            color: #252641;
         }
 
-        input {
+        input, select, textarea {
             width: 100%;
-            padding: 13px 14px;
+            padding: 12px 14px;
             border: 1px solid #ddd;
             border-radius: 9px;
             font-size: 14px;
             outline: none;
             transition: border-color .2s, box-shadow .2s;
+            box-sizing: border-box;
+            font-family: inherit;
+            background: white;
         }
 
-        input:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: #ef3938;
             box-shadow: 0 0 0 3px rgba(239,57,56,.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 75px;
         }
 
         .password-box {
@@ -181,20 +191,24 @@
 
         .login-button {
             width: 100%;
-            margin-top: 22px;
-            padding: 14px;
+            margin-top: 20px;
+            padding: 13px;
             border: none;
             border-radius: 9px;
             background: #ef3938;
             color: white;
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: bold;
             cursor: pointer;
-            transition: background .2s;
+            transition: background .2s, transform .1s;
         }
 
         .login-button:hover {
             background: #d92f30;
+        }
+
+        .login-button:active {
+            transform: scale(0.99);
         }
 
         .message {
@@ -239,7 +253,7 @@
         .mode-links {
             display: flex;
             gap: 10px;
-            margin: 12px 0 18px;
+            margin: 10px 0 16px;
         }
 
         .mode-links a {
@@ -259,6 +273,95 @@
             background: #252641;
             color: white;
             border-color: #252641;
+        }
+
+        /* ----- STEPPER REGISTRASI 2-LANGKAH ----- */
+        .stepper-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0 20px;
+            padding: 10px 14px;
+            background: #fafafc;
+            border-radius: 12px;
+            border: 1px solid #eef0ea;
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #999;
+        }
+
+        .step-indicator.active {
+            color: #252641;
+        }
+
+        .step-indicator.completed {
+            color: #247a42;
+        }
+
+        .step-num {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #e8e8ed;
+            color: #777;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11.5px;
+            font-weight: 800;
+            transition: all .2s;
+        }
+
+        .step-indicator.active .step-num {
+            background: #ef3938;
+            color: white;
+        }
+
+        .step-indicator.completed .step-num {
+            background: #247a42;
+            color: white;
+        }
+
+        .step-divider {
+            flex: 1;
+            height: 2px;
+            background: #e2e4e8;
+            margin: 0 10px;
+            transition: background .2s;
+        }
+
+        .step-divider.completed {
+            background: #247a42;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 22px;
+            align-items: center;
+        }
+
+        .btn-prev-step {
+            flex: 1;
+            padding: 13px;
+            border: 1.5px solid #dce2dc;
+            border-radius: 9px;
+            background: #f7f9f6;
+            color: #252641;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .btn-prev-step:hover {
+            background: #eaefe9;
         }
 
         @media (max-width: 760px) {
@@ -298,15 +401,14 @@
         <h1>Selamat Datang di <em>ATKGO.ID</em></h1>
 
         <p>
-            Temukan kebutuhan alat tulis dan perlengkapan kantor
-            dengan pengalaman belanja yang praktis, cepat,
+            Temukan kebutuhan alat tulis kantor, operasional bisnis,
+            dan agensi kreatif dengan pengalaman yang praktis, cepat,
             dan terpercaya.
         </p>
 
         <div class="banner-info">
-            <strong>Belanja Mudah &amp; Aman</strong><br>
-            Masuk ke akun Anda untuk melihat status pesanan,
-            mengelola keranjang, dan melakukan transaksi.
+            <strong>Terhubung Otomatis ke Profil Bisnis</strong><br>
+            Daftarkan akun dan profil usaha Anda untuk pemesanan otomatis, pelacakan real-time, dan invoice resmi terverifikasi.
         </div>
     </section>
 
@@ -320,7 +422,7 @@
 
         <p class="subtitle">
             {% if mode == 'register' %}
-                Lengkapi formulir berikut untuk mendaftar akun pelanggan ATKGO.ID.
+                Lengkapi formulir pendaftaran 2-langkah untuk mendaftarkan akun dan profil usaha Anda.
             {% else %}
                 Masukkan username atau email dan password Anda untuk melanjutkan.
             {% endif %}
@@ -328,10 +430,10 @@
 
         <!-- PILIHAN TAB LOGIN / DAFTAR -->
         <div class="mode-links">
-            <a href="{% url 'login' %}?mode=login" class="{% if mode != 'register' %}active{% endif %}">
+            <a href="{% url 'login' %}?mode=login{% if request.GET.next %}&next={{ request.GET.next }}{% endif %}" class="{% if mode != 'register' %}active{% endif %}">
                 Login
             </a>
-            <a href="{% url 'login' %}?mode=register" class="{% if mode == 'register' %}active{% endif %}">
+            <a href="{% url 'login' %}?mode=register{% if request.GET.next %}&next={{ request.GET.next }}{% endif %}" class="{% if mode == 'register' %}active{% endif %}">
                 Daftar
             </a>
         </div>
@@ -346,15 +448,28 @@
         {% endif %}
 
         {% if request.GET.next %}
-            <div style="background:#eef7f0; border-left:4px solid #304b35; padding:12px 16px; border-radius:8px; font-size:13px; color:#27522f; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+            <div style="background:#eef7f0; border-left:4px solid #304b35; padding:12px 14px; border-radius:8px; font-size:13px; color:#27522f; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
                 <span style="font-size:16px;">🔒</span>
-                <span>Silakan masuk atau daftar akun terlebih dahulu untuk mengakses halaman tersebut.</span>
+                <span>Silakan masuk atau selesaikan pendaftaran akun terlebih dahulu untuk melanjutkan.</span>
             </div>
         {% endif %}
 
         {% if mode == 'register' %}
 
-            <!-- FORM PENDAFTARAN PELANGGAN -->
+            <!-- STEPPER INDIKATOR LANGKAH 1 & LANGKAH 2 -->
+            <div class="stepper-wrap">
+                <div class="step-indicator {% if active_step != 2 %}active{% else %}completed{% endif %}" id="step-ind-1">
+                    <span class="step-num">{% if active_step == 2 %}✓{% else %}1{% endif %}</span>
+                    <span class="step-text">Data Akun &amp; Password</span>
+                </div>
+                <div class="step-divider {% if active_step == 2 %}completed{% endif %}" id="step-divider"></div>
+                <div class="step-indicator {% if active_step == 2 %}active{% endif %}" id="step-ind-2">
+                    <span class="step-num">2</span>
+                    <span class="step-text">Detail Usaha / Brand</span>
+                </div>
+            </div>
+
+            <!-- FORM PENDAFTARAN PELANGGAN MULTI-STEP -->
             <form method="POST" action="{% url 'login' %}?mode=register" id="registerForm">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="register">
@@ -363,110 +478,181 @@
                     <input type="hidden" name="next" value="{{ request.GET.next }}">
                 {% endif %}
 
-                <label for="full_name">Nama Lengkap</label>
-                <input
-                    type="text"
-                    name="full_name"
-                    id="full_name"
-                    value="{{ form_data.full_name|default:'' }}"
-                    placeholder="Contoh: Budi Santoso"
-                    autocomplete="name"
-                    required
-                >
+                <!-- ============================================================ -->
+                <!-- LANGKAH 1: DATA AKUN & KREDENSIAL                            -->
+                <!-- ============================================================ -->
+                <div id="register-step-1" style="display: {% if active_step == 2 %}none{% else %}block{% endif %};">
 
-                <label for="username">Username</label>
-                <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    value="{{ form_data.username|default:'' }}"
-                    placeholder="Contoh: budi_santoso"
-                    autocomplete="username"
-                    required
-                >
-
-                <label for="email">Alamat Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    value="{{ form_data.email|default:'' }}"
-                    placeholder="nama@email.com"
-                    autocomplete="email"
-                    required
-                >
-
-                <label for="telp">Nomor Telepon (WhatsApp)</label>
-                <input
-                    type="tel"
-                    name="telp"
-                    id="telp"
-                    value="{{ form_data.telp|default:'' }}"
-                    placeholder="Contoh: 081234567890"
-                    autocomplete="tel"
-                >
-
-                <label for="register_password">Password</label>
-                <div class="password-box">
+                    <label for="full_name">Nama Lengkap *</label>
                     <input
-                        type="password"
-                        name="password"
-                        id="register_password"
-                        placeholder="Minimal 8 karakter"
-                        autocomplete="new-password"
+                        type="text"
+                        name="full_name"
+                        id="full_name"
+                        value="{{ form_data.full_name|default:'' }}"
+                        placeholder="Contoh: Budi Santoso"
+                        autocomplete="name"
                         required
                     >
-                    <button
-                        type="button"
-                        class="toggle-password"
-                        data-target="register_password"
-                        aria-label="Tampilkan atau sembunyikan password"
-                        title="Tampilkan / sembunyikan password"
+
+                    <label for="username">Username *</label>
+                    <input
+                        type="text"
+                        name="username"
+                        id="username"
+                        value="{{ form_data.username|default:'' }}"
+                        placeholder="Contoh: budi_santoso (tanpa spasi)"
+                        autocomplete="username"
+                        required
                     >
-                        <!-- Ikon Mata Tertutup (Default saat tersembunyi) -->
-                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                            <line x1="1" y1="1" x2="23" y2="23"></line>
-                        </svg>
-                        <!-- Ikon Mata Terbuka (Saat terlihat) -->
-                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
+
+                    <label for="email">Alamat Email *</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        value="{{ form_data.email|default:'' }}"
+                        placeholder="nama@email.com"
+                        autocomplete="email"
+                        required
+                    >
+
+                    <label for="telp">Nomor WhatsApp / Telepon *</label>
+                    <input
+                        type="tel"
+                        name="telp"
+                        id="telp"
+                        value="{{ form_data.telp|default:'' }}"
+                        placeholder="Contoh: 081234567890"
+                        autocomplete="tel"
+                        required
+                    >
+
+                    <label for="register_password">Password Baru *</label>
+                    <div class="password-box">
+                        <input
+                            type="password"
+                            name="password"
+                            id="register_password"
+                            placeholder="Minimal 8 karakter"
+                            autocomplete="new-password"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            data-target="register_password"
+                            aria-label="Tampilkan atau sembunyikan password"
+                            title="Tampilkan / sembunyikan password"
+                        >
+                            <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <label for="confirm_password">Konfirmasi Password Baru *</label>
+                    <div class="password-box">
+                        <input
+                            type="password"
+                            name="confirm_password"
+                            id="confirm_password"
+                            placeholder="Ulangi password di atas"
+                            autocomplete="new-password"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            data-target="confirm_password"
+                            aria-label="Tampilkan atau sembunyikan konfirmasi password"
+                            title="Tampilkan / sembunyikan konfirmasi password"
+                        >
+                            <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <button type="button" class="login-button" id="btnNextStep">
+                        Lanjut ke Detail Usaha &rarr;
                     </button>
                 </div>
 
-                <label for="confirm_password">Konfirmasi Password</label>
-                <div class="password-box">
+                <!-- ============================================================ -->
+                <!-- LANGKAH 2: DETAIL PROFIL USAHA / BISNIS                      -->
+                <!-- ============================================================ -->
+                <div id="register-step-2" style="display: {% if active_step == 2 %}block{% else %}none{% endif %};">
+
+                    <div style="background: #eef7f0; border-left: 4px solid #304b35; padding: 12px 14px; border-radius: 8px; font-size: 13px; color: #27522f; margin-bottom: 18px; line-height: 1.5;">
+                        <strong>🏢 Langkah 2: Detail Profil Usaha / Brand</strong><br>
+                        Data usaha ini otomatis tersimpan di database dan tampil di halaman profil Anda untuk mempermudah pemesanan serta penerbitan invoice resmi.
+                    </div>
+
+                    <label for="nama_usaha">Nama Usaha / Brand / Instansi *</label>
                     <input
-                        type="password"
-                        name="confirm_password"
-                        id="confirm_password"
-                        placeholder="Ulangi password di atas"
-                        autocomplete="new-password"
+                        type="text"
+                        name="nama_usaha"
+                        id="nama_usaha"
+                        value="{{ form_data.nama_usaha|default:'' }}"
+                        placeholder="Contoh: PT Kreasi Mandiri, Toko ATK Berkah, Agensi Visual"
                         required
                     >
-                    <button
-                        type="button"
-                        class="toggle-password"
-                        data-target="confirm_password"
-                        aria-label="Tampilkan atau sembunyikan konfirmasi password"
-                        title="Tampilkan / sembunyikan konfirmasi password"
+
+                    <label for="jenis_usaha">Jenis Usaha / Sektor Industri</label>
+                    <input
+                        type="text"
+                        name="jenis_usaha"
+                        id="jenis_usaha"
+                        value="{{ form_data.jenis_usaha|default:'' }}"
+                        placeholder="Contoh: Agensi Kreatif, Retail / Toko, Pendidikan, Kantor Perusahaan"
                     >
-                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                            <line x1="1" y1="1" x2="23" y2="23"></line>
-                        </svg>
-                        <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
+
+                    <label for="telepon_usaha">Nomor Telepon Kantor / Usaha</label>
+                    <input
+                        type="tel"
+                        name="telepon_usaha"
+                        id="telepon_usaha"
+                        value="{{ form_data.telepon_usaha|default:'' }}"
+                        placeholder="Contoh: (021) 1234567 atau 0812xxxx"
+                    >
+
+                    <label for="alamat_usaha">Alamat Operasional Usaha / Pengiriman *</label>
+                    <textarea
+                        name="alamat_usaha"
+                        id="alamat_usaha"
+                        rows="3"
+                        placeholder="Alamat kantor, ruko, toko, atau lokasi pengiriman operasional usaha..."
+                        required
+                    >{{ form_data.alamat_usaha|default:'' }}</textarea>
+
+                    <label for="catatan_usaha">Kebutuhan Pengadaan Rutin (Opsional)</label>
+                    <textarea
+                        name="catatan_usaha"
+                        id="catatan_usaha"
+                        rows="2"
+                        placeholder="Tuliskan jika usaha Anda memiliki kebutuhan rutin alat tulis berkala, kebutuhan desain visual mingguan, dll..."
+                    >{{ form_data.catatan_usaha|default:'' }}</textarea>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-prev-step" id="btnPrevStep">
+                            &larr; Kembali
+                        </button>
+                        <button type="submit" class="login-button" style="margin-top: 0; flex: 2;">
+                            Selesaikan Pendaftaran &rarr;
+                        </button>
+                    </div>
                 </div>
 
-                <button type="submit" class="login-button">
-                    Daftar Akun Baru &rarr;
-                </button>
             </form>
 
         {% else %}
@@ -485,6 +671,7 @@
                     type="text"
                     name="username_or_email"
                     id="username_or_email"
+                    value="{{ registered_user|default:'' }}"
                     placeholder="Masukkan username atau email Anda"
                     autocomplete="username"
                     required
@@ -512,7 +699,7 @@
                             <line x1="1" y1="1" x2="23" y2="23"></line>
                         </svg>
                         <svg class="eye-open" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
                             <circle cx="12" cy="12" r="3"></circle>
                         </svg>
                     </button>
@@ -534,7 +721,7 @@
 </main>
 
 <script>
-    // Fitur Show/Hide Password dengan ikon mata
+    // 1. Fitur Show/Hide Password dengan ikon mata
     document.querySelectorAll('.toggle-password').forEach(function(button) {
         button.addEventListener('click', function(e) {
             e.preventDefault();
@@ -558,6 +745,92 @@
             }
         });
     });
+
+    // 2. Multi-step logic form registrasi
+    (function () {
+        const step1 = document.getElementById('register-step-1');
+        const step2 = document.getElementById('register-step-2');
+        const btnNext = document.getElementById('btnNextStep');
+        const btnPrev = document.getElementById('btnPrevStep');
+        const ind1 = document.getElementById('step-ind-1');
+        const ind2 = document.getElementById('step-ind-2');
+        const divider = document.getElementById('step-divider');
+
+        if (btnNext && step1 && step2) {
+            btnNext.addEventListener('click', function () {
+                // Validasi seluruh input di Langkah 1
+                const step1Inputs = step1.querySelectorAll('input');
+                for (const input of step1Inputs) {
+                    if (!input.reportValidity()) {
+                        return;
+                    }
+                }
+
+                const pwd = document.getElementById('register_password');
+                const confirmPwd = document.getElementById('confirm_password');
+
+                if (pwd && pwd.value.length < 8) {
+                    alert('Password minimal harus 8 karakter.');
+                    pwd.focus();
+                    return;
+                }
+
+                if (pwd && confirmPwd && pwd.value !== confirmPwd.value) {
+                    alert('Konfirmasi password tidak cocok dengan password yang dimasukkan.');
+                    confirmPwd.focus();
+                    return;
+                }
+
+                // Otomatis salin nomor WhatsApp ke telepon kantor jika belum diisi
+                const telpInput = document.getElementById('telp');
+                const telpUsahaInput = document.getElementById('telepon_usaha');
+                if (telpInput && telpUsahaInput && !telpUsahaInput.value.trim()) {
+                    telpUsahaInput.value = telpInput.value.trim();
+                }
+
+                // Beralih ke Langkah 2
+                step1.style.display = 'none';
+                step2.style.display = 'block';
+
+                if (ind1) {
+                    ind1.classList.remove('active');
+                    ind1.classList.add('completed');
+                    const num = ind1.querySelector('.step-num');
+                    if (num) num.textContent = '✓';
+                }
+                if (ind2) ind2.classList.add('active');
+                if (divider) divider.classList.add('completed');
+
+                // Fokus ke input nama usaha
+                const namaUsahaInput = document.getElementById('nama_usaha');
+                if (namaUsahaInput) namaUsahaInput.focus();
+            });
+
+            if (btnPrev) {
+                btnPrev.addEventListener('click', function () {
+                    step2.style.display = 'none';
+                    step1.style.display = 'block';
+
+                    if (ind1) {
+                        ind1.classList.add('active');
+                        ind1.classList.remove('completed');
+                        const num = ind1.querySelector('.step-num');
+                        if (num) num.textContent = '1';
+                    }
+                    if (ind2) ind2.classList.remove('active');
+                    if (divider) divider.classList.remove('completed');
+                });
+            }
+
+            // Mencegah penekanan Enter di Langkah 1 mengirim form sebelum Langkah 2
+            step1.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    btnNext.click();
+                }
+            });
+        }
+    })();
 </script>
 
 </body>

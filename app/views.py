@@ -126,18 +126,31 @@ def login_page(request):
             confirm_password = request.POST.get('confirm_password', '')
             telp = request.POST.get('telp', '').strip()
 
+            # Step 2: Detail Profil Usaha / Bisnis Pelanggan
+            nama_usaha = request.POST.get('nama_usaha', '').strip()
+            jenis_usaha = request.POST.get('jenis_usaha', '').strip()
+            telepon_usaha = request.POST.get('telepon_usaha', '').strip()
+            alamat_usaha = request.POST.get('alamat_usaha', '').strip()
+            catatan_usaha = request.POST.get('catatan_usaha', '').strip()
+
             context = {
                 'mode': 'register',
+                'active_step': 2 if (nama_usaha or jenis_usaha or alamat_usaha) else 1,
                 'form_data': {
                     'full_name': full_name,
                     'username': username,
                     'email': email,
                     'telp': telp,
+                    'nama_usaha': nama_usaha,
+                    'jenis_usaha': jenis_usaha,
+                    'telepon_usaha': telepon_usaha,
+                    'alamat_usaha': alamat_usaha,
+                    'catatan_usaha': catatan_usaha,
                 }
             }
 
             if not full_name or not email or not password or not confirm_password:
-                messages.error(request, "Semua data pendaftaran wajib diisi.")
+                messages.error(request, "Data nama, email, dan password pada langkah 1 wajib diisi.")
                 return render(request, 'app/login.html', context)
 
             if not username:
@@ -202,13 +215,19 @@ def login_page(request):
                     UserPengguna.objects.create(
                         user=user,
                         telp=telp or '',
+                        alamat=alamat_usaha or '',
+                        nama_usaha=nama_usaha or '',
+                        jenis_usaha=jenis_usaha or '',
+                        telepon_usaha=telepon_usaha or telp or '',
+                        alamat_usaha=alamat_usaha or '',
+                        catatan_usaha=catatan_usaha or '',
                     )
 
-                messages.success(request, "Pendaftaran berhasil! Akun Anda telah aktif, silakan masuk.")
+                messages.success(request, f"Pendaftaran berhasil! Akun dan data profil usaha Anda telah aktif. Silakan masuk.")
                 next_param = request.POST.get('next') or request.GET.get('next')
                 if next_param:
-                    return redirect(f"{reverse('login')}?mode=login&next={next_param}")
-                return redirect(f"{reverse('login')}?mode=login")
+                    return redirect(f"{reverse('login')}?mode=login&next={next_param}&registered={username}")
+                return redirect(f"{reverse('login')}?mode=login&registered={username}")
 
             except IntegrityError:
                 messages.error(request, "Terjadi konflik data akun. Silakan coba kembali dengan data lain.")
@@ -270,7 +289,11 @@ def login_page(request):
 
             return redirect('beranda')
 
-    return render(request, 'app/login.html', {'mode': mode})
+    registered_user = request.GET.get('registered', '').strip()
+    return render(request, 'app/login.html', {
+        'mode': mode,
+        'registered_user': registered_user,
+    })
 
 
 @login_required(login_url='login')
