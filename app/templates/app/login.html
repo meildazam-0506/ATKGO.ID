@@ -830,6 +830,29 @@
                 }
             });
         }
+
+        // 3. Mencegah klik ganda (double-submit) yang dapat menyebabkan token CSRF tidak cocok
+        ['loginForm', 'registerForm'].forEach(function(formId) {
+            const form = document.getElementById(formId);
+            if (form) {
+                form.addEventListener('submit', function() {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.style.opacity = '0.65';
+                        submitBtn.style.cursor = 'not-allowed';
+                        submitBtn.textContent = 'Memproses...';
+                    }
+                });
+            }
+        });
+
+        // 4. Reload halaman otomatis jika dibuka kembali dari Back Button browser (bfcache)
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
     })();
 </script>
 

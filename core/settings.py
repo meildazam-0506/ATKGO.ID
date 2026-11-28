@@ -65,7 +65,9 @@ if extra_csrf:
     CSRF_TRUSTED_ORIGINS.extend([origin.strip() for origin in extra_csrf.split(',') if origin.strip()])
 
 # Keamanan di balik reverse proxy Vercel & Pengaturan Sesi Persisten
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+if IS_VERCEL:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 hari (menjaga login tetap aktif & tidak terkeluar)
 SESSION_SAVE_EVERY_REQUEST = True        # Memastikan sesi selalu tersinkronisasi di setiap request
@@ -79,7 +81,10 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_NAME = 'atkgo_csrftoken'
 CSRF_COOKIE_AGE = 60 * 60 * 24 * 30
 
-if not DEBUG:
+# Custom handler untuk mencegah halaman error 403 jika CSRF token kadaluarsa
+CSRF_FAILURE_VIEW = 'app.views.csrf_failure'
+
+if IS_VERCEL and not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True

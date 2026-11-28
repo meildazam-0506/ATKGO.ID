@@ -305,6 +305,36 @@ def login_page(request):
     })
 
 
+def csrf_failure(request, reason=""):
+    """
+    Penanganan kegagalan verifikasi CSRF yang ramah pengguna.
+    Alih-alih menampilkan layar error 403, sistem secara otomatis merotasi token CSRF
+    dan mengarahkan kembali pengguna dengan notifikasi bahwa sesi formulir telah disegarkan.
+    """
+    from django.middleware.csrf import rotate_token
+    try:
+        rotate_token(request)
+    except Exception:
+        pass
+
+    messages.warning(
+        request,
+        "Sesi formulir Anda telah diperbarui secara otomatis untuk keamanan. Silakan coba kembali."
+    )
+
+    referer = request.META.get('HTTP_REFERER')
+    path = request.path or '/'
+
+    if referer and any(h in referer for h in ['127.0.0.1', 'localhost', 'vercel.app']):
+        return redirect(referer)
+
+    if 'login' in path:
+        mode = request.GET.get('mode', 'login')
+        return redirect(f"{reverse('login')}?mode={mode}")
+
+    return redirect(path)
+
+
 @login_required(login_url='login')
 def logout_page(request):
     """Logout pelanggan dan mengakhiri session dengan aman."""
