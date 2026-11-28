@@ -147,7 +147,11 @@ SUPABASE_SECRET_KEY = os.environ.get('SUPABASE_SECRET_KEY', '')
 SUPABASE_JWKS_URL = os.environ.get('SUPABASE_JWKS_URL', 'https://lfeaawstgowciackssme.supabase.co/auth/v1/.well-known/jwks.json')
 
 SUPABASE_DB_HOST = os.environ.get('SUPABASE_DB_HOST', 'aws-0-ap-northeast-2.pooler.supabase.com')
-SUPABASE_DB_PORT = os.environ.get('SUPABASE_DB_PORT', '5432')
+SUPABASE_DB_PORT = os.environ.get('SUPABASE_DB_PORT', '6543')
+# Supabase pooler session mode (5432) memiliki batas kaku 15 koneksi (EMAXCONNSESSION).
+# Otomatis gunakan port 6543 (transaction mode) untuk mencegah koneksi habis baik di lokal maupun serverless Vercel.
+if 'pooler.supabase.com' in SUPABASE_DB_HOST and SUPABASE_DB_PORT == '5432':
+    SUPABASE_DB_PORT = '6543'
 SUPABASE_DB_NAME = os.environ.get('SUPABASE_DB_NAME', 'postgres')
 SUPABASE_DB_USER = os.environ.get('SUPABASE_DB_USER', 'postgres.lfeaawstgowciackssme')
 SUPABASE_DB_PASSWORD = os.environ.get('SUPABASE_DB_PASSWORD') or 'Alcipakuhtuh0506_'
