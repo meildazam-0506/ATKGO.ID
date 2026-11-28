@@ -394,7 +394,6 @@ def profil_user(request):
 # 4. HALAMAN ARTIKEL & EDUKASI KONSUMEN
 # ==============================================================================
 
-@login_required(login_url='login')
 def artikel_list(request):
     """Daftar artikel edukasi dan wawasan ATKGO.ID."""
     query = request.GET.get('q', '').strip()
@@ -427,7 +426,6 @@ def artikel_list(request):
     return render(request, 'app/artikel_list.html', context)
 
 
-@login_required(login_url='login')
 def artikel_detail(request, slug):
     """Halaman detail artikel edukasi lengkap."""
     article = get_object_or_404(Article, slug=slug, is_published=True)
@@ -773,16 +771,18 @@ def kategori(request):
     return render(request, 'app/kategori.html')
 
 
-@login_required(login_url='login')
 def tentang(request):
-    """Halaman tentang ATKGO.ID."""
+    """Halaman tentang ATKGO.ID (Dapat diakses publik)."""
     return render(request, 'app/tentang.html')
 
 
-@login_required(login_url='login')
 def kontak(request):
-    """Halaman dan form pesan kontak."""
+    """Halaman dan form pesan kontak (Dapat dilihat publik, kirim pesan membutuhkan login)."""
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.warning(request, "Silakan login terlebih dahulu untuk mengirim pesan ke admin.")
+            return redirect(f"{reverse('login')}?mode=login&next={reverse('kontak')}")
+
         nama = request.POST.get('nama', '').strip()
         email = request.POST.get('email', '').strip()
         pesan = request.POST.get('pesan', '').strip()

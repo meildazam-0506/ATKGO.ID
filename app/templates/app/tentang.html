@@ -27,25 +27,40 @@
           <span class="eyebrow">TENTANG KAMI</span>
           <h1 class="page-title">Partner Digital untuk Mengembangkan Bisnis <em>ATK.</em></h1>
 
-          <p>ATKGO.ID adalah agensi digital marketing yang membantu bisnis mengembangkan identitas merek dan memperluas jangkauan pemasaran melalui strategi digital yang kreatif dan terarah.</p>
+          <p>ATKGO.ID adalah platform cerdas pengadaan alat tulis, perlengkapan kantor, dan agensi pemasaran digital yang membantu bisnis mengembangkan identitas merek serta memperluas jangkauan pasar secara efektif.</p>
 
-          <p>Kami menyediakan layanan strategi konten, desain visual, manajemen media sosial, serta produksi foto dan video untuk membantu bisnis membangun citra merek yang kuat dan menjangkau lebih banyak audiens.</p>
+          <p>Kami menyediakan layanan komprehensif mulai dari strategi konten, desain visual identitas brand, pengelolaan media sosial profesional, hingga pasokan logistik perlengkapan kantor yang terintegrasi penuh.</p>
 
           <div class="checklist">
-            <div class="check"><b>✓</b> Strategi Kreatif</div>
-            <div class="check"><b>✓</b> Desain</div>
-            <div class="check"><b>✓</b> Layanan Terarah</div>
-            <div class="check"><b>✓</b> Fokus pada Klien</div>
+            <div class="check"><b>✓</b> Pengadaan ATK Terpercaya</div>
+            <div class="check"><b>✓</b> Strategi Konten Kreatif</div>
+            <div class="check"><b>✓</b> Desain Visual &amp; Branding</div>
+            <div class="check"><b>✓</b> Solusi Khusus Bisnis &amp; UMKM</div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="section alt">
-      <div class="wrap">
+      <div class="wrap" style="text-align: center; max-width: 800px; margin: 0 auto;">
         <span class="eyebrow">KOMITMEN KAMI</span>
         <h2>Kreatif, Strategis, dan Terpercaya.</h2>
-        <p class="lead">Kami berkomitmen membantu bisnis mengembangkan merek melalui strategi konten, desain kreatif, dan pemasaran digital yang terarah untuk menjangkau audiens yang tepat.</p>
+        <p class="lead">Kami berkomitmen membantu bisnis Anda berkembang melalui efisiensi operasional pengadaan alat tulis, strategi konten kreatif, dan pemasaran digital yang tepat sasaran.</p>
+
+        <div style="margin-top: 32px;">
+          {% if request.user.is_authenticated %}
+            <a href="{% url 'kontak' %}" class="btn btn-red" style="display: inline-block; padding: 13px 32px; font-size: 15px; font-weight: bold; text-decoration: none; border-radius: 9px; box-shadow: 0 4px 14px rgba(223,51,43,0.3);">
+              Konsultasi dengan Tim Kami &rarr;
+            </a>
+          {% else %}
+            <a href="{% url 'login' %}?mode=login&next={% url 'kontak' %}" class="btn btn-red" style="display: inline-block; padding: 13px 32px; font-size: 14.5px; font-weight: bold; text-decoration: none; border-radius: 9px; background: #c53030; box-shadow: 0 4px 14px rgba(197,48,48,0.25);">
+              🔒 Masuk untuk Konsultasi &rarr;
+            </a>
+            <p style="margin: 12px 0 0; font-size: 12.5px; color: #777;">
+              Daftar akun gratis untuk menghubungi dan berkonsultasi langsung dengan konsultan kami.
+            </p>
+          {% endif %}
+        </div>
       </div>
     </section>
   </main>
@@ -55,15 +70,16 @@
       <div class="footer-grid">
         <div>
           <h3>ATKGO.ID</h3>
-          <p>Agensi digital marketing yang membantu bisnis membangun identitas merek, mengembangkan konten kreatif, dan meningkatkan jangkauan pemasaran secara digital.</p>
+          <p>Mitra cerdas pengadaan alat tulis, perlengkapan kantor, dan agensi pemasaran digital yang membantu bisnis Anda tumbuh lebih cepat.</p>
         </div>
 
         <div>
           <h3>Menu</h3>
           <div class="footer-links">
-            <a href="{% url 'produk' %}">Layanan Kami</a>
-            <a href="{% url 'kategori' %}">Portofolio</a>
+            <a href="{% url 'beranda' %}">Beranda</a>
             <a href="{% url 'tentang' %}">Tentang Kami</a>
+            <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
+            <a href="{% url 'kontak' %}">Hubungi Kami</a>
           </div>
         </div>
 
@@ -71,7 +87,7 @@
           <h3>Kontak</h3>
           <div class="footer-links">
             <a href="{% url 'kontak' %}">Hubungi ATKGO.ID</a>
-            <span>Konsultasi Layanan Digital Marketing</span>
+            <span>support@atkgo.id &bull; Indonesia</span>
           </div>
         </div>
       </div>

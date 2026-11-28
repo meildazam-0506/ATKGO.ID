@@ -4,13 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>Kontak | ATKGO.ID</title>
-
   <meta name="description" content="ATKGO.ID — Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.">
-
   <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
-
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 </head>
 <body>
@@ -22,45 +18,101 @@
         <div>
           <span class="eyebrow">KONTAK</span>
           <h1 class="page-title">Ada yang ingin <em>ditanyakan?</em></h1>
-          <p>Isi formulir berikut untuk menyiapkan pesan pesanan atau pertanyaan. Pesan akan dibuka melalui aplikasi email di perangkat kamu.</p>
-          <div class="card">
-            <h3>ATKGO.ID</h3>
-            <p>Mitra cerdas pengadaan alat tulis dan perlengkapan kantor.</p>
-            <p><b class="contact-hours">Jam layanan:</b> Sesuaikan dengan jam operasional toko.</p>
+          <p>Isi formulir berikut untuk menyampaikan pertanyaan atau kebutuhan pengadaan alat tulis dan layanan branding bisnis Anda. Tim kami akan segera menindaklanjuti pesan Anda.</p>
+          
+          <div class="card" style="margin-top: 20px;">
+            <h3 style="margin-top: 0; color: #252641;">ATKGO.ID</h3>
+            <p>Mitra cerdas pengadaan alat tulis, perlengkapan operasional kantor, dan pemasaran digital.</p>
+            <p style="margin: 8px 0;"><b class="contact-hours">Jam Layanan:</b> Senin – Sabtu, 08:00 – 17:00 WITA</p>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e0e0e0; font-size: 13.5px; color: #555; line-height: 1.6;">
+              <div>📧 <strong>Email:</strong> support@atkgo.id</div>
+              <div>📱 <strong>WhatsApp:</strong> 0822-7884-3288</div>
+              <div>📍 <strong>Lokasi:</strong> Indonesia</div>
+            </div>
           </div>
         </div>
 
-        <form class="form card" id="contactForm">
-           <div class="form-group">
-        <label for="nama">Nama</label>
-        <input
-            type="text"
-            id="nama"
-            name="nama"
-            placeholder="Masukkan nama Anda"
-            required
-        >
-    </div>
+        <div class="card" style="padding: 30px;">
+          <!-- PESAN ALERT / FLASH MESSAGES -->
+          {% if messages %}
+            {% for message in messages %}
+              <div style="padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13.5px;
+                {% if message.tags == 'success' %}background:#eef7ee; color:#276738; border-left:4px solid #276738;
+                {% elif message.tags == 'warning' %}background:#fff8e1; color:#8a6d3b; border-left:4px solid #ffa000;
+                {% else %}background:#fee2e2; color:#b91c1c; border-left:4px solid #ef4444;{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
 
-    <!-- Email -->
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="nama@email.com"
-            required
-        >
-    </div>
+          {% if not request.user.is_authenticated %}
+            <!-- PEMBERITAHUAN UNTUK PENGUNJUNG YANG BELUM LOGIN -->
+            <div style="background: #fff8e1; border: 1.5px solid #ffe082; border-left: 4px solid #ffa000; border-radius: 8px; padding: 14px 16px; margin-bottom: 22px; font-size: 13px; color: #8a6d3b; line-height: 1.55;">
+              <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 4px;">
+                <span>🔒</span>
+                <span>Masuk untuk Mengirim Pesan</span>
+              </div>
+              <div>
+                Halaman kontak ini terbuka untuk Anda baca. Namun untuk mengirim pesan atau formulir konsultasi resmi, Anda harus <strong>masuk ke akun</strong> terlebih dahulu.
+              </div>
+            </div>
+          {% endif %}
 
-          </label>
-          <label>Pesan<textarea id="pesan" required placeholder="Tulis pesan kamu..."></textarea></label>
-          <button class="btn btn-red" type="submit">Lanjut Pembayaran →
-          </button>
-        
-          <small class="notice"></small>
-        </form>
+          <form method="POST" action="{% url 'kontak' %}" id="contactForm">
+            {% csrf_token %}
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label for="nama" style="display:block; margin-bottom:6px; font-weight:600; font-size:13px; color:#252641;">Nama Lengkap *</label>
+              <input
+                type="text"
+                id="nama"
+                name="nama"
+                placeholder="Masukkan nama lengkap Anda"
+                value="{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username }}{% endif %}"
+                {% if not request.user.is_authenticated %}readonly style="background:#f7f9f7; cursor:not-allowed;"{% endif %}
+                required
+              >
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label for="email" style="display:block; margin-bottom:6px; font-weight:600; font-size:13px; color:#252641;">Alamat Email *</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="nama@email.com"
+                value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}"
+                {% if not request.user.is_authenticated %}readonly style="background:#f7f9f7; cursor:not-allowed;"{% endif %}
+                required
+              >
+            </div>
+
+            <div class="form-group" style="margin-bottom: 22px;">
+              <label for="pesan" style="display:block; margin-bottom:6px; font-weight:600; font-size:13px; color:#252641;">Pesan atau Pertanyaan *</label>
+              <textarea
+                id="pesan"
+                name="pesan"
+                rows="5"
+                placeholder="{% if request.user.is_authenticated %}Tulis pesan, pertanyaan, atau kebutuhan pengadaan bisnis Anda di sini...{% else %}Silakan masuk ke akun terlebih dahulu untuk menulis dan mengirimkan pesan ini...{% endif %}"
+                {% if not request.user.is_authenticated %}readonly style="background:#f7f9f7; cursor:not-allowed;"{% endif %}
+                required
+              ></textarea>
+            </div>
+
+            {% if request.user.is_authenticated %}
+              <button class="btn btn-red" type="submit" style="width: 100%; padding: 13px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer;">
+                Kirim Pesan &rarr;
+              </button>
+            {% else %}
+              <a href="{% url 'login' %}?mode=login&next={% url 'kontak' %}" class="btn btn-red" style="display: block; width: 100%; text-align: center; text-decoration: none; padding: 13px; font-size: 14.5px; font-weight: bold; border-radius: 8px; background: #c53030; box-sizing: border-box; box-shadow: 0 4px 12px rgba(197,48,48,0.25);">
+                🔒 Masuk untuk Mengirim Pesan &rarr;
+              </a>
+              <p style="text-align: center; margin: 12px 0 0; font-size: 12.5px; color: #777;">
+                Belum memiliki akun? <a href="{% url 'login' %}?mode=register&next={% url 'kontak' %}" style="color: #304b35; font-weight: 700; text-decoration: underline;">Daftar Akun Baru</a>
+              </p>
+            {% endif %}
+          </form>
+        </div>
       </div>
     </section>
   </main>
@@ -75,9 +127,10 @@
         <div>
           <h3>Menu</h3>
           <div class="footer-links">
-            <a href="{% url 'produk' %}">Katalog Produk</a>
-            <a href="{% url 'kategori' %}">Kategori</a>
+            <a href="{% url 'beranda' %}">Beranda</a>
             <a href="{% url 'tentang' %}">Tentang Kami</a>
+            <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
+            <a href="{% url 'kontak' %}">Hubungi Kami</a>
           </div>
         </div>
         <div>

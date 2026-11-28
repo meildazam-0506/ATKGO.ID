@@ -70,16 +70,39 @@
       border: 1px solid #dce2dc;
       border-radius: 8px;
       font-size: 14px;
+      background: white;
+      outline: none;
+    }
+
+    .article-search input:focus {
+      border-color: #304b35;
+      box-shadow: 0 0 0 3px rgba(48,75,53,0.1);
     }
 
     .article-search button {
-      padding: 12px 20px;
+      padding: 12px 22px;
       background: #304b35;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 14px;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+
+    .article-search button:hover {
+      background: #253b29;
+    }
+
+    .article-search button.btn-locked {
+      background: #666;
+      cursor: pointer;
+    }
+
+    .article-search button.btn-locked:hover {
+      background: #444;
     }
 
     .article-grid {
@@ -187,12 +210,18 @@
       <div class="wrap">
         <span class="eyebrow">WAWASAN &amp; EDUKASI</span>
         <h1>Artikel &amp; Inspirasi Bisnis</h1>
-        <p>Temukan panduan praktis, tips pengadaan alat tulis, dan strategi visual untuk memajukan brand dan operasional kantor Anda.</p>
+        <p>Temukan panduan praktis, tips pengadaan alat tulis kantor, dan strategi visual untuk memajukan brand serta operasional kantor Anda.</p>
 
         <!-- PENCARIAN ARTIKEL -->
-        <form method="GET" action="{% url 'artikel_list' %}" class="article-search">
-          <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Cari judul artikel atau kata kunci...">
-          <button type="submit">Cari</button>
+        <form method="GET" action="{% url 'artikel_list' %}" class="article-search" id="articleSearchForm">
+          <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Cari judul artikel atau topik wawasan...">
+          {% if request.user.is_authenticated %}
+            <button type="submit">Cari Artikel</button>
+          {% else %}
+            <button type="button" class="btn-locked" onclick="lockedSearchAlert()" title="Masuk ke akun untuk mencari artikel">
+              🔒 Masuk untuk Cari
+            </button>
+          {% endif %}
         </form>
 
         <!-- KATEGORI ARTIKEL -->
@@ -253,14 +282,14 @@
         <div>
           <h4>Menu Cepat</h4>
           <a href="{% url 'beranda' %}">Beranda</a>
-          <a href="{% url 'produk' %}">Layanan &amp; Katalog</a>
-          <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
           <a href="{% url 'tentang' %}">Tentang Kami</a>
+          <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
+          <a href="{% url 'kontak' %}">Hubungi Kami</a>
         </div>
         <div>
           <h4>Hubungi Kami</h4>
           <p>Email: hello@atkgo.id</p>
-          <p>WhatsApp: 0812-3456-7890</p>
+          <p>WhatsApp: 0822-7884-3288</p>
         </div>
       </div>
       <div class="copyright">
@@ -268,6 +297,15 @@
       </div>
     </div>
   </footer>
+
+  {% if not request.user.is_authenticated %}
+  <script>
+    function lockedSearchAlert() {
+      alert("🔒 Silakan masuk ke akun Anda terlebih dahulu untuk menggunakan fitur pencarian artikel.");
+      window.location.href = "{% url 'login' %}?mode=login&next={% url 'artikel_list' %}";
+    }
+  </script>
+  {% endif %}
 
   <script src="{% static 'assets/js/script.js' %}"></script>
 </body>

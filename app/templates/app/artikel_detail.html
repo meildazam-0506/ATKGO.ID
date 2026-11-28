@@ -126,8 +126,7 @@
         <h1>{{ article.judul }}</h1>
 
         <div class="article-author-bar">
-          <span>Ditulis oleh: <strong>{{ article.nama_penulis|default:article.penulis.first_name|default:"Tim ATKGO"
-              }}</strong></span>
+          <span>Ditulis oleh: <strong>{{ article.nama_penulis|default:article.penulis.first_name|default:"Tim ATKGO" }}</strong></span>
           <span>&bull;</span>
           <time datetime="{{ article.dibuat_pada|date:'Y-m-d' }}">{{ article.dibuat_pada|date:"d F Y, H:i" }} WIB</time>
         </div>
@@ -143,14 +142,21 @@
 
       <div class="article-share-card">
         <div>
-          <strong style="color: #252641;">Tertarik mendiskusikan kebutuhan bisnis Anda?</strong>
-          <p style="margin: 4px 0 0; color: #777; font-size: 13px;">Tim profesional ATKGO.ID siap membantu pengadaan
-            alat tulis dan kebutuhan visual brand Anda.</p>
+          <strong style="color: #252641; font-size: 15px;">Tertarik mendiskusikan kebutuhan bisnis Anda?</strong>
+          <p style="margin: 4px 0 0; color: #777; font-size: 13px;">Tim profesional ATKGO.ID siap membantu pengadaan alat tulis dan kebutuhan visual brand Anda.</p>
         </div>
-        <a href="{% url 'kontak' %}" class="btn btn-red"
-          style="padding: 10px 18px; font-size: 13px; text-decoration: none; border-radius: 8px;">
-          Konsultasi Gratis &rarr;
-        </a>
+
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'kontak' %}" class="btn btn-red"
+            style="padding: 11px 22px; font-size: 13.5px; font-weight: bold; text-decoration: none; border-radius: 8px;">
+            Konsultasi Gratis &rarr;
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}?mode=login&next={% url 'kontak' %}" class="btn btn-red"
+            style="padding: 11px 22px; font-size: 13.5px; font-weight: bold; text-decoration: none; border-radius: 8px; background: #c53030; box-shadow: 0 4px 12px rgba(197,48,48,0.25);">
+            🔒 Masuk untuk Konsultasi &rarr;
+          </a>
+        {% endif %}
       </div>
     </article>
   </main>
@@ -168,14 +174,14 @@
         <div>
           <h4>Menu Cepat</h4>
           <a href="{% url 'beranda' %}">Beranda</a>
-          <a href="{% url 'produk' %}">Layanan &amp; Katalog</a>
-          <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
           <a href="{% url 'tentang' %}">Tentang Kami</a>
+          <a href="{% url 'artikel_list' %}">Artikel Edukasi</a>
+          <a href="{% url 'kontak' %}">Hubungi Kami</a>
         </div>
         <div>
           <h4>Hubungi Kami</h4>
           <p>Email: hello@atkgo.id</p>
-          <p>WhatsApp: 0812-3456-7890</p>
+          <p>WhatsApp: 0822-7884-3288</p>
         </div>
       </div>
       <div class="copyright">
