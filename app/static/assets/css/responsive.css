@@ -5,42 +5,72 @@
    Urutan: dari layar besar ke kecil (jangan ubah urutannya).
    ========================================================== */
 
-/* ---------- Tablet (≤ 850px) ---------- */
-@media (max-width: 850px) {
+/* ---------- Tablet (≤ 900px) ---------- */
+@media (max-width: 900px) {
   /* Navigasi menjadi menu hamburger */
-  .nav { gap: 12px; }
-  .nav-cta { display: none; }
-  .nav-user-actions {
-    margin-left: auto;
+  .site-header .wrap.nav,
+  .nav { min-height: 68px; gap: 12px; }
+
+  .nav-right {
     gap: 8px;
-  }
-  .cart-nav, .profile-button, .logout-button {
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-  }
-  .menu {
-    display: block;
-    margin-left: 6px;
-    min-width: 40px;
-    min-height: 40px;
+    margin-left: auto;
   }
 
+  .nav-user-actions {
+    gap: 8px;
+  }
+
+  .cart-nav,
+  .profile-button,
+  .logout-button,
+  .menu {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+    max-width: 38px;
+    max-height: 38px;
+    border-radius: 9px;
+  }
+
+  .cart-nav svg,
+  .profile-button svg,
+  .logout-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .menu {
+    display: inline-flex !important;
+  }
+
+  nav#mainNav,
   nav {
     display: none;
     position: absolute;
     left: 0;
     right: 0;
     top: 100%;                 /* tepat di bawah header */
-    background: var(--paper);
-    padding: 18px 4%;
+    background: rgba(255, 253, 248, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 18px 5%;
     border-bottom: 1px solid var(--line);
     box-shadow: 0 12px 24px rgba(41, 42, 64, .08);
     flex-direction: column;
-    gap: 16px;
+    align-items: flex-start;
+    gap: 14px;
+    z-index: 999;
   }
-  nav.open { display: flex; }
-  nav a { padding: 4px 0; font-size: 15px; }
+  nav#mainNav.open,
+  nav.open { display: flex !important; }
+  nav#mainNav a,
+  nav a {
+    padding: 6px 0;
+    font-size: 15px;
+    width: 100%;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
 
   .hero-grid, .split { grid-template-columns: 1fr; }
   .hero-grid { padding: 48px 0; min-height: 0; }
@@ -53,9 +83,46 @@
 
 /* ---------- Ponsel (≤ 520px) ---------- */
 @media (max-width: 520px) {
-  .nav { min-height: 68px; }
-  .brand { font-size: 17px; }
-  .brand img { width: 40px; height: 42px; }
+  .site-header .wrap.nav,
+  .nav { min-height: 62px; gap: 8px; }
+  .brand { font-size: 16px; gap: 6px; }
+  .brand img { width: 34px; height: 35px; }
+
+  .nav-right { gap: 6px; }
+  .nav-user-actions { gap: 6px; }
+
+  .cart-nav,
+  .profile-button,
+  .logout-button,
+  .menu {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+    border-radius: 8px;
+  }
+
+  .cart-nav svg,
+  .profile-button svg,
+  .logout-button svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .cart-count {
+    min-width: 16px;
+    height: 16px;
+    font-size: 9px;
+    top: -4px;
+    right: -4px;
+  }
+
+  .nav-cta {
+    padding: 8px 12px;
+    font-size: 11.5px;
+  }
 
   /* Judul lebih kecil & lebih rapat agar tidak terpotong */
   h1 { letter-spacing: -1.7px; }

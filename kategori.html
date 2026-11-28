@@ -1,13 +1,16 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="refresh" content="0; url={% url 'produk' %}">
   <title>Mengarahkan ke Layanan... | ATKGO.ID</title>
   <script>window.location.replace("{% url 'produk' %}");</script>
 </head>
+
 <body>
   <p>Mengarahkan ke katalog <a href="{% url 'produk' %}">Layanan ATKGO.ID</a>...</p>
 </body>
+
 </html>
