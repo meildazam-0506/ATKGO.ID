@@ -160,7 +160,10 @@ SUPABASE_DB_PASSWORD = os.environ.get('SUPABASE_DB_PASSWORD') or 'Alcipakuhtuh05
 if os.environ.get('DATABASE_URL'):
     db_url = urlparse(os.environ.get('DATABASE_URL'))
     engine = 'django.db.backends.mysql' if 'mysql' in db_url.scheme else 'django.db.backends.postgresql'
-    options = {'charset': 'utf8mb4'} if 'mysql' in engine else {'sslmode': 'require'}
+    port = str(db_url.port or (3306 if 'mysql' in engine else 5432))
+    if 'pooler.supabase.com' in (db_url.hostname or '') and port == '5432':
+        port = '6543'
+    options = {'charset': 'utf8mb4'} if 'mysql' in engine else {'sslmode': 'require', 'connect_timeout': 10}
     DATABASES = {
         'default': {
             'ENGINE': engine,
@@ -168,21 +171,21 @@ if os.environ.get('DATABASE_URL'):
             'USER': db_url.username or '',
             'PASSWORD': db_url.password or '',
             'HOST': db_url.hostname or '',
-            'PORT': str(db_url.port or (3306 if 'mysql' in engine else 5432)),
+            'PORT': port,
             'CONN_MAX_AGE': 0,
             'OPTIONS': options,
         }
     }
 elif SUPABASE_DB_PASSWORD:
     db_host = SUPABASE_DB_HOST
-    try:
-        import socket
-        resolved = socket.gethostbyname(SUPABASE_DB_HOST)
-        if resolved:
-            db_host = resolved
-    except Exception:
-        # Fallback ke IP resmi Supabase Pooler ap-northeast-2 jika DNS ISP/lokal gagal me-resolve domain
-        db_host = '13.124.111.232'
+    if not IS_VERCEL:
+        try:
+            import socket
+            resolved = socket.gethostbyname(SUPABASE_DB_HOST)
+            if resolved:
+                db_host = resolved
+        except Exception:
+            db_host = '13.124.111.232'
 
     DATABASES = {
         'default': {
@@ -195,6 +198,7 @@ elif SUPABASE_DB_PASSWORD:
             'CONN_MAX_AGE': 0,
             'OPTIONS': {
                 'sslmode': 'require',
+                'connect_timeout': 10,
             },
         }
     }
@@ -275,8 +279,10 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Dukungan WhiteNoise untuk penyajian file statis langsung via WSGI di Vercel
+# Dukungan WhiteNoise untuk kompresi (Gzip/Brotli) & caching cepat file statis di Vercel CDN
 WHITENOISE_USE_FINDERS = True
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+WHITENOISE_MAX_AGE = 31536000  # 1 tahun cache browser & edge CDN
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
