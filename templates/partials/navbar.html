@@ -1,12 +1,14 @@
 {% load static %}
 <header class="site-header">
-  <div class="wrap nav">
+  <div class="wrap nav-container">
+    <!-- 1. KIRI: Brand Logo -->
     <a class="brand" href="{% if request.user.is_authenticated %}{% url 'beranda' %}{% else %}{% url 'landing' %}{% endif %}">
       <img src="{% static 'assets/img/logo.png' %}" width="47" height="48" alt="Logo ATKGO.ID">
       <span>ATK<span class="go">GO</span>.ID</span>
     </a>
 
-    <nav id="mainNav" aria-label="Menu utama">
+    <!-- 2. TENGAH: Menu Navigasi Utama -->
+    <nav id="mainNav" class="nav-center" aria-label="Menu utama">
       {% if request.user.is_authenticated %}
         <!-- Navbar Pengguna Sudah Login: Beranda, Layanan, Artikel, Tentang, Kontak -->
         <a href="{% url 'beranda' %}" {% if request.resolver_match.url_name == 'beranda' %}class="active" aria-current="page"{% endif %}>Beranda</a>
@@ -15,7 +17,7 @@
         <a href="{% url 'tentang' %}" {% if request.resolver_match.url_name == 'tentang' %}class="active" aria-current="page"{% endif %}>Tentang</a>
         <a href="{% url 'kontak' %}" {% if request.resolver_match.url_name == 'kontak' %}class="active" aria-current="page"{% endif %}>Kontak</a>
       {% else %}
-        <!-- Navbar Konsisten Sebelum Login/Register: Beranda, Tentang, Artikel, Kontak -->
+        <!-- Navbar Pengguna Belum Login: Beranda, Tentang, Artikel, Kontak -->
         <a href="{% url 'beranda' %}" {% if request.resolver_match.url_name == 'beranda' or request.resolver_match.url_name == 'landing' %}class="active" aria-current="page"{% endif %}>Beranda</a>
         <a href="{% url 'tentang' %}" {% if request.resolver_match.url_name == 'tentang' %}class="active" aria-current="page"{% endif %}>Tentang</a>
         <a href="{% url 'artikel_list' %}" {% if request.resolver_match.url_name == 'artikel_list' or request.resolver_match.url_name == 'artikel_detail' %}class="active" aria-current="page"{% endif %}>Artikel</a>
@@ -23,12 +25,12 @@
       {% endif %}
     </nav>
 
+    <!-- 3. KANAN: Ikon Keranjang, Profil, Keluar (Sejajar 1 Baris) -->
     <div class="nav-right">
       {% if request.user.is_authenticated %}
-        <!-- Grup Aksi Pengguna: Keranjang, Profil, Logout (Rapi & Proporsional UI/UX) -->
         <div class="nav-user-actions">
           <!-- Ikon Keranjang -->
-          <a href="{% url 'keranjang' %}" class="cart-nav" aria-label="Buka keranjang" title="Keranjang Belanja">
+          <a href="{% url 'keranjang' %}" class="nav-action-btn cart-nav" aria-label="Buka keranjang belanja" title="Keranjang Belanja">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="9" cy="21" r="1"/>
               <circle cx="20" cy="21" r="1"/>
@@ -38,7 +40,7 @@
           </a>
 
           <!-- Tombol Profil Pengguna -->
-          <a href="{% url 'profil' %}" class="profile-button {% if request.resolver_match.url_name == 'profil' %}active{% endif %}" aria-label="Profil Akun Saya" title="Profil Saya">
+          <a href="{% url 'profil' %}" class="nav-action-btn profile-button {% if request.resolver_match.url_name == 'profil' %}active{% endif %}" aria-label="Profil Akun Saya" title="Profil Saya">
             <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
@@ -48,7 +50,7 @@
           <!-- Tombol Logout -->
           <form method="POST" action="{% url 'logout' %}" class="logout-form">
             {% csrf_token %}
-            <button type="submit" class="logout-button" aria-label="Logout" title="Keluar dari akun">
+            <button type="submit" class="nav-action-btn logout-button" aria-label="Keluar dari akun" title="Keluar dari akun">
               <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                 <polyline points="16 17 21 12 16 7"/>
@@ -61,7 +63,384 @@
         <a class="nav-cta" href="{% url 'login' %}">Login / Register</a>
       {% endif %}
 
-      <button class="menu" id="menuBtn" type="button" aria-label="Buka menu" aria-controls="mainNav" aria-expanded="false">☰</button>
+      <!-- Tombol Hamburger Mobile -->
+      <button class="menu" id="menuBtn" type="button" aria-label="Buka menu navigasi" aria-controls="mainNav" aria-expanded="false">☰</button>
     </div>
   </div>
 </header>
+
+<style>
+  /* ===== NAVBAR ATKGO.ID — LAYOUT & ANTI-OVERLAP (MUTLAK SEJAJAR) ===== */
+  .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(255, 253, 248, 0.98) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid var(--line, #e2e8f0) !important;
+    width: 100% !important;
+  }
+
+  .site-header .wrap.nav-container,
+  .site-header .wrap.nav {
+    width: min(1200px, 94%) !important;
+    margin: 0 auto !important;
+    min-height: 76px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    flex-wrap: nowrap !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 1. KIRI: Brand Logo */
+  .site-header .brand {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    color: var(--navy, #252641) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .site-header .brand img {
+    width: 44px !important;
+    height: 45px !important;
+    object-fit: contain !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+  }
+  .site-header .brand .go {
+    color: var(--red, #ef3938) !important;
+  }
+
+  /* 2. TENGAH: Menu Navigasi Utama */
+  .site-header nav#mainNav,
+  .site-header nav.nav-center {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 26px !important;
+    margin: 0 auto !important; /* POSISI PERSIS DI TENGAH */
+    padding: 0 !important;
+    list-style: none !important;
+    flex-shrink: 0 !important;
+  }
+  .site-header nav#mainNav a,
+  .site-header nav.nav-center a {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: var(--navy, #252641) !important;
+    text-decoration: none !important;
+    padding: 8px 4px !important;
+    white-space: nowrap !important;
+    transition: color 0.2s ease !important;
+    display: inline-block !important;
+    margin: 0 !important;
+  }
+  .site-header nav#mainNav a:hover,
+  .site-header nav#mainNav a.active,
+  .site-header nav.nav-center a:hover,
+  .site-header nav.nav-center a.active {
+    color: var(--red, #ef3938) !important;
+  }
+
+  /* 3. KANAN: Nav Right & User Actions (SEJAJAR 1 BARIS) */
+  .site-header .nav-right {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .site-header .nav-user-actions {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 12px !important; /* Jarak proporsional antar tombol */
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Tombol Aksi: Keranjang, Profil, Logout */
+  .site-header .nav-action-btn,
+  .site-header .cart-nav,
+  .site-header .profile-button,
+  .site-header .logout-button {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    color: #252641 !important;
+    text-decoration: none !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    line-height: 1 !important;
+  }
+
+  .site-header .cart-nav:hover {
+    background: #fff5f5 !important;
+    color: #ef3938 !important;
+    border-color: #ef3938 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 10px rgba(239, 57, 56, 0.15) !important;
+  }
+
+  .site-header .profile-button:hover,
+  .site-header .profile-button.active {
+    background: #304b35 !important;
+    color: #ffffff !important;
+    border-color: #304b35 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 10px rgba(48, 75, 53, 0.2) !important;
+  }
+
+  /* Logout Form: inline-flex agar tetap 1 baris */
+  .site-header .logout-form {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .site-header .logout-button:hover {
+    background: #ef3938 !important;
+    color: #ffffff !important;
+    border-color: #ef3938 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 10px rgba(239, 57, 56, 0.2) !important;
+  }
+
+  .site-header .nav-action-btn svg,
+  .site-header .cart-nav svg,
+  .site-header .profile-button svg,
+  .site-header .logout-button svg {
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+    flex-shrink: 0 !important;
+    margin: auto !important;
+  }
+
+  /* Badge Jumlah Keranjang (Anti-Overlap) */
+  .site-header .cart-count {
+    position: absolute !important;
+    top: -5px !important;
+    right: -5px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    padding: 0 4px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 999px !important;
+    background: #ef3938 !important;
+    color: #ffffff !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Tombol CTA Login/Register */
+  .site-header .nav-cta {
+    background: var(--red, #ef3938) !important;
+    color: #ffffff !important;
+    border-radius: 9px !important;
+    padding: 10px 18px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    transition: background 0.2s ease, transform 0.2s ease !important;
+  }
+  .site-header .nav-cta:hover {
+    background: #c53030 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* Tombol Hamburger */
+  .site-header .menu {
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    color: var(--navy, #252641) !important;
+    font-size: 20px !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+    line-height: 1 !important;
+  }
+  .site-header .menu:hover {
+    background: #f1f5f9 !important;
+    color: var(--red, #ef3938) !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  /* ===== RESPONSIVE TABLET & MOBILE ===== */
+  @media (max-width: 900px) {
+    .site-header .wrap.nav-container,
+    .site-header .wrap.nav {
+      min-height: 68px !important;
+      gap: 10px !important;
+    }
+    .site-header nav#mainNav,
+    .site-header nav.nav-center {
+      display: none !important;
+      position: absolute !important;
+      left: 0 !important;
+      right: 0 !important;
+      top: 100% !important;
+      background: rgba(255, 253, 248, 0.98) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      padding: 18px 5% !important;
+      border-bottom: 1px solid var(--line, #e2e8f0) !important;
+      box-shadow: 0 12px 24px rgba(41, 42, 64, 0.08) !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 14px !important;
+      z-index: 999 !important;
+      margin: 0 !important;
+    }
+    .site-header nav#mainNav.open,
+    .site-header nav.nav-center.open {
+      display: flex !important;
+    }
+    .site-header nav#mainNav a,
+    .site-header nav.nav-center a {
+      padding: 6px 0 !important;
+      font-size: 15px !important;
+      width: 100% !important;
+      border-bottom: 1px solid rgba(0,0,0,0.04) !important;
+    }
+    .site-header .menu {
+      display: inline-flex !important;
+    }
+    .site-header .nav-right {
+      gap: 8px !important;
+    }
+    .site-header .nav-user-actions {
+      gap: 8px !important;
+    }
+    .site-header .nav-action-btn,
+    .site-header .cart-nav,
+    .site-header .profile-button,
+    .site-header .logout-button,
+    .site-header .menu {
+      width: 38px !important;
+      height: 38px !important;
+      min-width: 38px !important;
+      min-height: 38px !important;
+      max-width: 38px !important;
+      max-height: 38px !important;
+      border-radius: 9px !important;
+    }
+    .site-header .nav-action-btn svg,
+    .site-header .cart-nav svg,
+    .site-header .profile-button svg,
+    .site-header .logout-button svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .site-header .wrap.nav-container,
+    .site-header .wrap.nav {
+      min-height: 62px !important;
+      gap: 8px !important;
+      padding: 0 12px !important;
+    }
+    .site-header .brand {
+      font-size: 16px !important;
+      gap: 6px !important;
+    }
+    .site-header .brand img {
+      width: 34px !important;
+      height: 35px !important;
+    }
+    .site-header .nav-right {
+      gap: 6px !important;
+    }
+    .site-header .nav-user-actions {
+      gap: 6px !important;
+    }
+    .site-header .nav-action-btn,
+    .site-header .cart-nav,
+    .site-header .profile-button,
+    .site-header .logout-button,
+    .site-header .menu {
+      width: 36px !important;
+      height: 36px !important;
+      min-width: 36px !important;
+      min-height: 36px !important;
+      max-width: 36px !important;
+      max-height: 36px !important;
+      border-radius: 8px !important;
+    }
+    .site-header .nav-action-btn svg,
+    .site-header .cart-nav svg,
+    .site-header .profile-button svg,
+    .site-header .logout-button svg {
+      width: 17px !important;
+      height: 17px !important;
+    }
+    .site-header .cart-count {
+      min-width: 16px !important;
+      height: 16px !important;
+      font-size: 9px !important;
+      top: -4px !important;
+      right: -4px !important;
+    }
+    .site-header .nav-cta {
+      padding: 8px 12px !important;
+      font-size: 11.5px !important;
+    }
+  }
+</style>
